@@ -962,9 +962,15 @@
           </div>
         </details>
 
-        <div class="pt-1">
-          <button onclick="connectFirebaseRealtime()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl smooth shadow-sm">
-            <i class="fas fa-link"></i> Kết nối Realtime
+        <div class="flex gap-2 pt-1">
+          <button onclick="connectFirebaseRealtime(true)" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl smooth shadow-sm flex items-center justify-center gap-1">
+            <i class="fas fa-link"></i> Kết nối
+          </button>
+          <button onclick="forcePushToFirebase()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl smooth shadow-sm flex items-center justify-center gap-1" title="Đẩy dữ liệu máy tính này lên Cloud làm chuẩn">
+            <i class="fas fa-cloud-upload-alt"></i> Đẩy lên Cloud
+          </button>
+          <button onclick="forcePullFromFirebase()" class="px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold py-2 rounded-xl smooth flex items-center justify-center gap-1" title="Tải dữ liệu từ Cloud về máy">
+            <i class="fas fa-cloud-download-alt"></i> Tải về
           </button>
         </div>
       </div>
@@ -2785,12 +2791,13 @@
       if (!wrapper || !container) return;
 
       const roomId = document.getElementById('firebaseRoomId')?.value.trim() || state.sync.firebaseRoomId || 'typlex_default_room';
+      const dbUrl = document.getElementById('firebaseDbUrl')?.value.trim() || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com';
       
       let baseUrl = window.location.origin + window.location.pathname;
       if (window.location.protocol === 'file:') {
         baseUrl = `http://192.168.1.4:8080/index.html`;
       }
-      const fullUrl = `${baseUrl}?room=${encodeURIComponent(roomId)}`;
+      const fullUrl = `${baseUrl}?room=${encodeURIComponent(roomId)}&db=${encodeURIComponent(dbUrl)}`;
       if (input) input.value = fullUrl;
 
       container.innerHTML = '';
@@ -2824,26 +2831,117 @@
     function initSyncEngine() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
+        let hasParams = false;
         if (urlParams.has('room')) {
           const r = urlParams.get('room');
           if (r) {
             state.sync.firebaseRoomId = r;
-            state.sync.syncProvider = 'firebase';
             const roomInp = document.getElementById('firebaseRoomId');
             if (roomInp) roomInp.value = r;
-            saveState(false);
+            hasParams = true;
           }
+        }
+        if (urlParams.has('db')) {
+          const db = decodeURIComponent(urlParams.get('db'));
+          if (db) {
+            state.sync.firebaseDbUrl = db;
+            const dbInp = document.getElementById('firebaseDbUrl');
+            if (dbInp) dbInp.value = db;
+            hasParams = true;
+          }
+        }
+        if (hasParams) {
+          state.sync.syncProvider = 'firebase';
+          saveState(false);
         }
       } catch (e) {}
 
       if (state.sync.syncProvider === 'firebase' && state.sync.firebaseRoomId) {
-        connectFirebaseRealtime();
+        connectFirebaseRealtime(false);
       }
     }
 
-    function connectFirebaseRealtime() {
-      const roomId = document.getElementById('firebaseRoomId').value.trim() || 'typlex_default_room';
-      const dbUrl = document.getElementById('firebaseDbUrl').value.trim() || 'https://typlex-workspace-default-rtdb.firebaseio.com';
+    function broadcastToFirebase(notifySuccess = false) {
+      if (!firebaseRef) return;
+      try {
+        const cleanData = JSON.parse(JSON.stringify(state));
+        cleanData.lastModified = Date.now();
+        state.lastModified = cleanData.lastModified;
+
+        firebaseRef.set(cleanData)
+          .then(() => {
+            updateSyncBadge('🟢 Realtime (Đã sync)');
+            if (notifySuccess) alert('Đã đẩy toàn bộ dữ liệu máy tính lên Cloud Firebase thành công!');
+          })
+          .catch(err => {
+            console.error('Firebase save error:', err);
+            if (err && err.message && err.message.includes('PERMISSION_DENIED')) {
+              updateSyncBadge('🔴 Lỗi Quyền Database');
+              alert('Lỗi quyền Firebase Database! Vui lòng vào Firebase Console > Realtime Database > Rules và đổi thành { ".read": true, ".write": true }.');
+            } else {
+              updateSyncBadge('🔴 Lỗi kết nối');
+            }
+          });
+      } catch (e) {
+        console.error('Serialization error:', e);
+      }
+    }
+
+    function forcePushToFirebase() {
+      const roomId = document.getElementById('firebaseRoomId')?.value.trim() || state.sync.firebaseRoomId || 'typlex_default_room';
+      const dbUrl = document.getElementById('firebaseDbUrl')?.value.trim() || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com';
+      state.sync.firebaseRoomId = roomId;
+      state.sync.firebaseDbUrl = dbUrl;
+      state.sync.syncProvider = 'firebase';
+      saveState(false);
+
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp({ databaseURL: dbUrl });
+        }
+        const db = firebase.database();
+        firebaseRef = db.ref('workspaces/' + roomId);
+        broadcastToFirebase(true);
+        closeModal('cloud-modal');
+      } catch (e) {
+        alert('Lỗi: ' + e.message);
+      }
+    }
+
+    function forcePullFromFirebase() {
+      const roomId = document.getElementById('firebaseRoomId')?.value.trim() || state.sync.firebaseRoomId || 'typlex_default_room';
+      const dbUrl = document.getElementById('firebaseDbUrl')?.value.trim() || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com';
+      state.sync.firebaseRoomId = roomId;
+      state.sync.firebaseDbUrl = dbUrl;
+      state.sync.syncProvider = 'firebase';
+      saveState(false);
+
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp({ databaseURL: dbUrl });
+        }
+        const db = firebase.database();
+        firebaseRef = db.ref('workspaces/' + roomId);
+        firebaseRef.once('value').then(snapshot => {
+          const remoteData = snapshot.val();
+          if (remoteData && remoteData.version) {
+            applyRemoteData(remoteData);
+            alert('Đã tải dữ liệu mới nhất từ Cloud về máy thành công!');
+            closeModal('cloud-modal');
+          } else {
+            alert('Phòng trên Cloud hiện chưa có dữ liệu!');
+          }
+        }).catch(e => {
+          alert('Lỗi tải dữ liệu: ' + e.message);
+        });
+      } catch (e) {
+        alert('Lỗi: ' + e.message);
+      }
+    }
+
+    function connectFirebaseRealtime(userAction = false) {
+      const roomId = (document.getElementById('firebaseRoomId')?.value || state.sync.firebaseRoomId || 'typlex_default_room').trim();
+      const dbUrl = (document.getElementById('firebaseDbUrl')?.value || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com').trim();
       state.sync.firebaseRoomId = roomId;
       state.sync.firebaseDbUrl = dbUrl;
       state.sync.syncProvider = 'firebase';
@@ -2856,47 +2954,91 @@
         const db = firebase.database();
         firebaseRef = db.ref('workspaces/' + roomId);
 
+        firebaseRef.once('value').then(snapshot => {
+          const remoteData = snapshot.val();
+          if (!remoteData || !remoteData.version) {
+            // Room is empty on cloud! Push local state to cloud immediately
+            broadcastToFirebase(false);
+          } else {
+            const localCredits = state.accumulatedCredits || 0;
+            const remoteCredits = remoteData.accumulatedCredits || 0;
+            const localSemestersCount = (state.semesters || []).length;
+            const remoteSemestersCount = (remoteData.semesters || []).length;
+
+            if (userAction && (localCredits > remoteCredits || localSemestersCount > remoteSemestersCount)) {
+              const keepLocal = confirm(`Dữ liệu trên máy (${localCredits} tín chỉ, ${localSemestersCount} học kỳ) nhiều hơn trên Cloud (${remoteCredits} tín chỉ, ${remoteSemestersCount} học kỳ).\n\nBạn có muốn ĐẨY dữ liệu máy lên Cloud để các thiết bị khác (điện thoại) nhận dữ liệu này không?\n\n- Bấm [OK] để Đẩy dữ liệu máy lên Cloud\n- Bấm [Cancel] để Tải dữ liệu từ Cloud về máy`);
+              if (keepLocal) {
+                broadcastToFirebase(true);
+                return;
+              }
+            }
+
+            const remoteTime = remoteData.lastModified || 0;
+            const localTime = state.lastModified || 0;
+
+            if (remoteTime >= localTime || localCredits <= remoteCredits) {
+              applyRemoteData(remoteData);
+            } else {
+              broadcastToFirebase(false);
+            }
+          }
+        }).catch(e => {
+          console.warn('Initial check warning:', e);
+          broadcastToFirebase(false);
+        });
+
+        firebaseRef.off();
         firebaseRef.on('value', (snapshot) => {
           const remoteData = snapshot.val();
           if (remoteData && remoteData.version) {
-            isRemoteSyncUpdate = true;
-            state = Object.assign(state, remoteData);
-            if (!state.calendar) state.calendar = {};
-            if (!state.calendar.days) state.calendar.days = {};
-            if (!state.calendar.selectedDateStr) state.calendar.selectedDateStr = getLocalYMD(new Date());
-            if (!state.timetable) state.timetable = { viewMode: "grid", classes: [] };
-            if (!state.timetable.classes) state.timetable.classes = [];
-            if (!state.focus) state.focus = { timerMinutes: 25, breakMinutes: 5, dailyGoalMinutes: 360 };
-            if (!state.player) state.player = { selectedPlaylistId: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg", apiKey: "", customPlaylists: [...DEFAULT_PLAYLISTS], isShuffle: true, masterVideoIds: [] };
-            if (remoteData.gpa && remoteData.gpa.semesters && (!state.semesters || state.semesters.length === 0)) {
-              state.semesters = remoteData.gpa.semesters;
+            const remoteTime = remoteData.lastModified || 0;
+            const localTime = state.lastModified || 0;
+            if (remoteTime > localTime || !state.semesters || state.semesters.length === 0) {
+              applyRemoteData(remoteData);
             }
-            saveState(false);
-            applyTheme();
-            renderSemesters();
-            recalculateAll();
-            renderTimetable();
-            renderCalendar();
-            renderTodayOverview();
-            isRemoteSyncUpdate = false;
-            updateSyncBadge('🟢 Realtime');
           }
         });
 
         updateSyncBadge('🟢 Realtime');
-        closeModal('cloud-modal');
+        if (userAction) {
+          closeModal('cloud-modal');
+          alert(`Đã kết nối thành công tới phòng [${roomId}]!`);
+        }
       } catch (err) {
         console.error('Firebase error:', err);
-        updateSyncBadge('🟡 Local');
+        updateSyncBadge('🔴 Lỗi kết nối');
+        if (userAction) alert('Lỗi kết nối Firebase: ' + err.message);
       }
+    }
+
+    function applyRemoteData(remoteData) {
+      isRemoteSyncUpdate = true;
+      state = Object.assign(state, remoteData);
+      if (!state.calendar) state.calendar = {};
+      if (!state.calendar.days) state.calendar.days = {};
+      if (!state.calendar.selectedDateStr) state.calendar.selectedDateStr = getLocalYMD(new Date());
+      if (!state.timetable) state.timetable = { viewMode: "grid", classes: [] };
+      if (!state.timetable.classes) state.timetable.classes = [];
+      if (!state.focus) state.focus = { timerMinutes: 25, breakMinutes: 5, dailyGoalMinutes: 360 };
+      if (!state.player) state.player = { selectedPlaylistId: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg", apiKey: "", customPlaylists: [...DEFAULT_PLAYLISTS], isShuffle: true, masterVideoIds: [] };
+      
+      saveState(false);
+      applyTheme();
+      renderSemesters();
+      recalculateAll();
+      renderTimetable();
+      renderCalendar();
+      renderTodayOverview();
+      isRemoteSyncUpdate = false;
+      updateSyncBadge('🟢 Realtime');
     }
 
     function debounceBroadcastCloud() {
       if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
       syncDebounceTimer = setTimeout(() => {
-        if (firebaseRef) firebaseRef.set(state).catch(e => console.error(e));
+        broadcastToFirebase(false);
         if (state.sync.gistToken && state.sync.gistId) pushGistData(true);
-      }, 1200);
+      }, 400);
     }
 
     async function pushGistData(silent = false) {

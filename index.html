@@ -1241,6 +1241,16 @@
         }
       }
 
+      // Ensure all state sub-objects always exist
+      if (!state.calendar) state.calendar = {};
+      if (!state.calendar.days) state.calendar.days = {};
+      if (!state.calendar.selectedDateStr) state.calendar.selectedDateStr = getLocalYMD(new Date());
+      if (!state.timetable) state.timetable = { viewMode: "grid", classes: [] };
+      if (!state.timetable.classes) state.timetable.classes = [];
+      if (!state.focus) state.focus = { timerMinutes: 25, breakMinutes: 5, dailyGoalMinutes: 360 };
+      if (!state.player) state.player = { selectedPlaylistId: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg", apiKey: "", customPlaylists: [...DEFAULT_PLAYLISTS], isShuffle: true, masterVideoIds: [] };
+      if (!state.sync) state.sync = { syncProvider: "firebase", firebaseRoomId: "typlex_default_room", firebaseDbUrl: "https://typlex-workspace-default-rtdb.firebaseio.com", gistToken: "", gistId: "" };
+
       // 3. Preserve legacy if not empty
       if (legacySemesters && (!state.semesters || state.semesters.length === 0)) {
         state.semesters = legacySemesters;
@@ -2209,6 +2219,10 @@
     }
 
     function renderCalendar() {
+      if (!state.calendar) state.calendar = { selectedDateStr: getLocalYMD(new Date()), days: {} };
+      if (!state.calendar.days) state.calendar.days = {};
+      if (!state.calendar.selectedDateStr) state.calendar.selectedDateStr = getLocalYMD(new Date());
+
       const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
       if (document.getElementById('calendarMonthYearDisplay')) {
         document.getElementById('calendarMonthYearDisplay').textContent = `${monthNames[calendarMonth]}, ${calendarYear}`;
@@ -2233,7 +2247,7 @@
       for (let d = 1; d <= daysInMonth; d++) {
         const dateObj = new Date(calendarYear, calendarMonth, d);
         const dateStr = getLocalYMD(dateObj);
-        const dayData = state.calendar.days[dateStr] || { tasks: [], studyTime: 0 };
+        const dayData = (state.calendar.days && state.calendar.days[dateStr]) || { tasks: [], studyTime: 0 };
         const studyTime = dayData.studyTime || 0;
         const totalTasks = (dayData.tasks || []).length;
         const completedTasks = (dayData.tasks || []).filter(t => t.completed).length;
@@ -2242,7 +2256,7 @@
         const isSelected = dateStr === state.calendar.selectedDateStr;
 
         let bgClass = 'bg-slate-50 dark:bg-slate-900/60 border-slate-200/60 dark:border-slate-800';
-        if (studyTime >= (state.focus.dailyGoalMinutes || 360)) {
+        if (studyTime >= ((state.focus && state.focus.dailyGoalMinutes) || 360)) {
           bgClass = 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300';
         } else if (studyTime > 0) {
           bgClass = 'bg-blue-950/40 border-blue-500/50 text-blue-300';
@@ -2272,11 +2286,14 @@
     }
 
     function selectCalendarDate(dateStr) {
+      if (!state.calendar) state.calendar = { selectedDateStr: dateStr, days: {} };
       state.calendar.selectedDateStr = dateStr;
       renderCalendar();
     }
 
     function renderSelectedDateDetails() {
+      if (!state.calendar) state.calendar = { selectedDateStr: getLocalYMD(new Date()), days: {} };
+      if (!state.calendar.days) state.calendar.days = {};
       const dateStr = state.calendar.selectedDateStr || getLocalYMD(new Date());
       const parts = dateStr.split('-');
       if (document.getElementById('selectedDateTitle')) {
@@ -2844,6 +2861,13 @@
           if (remoteData && remoteData.version) {
             isRemoteSyncUpdate = true;
             state = Object.assign(state, remoteData);
+            if (!state.calendar) state.calendar = {};
+            if (!state.calendar.days) state.calendar.days = {};
+            if (!state.calendar.selectedDateStr) state.calendar.selectedDateStr = getLocalYMD(new Date());
+            if (!state.timetable) state.timetable = { viewMode: "grid", classes: [] };
+            if (!state.timetable.classes) state.timetable.classes = [];
+            if (!state.focus) state.focus = { timerMinutes: 25, breakMinutes: 5, dailyGoalMinutes: 360 };
+            if (!state.player) state.player = { selectedPlaylistId: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg", apiKey: "", customPlaylists: [...DEFAULT_PLAYLISTS], isShuffle: true, masterVideoIds: [] };
             if (remoteData.gpa && remoteData.gpa.semesters && (!state.semesters || state.semesters.length === 0)) {
               state.semesters = remoteData.gpa.semesters;
             }

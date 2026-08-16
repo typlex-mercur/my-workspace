@@ -37,6 +37,7 @@ self.addEventListener('fetch', event => {
   // Bypass external APIs and real-time streams
   if (
     url.includes('firebaseio.com') ||
+    url.includes('firebasedatabase.app') ||
     url.includes('googleapis.com') ||
     url.includes('api.github.com') ||
     url.includes('youtube.com') ||

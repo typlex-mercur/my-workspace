@@ -1,0 +1,3035 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- PWA Manifest & App Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="theme-color" content="#090D16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <title>Typlex Workspace & GPA Tracker</title>
+
+  <!-- External Libraries via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Firebase Compat for Instant Real-Time Synchronization -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#EFF6FF',
+              100: '#DBEAFE',
+              500: '#3B82F6',
+              600: '#2563EB',
+              700: '#1D4ED8',
+            },
+            surface: {
+              light: '#F8FAFC',
+              dark: '#090D16',
+              cardLight: '#FFFFFF',
+              cardDark: '#101626',
+              borderLight: '#E2E8F0',
+              borderDark: '#1E293B',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+    input, textarea, select {
+      user-select: text;
+    }
+    
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+    /* Number Input Arrows Reset */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none; margin: 0;
+    }
+    input[type=number] { appearance: textfield; -moz-appearance: textfield; }
+
+    .smooth { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    .glass {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* Accordion transitions */
+    .accordion-content {
+      transition: max-height 0.25s ease-out, opacity 0.2s ease-out;
+      max-height: 4000px;
+      opacity: 1;
+      overflow: hidden;
+    }
+    .accordion-content.collapsed {
+      max-height: 0;
+      opacity: 0;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      border-width: 0 !important;
+    }
+
+    @media (max-width: 640px) {
+      .mobile-pb { padding-bottom: 4.5rem; }
+    }
+  </style>
+</head>
+
+<body class="bg-surface-light text-slate-800 dark:bg-surface-dark dark:text-slate-100 h-screen overflow-hidden flex flex-col transition-colors duration-300">
+
+  <!-- ========================================== -->
+  <!-- TOP NAVIGATION BAR                         -->
+  <!-- ========================================== -->
+  <nav class="h-14 flex-shrink-0 z-40 bg-white/95 dark:bg-surface-dark/95 glass border-b border-surface-borderLight dark:border-surface-borderDark px-4 lg:px-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchTab('overview')">
+        <img src="icon.png" class="w-8 h-8 rounded-xl shadow-sm object-cover border border-slate-200/50 dark:border-slate-800" alt="Typlex Logo">
+        <div class="flex items-center gap-2">
+          <span class="font-black text-base tracking-tight text-slate-900 dark:text-white">Typlex</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold">Workspace</span>
+        </div>
+      </div>
+
+      <!-- Sync Status Indicator -->
+      <div class="hidden sm:flex items-center gap-1.5 text-[11px] text-slate-400 pl-2 border-l border-slate-200 dark:border-slate-800" id="syncStatusBadge">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Tabs -->
+    <div class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800">
+      <button onclick="switchTab('overview')" id="tab-btn-overview" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm">
+        <i class="fas fa-th-large"></i> Tổng quan
+      </button>
+      <button onclick="switchTab('gpa')" id="tab-btn-gpa" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <i class="fas fa-chart-pie"></i> GPA Tracker
+      </button>
+      <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <i class="fas fa-calendar-week"></i> Thời khóa biểu
+      </button>
+      <button onclick="switchTab('tasks')" id="tab-btn-tasks" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <i class="fas fa-check-circle"></i> Lịch & Nhiệm vụ
+      </button>
+      <button onclick="switchTab('focus')" id="tab-btn-focus" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <i class="fas fa-stopwatch"></i> Focus
+      </button>
+    </div>
+
+    <!-- Action Buttons (Sync, Settings, Theme) -->
+    <div class="flex items-center gap-1.5">
+      <!-- Cloud Sync Button -->
+      <button onclick="openModal('cloud-modal')" class="px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 smooth text-xs font-bold flex items-center justify-center gap-1.5 border border-blue-200/40 dark:border-blue-700/30" title="Đồng bộ Real-time">
+        <i class="fas fa-cloud"></i>
+        <span>Sync</span>
+      </button>
+
+      <!-- Settings Modal Button -->
+      <button onclick="openModal('settings-modal')" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50" title="Cài đặt">
+        <i class="fas fa-cog"></i>
+      </button>
+
+      <!-- Theme Toggle Button -->
+      <button onclick="toggleTheme()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50" title="Chuyển Sáng/Tối">
+        <i class="fas fa-sun text-amber-500" id="themeIcon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========================================== -->
+  <!-- MAIN APP CONTAINER                         -->
+  <!-- ========================================== -->
+  <main class="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-5 max-w-7xl w-full mx-auto">
+
+    <!-- ======================================================= -->
+    <!-- TAB 1: OVERVIEW DASHBOARD (COMPACT NATURAL HEIGHT)       -->
+    <!-- ======================================================= -->
+    <div id="view-overview" class="tab-view space-y-4 mobile-pb">
+      
+      <!-- Top Stats Overview Bar -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-base flex-shrink-0">
+            <i class="fas fa-star"></i>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">CGPA</span>
+            <div class="text-xl font-black text-slate-900 dark:text-white" id="hero-cgpa">0.00</div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-base flex-shrink-0">
+            <i class="fas fa-award"></i>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Tín chỉ</span>
+            <div class="text-xl font-black text-emerald-600 dark:text-emerald-400" id="hero-credits-badge">0/120</div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base flex-shrink-0">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Focus Hôm nay</span>
+            <div class="text-xl font-black text-amber-500 dark:text-amber-400" id="hero-today-study">0m</div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base flex-shrink-0">
+            <i class="fas fa-calendar-day"></i>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Hôm nay</span>
+            <div class="text-xs font-black text-slate-800 dark:text-slate-200 truncate" id="heroDateString">Thứ Hai</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview Main Cards (Compact Natural Height stopping around horizontal red-line mark) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3.5 items-start">
+
+        <!-- Card 1: Today's Classes -->
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-calendar-day text-blue-500 text-xs"></i>
+              <h3 class="font-extrabold text-xs text-slate-900 dark:text-white">Lớp học</h3>
+            </div>
+            <button onclick="switchTab('timetable')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline">
+              Xem TKB →
+            </button>
+          </div>
+          <div id="overview-today-classes" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Card 2: Today's Tasks -->
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-tasks text-emerald-500 text-xs"></i>
+              <h3 class="font-extrabold text-xs text-slate-900 dark:text-white">Nhiệm vụ</h3>
+            </div>
+            <span class="text-[11px] text-slate-400 font-bold" id="overviewTaskCount">0/0</span>
+          </div>
+
+          <div class="flex gap-2 mb-2.5">
+            <input type="text" id="overviewQuickTaskInput" placeholder="Thêm việc cần làm..." 
+              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onkeypress="if(event.key==='Enter') addOverviewQuickTask()">
+            <button onclick="addOverviewQuickTask()" class="px-3 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 smooth">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <div id="overview-today-tasks" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Card 3: Quick Focus & Miniplayer Bar -->
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between gap-3 shadow-sm">
+          <div>
+            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-stopwatch text-amber-500 text-xs"></i>
+                <h3 class="font-extrabold text-xs text-slate-900 dark:text-white">Đồng hồ</h3>
+              </div>
+              <button onclick="switchTab('focus')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline">
+                Phòng Focus →
+              </button>
+            </div>
+
+            <!-- Compact Timer Preview -->
+            <div class="bg-slate-50 dark:bg-slate-900/60 rounded-xl p-3 text-center border border-slate-200/60 dark:border-slate-800">
+              <div class="text-3xl sm:text-4xl font-black font-mono tracking-wider text-amber-500 dark:text-amber-400 mb-2" id="overviewTimerDisplay">25:00</div>
+              <div class="flex items-center justify-center gap-2">
+                <button onclick="toggleTimer()" id="overviewTimerBtn" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs smooth flex items-center gap-1.5">
+                  <i class="fas fa-play"></i> Bắt đầu
+                </button>
+                <button onclick="endAndLogEarly()" class="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 dark:text-red-400 font-bold text-xs smooth flex items-center gap-1">
+                  <i class="fas fa-stop"></i> Lưu & Dừng
+                </button>
+                <button onclick="resetTimer()" class="px-2.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs smooth">
+                  <i class="fas fa-redo"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini Player Compact Status -->
+          <div class="bg-blue-50/70 dark:bg-blue-900/20 rounded-xl p-2.5 border border-blue-100 dark:border-blue-800/40 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 overflow-hidden">
+              <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+                <i class="fas fa-music"></i>
+              </div>
+              <div class="truncate text-xs">
+                <div class="font-bold text-slate-900 dark:text-white truncate" id="overviewMusicName">RandomVie</div>
+                <div class="text-[10px] text-slate-400" id="overviewMusicStatus">Sẵn sàng</div>
+              </div>
+            </div>
+            <button onclick="openMiniplayerFull()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-[11px] shadow-sm hover:bg-blue-50 dark:hover:bg-slate-700 smooth flex-shrink-0">
+              Mở Player
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- TAB 2: GPA TRACKER                                      -->
+    <!-- ======================================================= -->
+    <div id="view-gpa" class="tab-view hidden space-y-4 mobile-pb">
+
+      <!-- GPA Header Actions -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white dark:bg-surface-cardDark p-4 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fas fa-graduation-cap text-blue-600"></i> Bảng điểm
+          </h2>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button onclick="cleanupEmptySemesters()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 font-bold text-xs smooth flex items-center justify-center flex-shrink-0" title="Dọn dẹp các học kỳ rỗng">
+            <i class="fas fa-broom"></i>
+          </button>
+          <button onclick="exportJSON()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth flex items-center gap-1">
+            <i class="fas fa-download"></i> Xuất
+          </button>
+          <label for="import-json-file" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth flex items-center gap-1 cursor-pointer mb-0">
+            <i class="fas fa-upload"></i> Nhập
+          </label>
+          <input type="file" id="import-json-file" accept=".json" class="hidden" onchange="importJSONFile(event)">
+          <button onclick="addSemester()" class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center justify-center gap-1">
+            <i class="fas fa-plus"></i> Thêm Học kỳ
+          </button>
+        </div>
+      </div>
+
+      <!-- Main GPA Content (Mobile: Chart on Top, Semesters below; Desktop: Semesters left, Chart right) -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start pb-6">
+        
+        <!-- Semesters Accordion Container (order-2 on Mobile, xl:order-1 on Desktop) -->
+        <div class="xl:col-span-8 order-2 xl:order-1 space-y-3" id="semesters-container">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Right: GPA Analytics Chart & Goal Forecast (order-1 on Mobile, xl:order-2 on Desktop) -->
+        <div class="xl:col-span-4 order-1 xl:order-2 space-y-4">
+          
+          <!-- GPA & Accumulated Credits Summary Card (Above GPA Chart) -->
+          <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/50 dark:border-blue-800/40 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-base flex-shrink-0 shadow-sm">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="truncate">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">CGPA Tích lũy</span>
+                  <div class="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400" id="gpa-summary-cgpa">0.00</div>
+                </div>
+              </div>
+
+              <div class="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/50 dark:border-emerald-800/40 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base flex-shrink-0 shadow-sm">
+                  <i class="fas fa-award"></i>
+                </div>
+                <div class="truncate">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Tín chỉ Tích lũy</span>
+                  <div class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400" id="gpa-summary-credits">0/120</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GPA Chart Card -->
+          <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+            <h3 class="font-extrabold text-xs text-slate-900 dark:text-white flex items-center gap-1.5 mb-3">
+              <i class="fas fa-chart-line text-blue-500"></i> Biểu đồ GPA
+            </h3>
+            <div class="relative w-full aspect-[4/3] md:aspect-auto md:h-52">
+              <canvas id="gpaChartCanvas"></canvas>
+            </div>
+          </div>
+
+          <!-- GPA Goal Calculator Card (Clean, Symmetrical UI matching original) -->
+          <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+            <h3 class="font-extrabold text-xs text-slate-900 dark:text-white flex items-center gap-1.5 mb-3">
+              <i class="fas fa-bullseye text-indigo-500"></i> Mục tiêu CGPA
+            </h3>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Mục tiêu CGPA</label>
+                <input type="number" id="input-target-cgpa" min="0" max="4" step="0.01" placeholder="3.50"
+                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  oninput="updateGoalForecast()">
+              </div>
+
+              <!-- Symmetrical 2-column layout with consistent labels -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Tín còn lại</label>
+                  <div class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-center text-slate-900 dark:text-white flex items-center justify-center h-[38px]" id="goal-remaining-credits">0</div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Tín/Môn</label>
+                  <input type="number" id="input-avg-credits" min="1" step="1" value="3"
+                    class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-center text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 h-[38px]"
+                    oninput="updateGoalForecast()">
+                </div>
+              </div>
+
+              <!-- Forecast Result Box -->
+              <div id="goal-forecast-result" class="bg-slate-50 dark:bg-slate-900/60 rounded-xl p-3 border border-slate-200/60 dark:border-slate-800 text-xs">
+                <span class="text-slate-500 dark:text-slate-400">Nhập mục tiêu CGPA để xem dự báo.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- TAB 3: THỜI KHÓA BIỂU                                  -->
+    <!-- ======================================================= -->
+    <div id="view-timetable" class="tab-view hidden space-y-3 mobile-pb">
+
+      <!-- Timetable Header Bar -->
+      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-calendar-alt text-blue-600"></i>
+          <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Thời khóa biểu</h2>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg flex items-center border border-slate-200/60 dark:border-slate-700/60">
+            <button onclick="setTimetableViewMode('grid')" id="btn-tkb-grid" class="px-3 py-1 rounded text-xs font-bold smooth bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm">
+              <i class="fas fa-table"></i> Lưới
+            </button>
+            <button onclick="setTimetableViewMode('list')" id="btn-tkb-list" class="px-3 py-1 rounded text-xs font-bold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <i class="fas fa-list"></i> Danh sách
+            </button>
+          </div>
+
+          <button onclick="openAddClassModal()" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center gap-1">
+            <i class="fas fa-plus"></i> Thêm Lớp
+          </button>
+        </div>
+      </div>
+
+      <!-- Weekly Grid View -->
+      <div id="timetable-grid-view" class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark overflow-x-auto shadow-sm">
+        <div class="min-w-[800px]">
+          <!-- Day Headers -->
+          <div class="grid grid-cols-8 gap-2 mb-2 text-center text-xs font-extrabold uppercase">
+            <div class="py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400">Ca / Giờ</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="1">Thứ 2</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="2">Thứ 3</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="3">Thứ 4</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="4">Thứ 5</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="5">Thứ 6</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="6">Thứ 7</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="0">Chủ Nhật</div>
+          </div>
+
+          <!-- Shifts Grid Body (4 exact user shifts) -->
+          <div id="timetable-matrix-body" class="space-y-2">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Cards / List View -->
+      <div id="timetable-list-view" class="hidden space-y-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5" id="timetable-day-cards">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- TAB 4: LỊCH & NHIỆM VỤ                                  -->
+    <!-- ======================================================= -->
+    <div id="view-tasks" class="tab-view hidden space-y-3 mobile-pb">
+
+      <!-- Calendar & Tasks Header -->
+      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-calendar-check text-blue-600"></i>
+          <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Lịch & Nhiệm vụ</h2>
+        </div>
+
+        <button onclick="goToTodayCalendar()" class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth">
+          Hôm nay
+        </button>
+      </div>
+
+      <!-- Main Layout: Month Heatmap (Left) + Day Details (Right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+        
+        <!-- Left: Interactive Month Calendar -->
+        <div class="lg:col-span-7 bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          
+          <!-- Month Selector -->
+          <div class="flex items-center justify-between mb-3">
+            <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center smooth">
+              <i class="fas fa-chevron-left text-xs"></i>
+            </button>
+            <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white" id="calendarMonthYearDisplay">Tháng 8, 2026</h3>
+            <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center smooth">
+              <i class="fas fa-chevron-right text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Weekday Headers -->
+          <div class="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-extrabold text-slate-400 uppercase">
+            <div>CN</div><div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div>
+          </div>
+
+          <!-- Month Grid Cells -->
+          <div class="grid grid-cols-7 gap-2" id="calendarGridCells">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Compact Legend -->
+          <div class="flex items-center justify-center gap-4 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-emerald-600"></span> ≥6h</div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-blue-600"></span> &gt;0h</div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded border-2 border-blue-500"></span> Hôm nay</div>
+          </div>
+        </div>
+
+        <!-- Right: Selected Day Task List & Direct Study Time Editor -->
+        <div class="lg:col-span-5 bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark space-y-3 shadow-sm">
+          
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase block">Chi tiết ngày</span>
+              <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white" id="selectedDateTitle">16/08/2026</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-black text-amber-500" id="selectedDateStudyMinutes">0 phút</span>
+            </div>
+          </div>
+
+          <!-- Quick Inline Study Time Editor -->
+          <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2">
+            <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Thời gian học ngày:</span>
+            <div class="flex items-center gap-1.5">
+              <input type="number" id="inlineStudyMinutesInput" min="0" max="1440" step="5" value="0"
+                class="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-center font-bold text-xs text-slate-900 dark:text-white focus:outline-none"
+                onchange="saveInlineStudyTime(this.value)">
+              <span class="text-xs font-bold text-slate-400">phút</span>
+            </div>
+          </div>
+
+          <!-- Add Task Input -->
+          <div class="flex gap-2">
+            <input type="text" id="newTaskInput" placeholder="Nhiệm vụ cần làm..." 
+              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onkeypress="if(event.key==='Enter') saveSelectedDateTask()">
+            <button onclick="saveSelectedDateTask()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <!-- Task List -->
+          <div id="selectedDateTaskList" class="space-y-2 max-h-64 sm:max-h-72 overflow-y-auto pr-1">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Task Bottom Actions -->
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+            <button onclick="clearCompletedTasks()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 font-bold text-xs smooth flex items-center gap-1">
+              <i class="fas fa-trash-alt"></i> Xóa việc đã xong
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- TAB 5: PHÒNG FOCUS                                      -->
+    <!-- ======================================================= -->
+    <div id="view-focus" class="tab-view hidden py-4 mobile-pb">
+
+      <div class="max-w-lg w-full mx-auto bg-white dark:bg-surface-cardDark rounded-3xl p-8 sm:p-10 border border-surface-borderLight dark:border-surface-borderDark text-center shadow-lg">
+        
+        <div class="space-y-7">
+          
+          <!-- Big Countdown Display -->
+          <div class="py-2">
+            <div class="text-8xl sm:text-9xl font-black font-mono tracking-tight text-amber-500 dark:text-amber-400 select-none" id="focusTimerBigDisplay">
+              25:00
+            </div>
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2" id="focusModeLabel">
+              Đồng hồ
+            </div>
+          </div>
+
+          <!-- Direct Focus Minutes & Break Dropdown -->
+          <div class="space-y-4 text-left bg-slate-50 dark:bg-slate-900/70 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-800">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Thời gian học (Phút):</label>
+              <input type="number" id="focusCustomMinutes" min="1" max="300" value="25"
+                class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-center font-bold text-base text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                oninput="onCustomMinutesChange(this.value)">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Thời gian nghỉ sau phiên:</label>
+              <select id="focusBreakSelect" onchange="onBreakDurationChange(this.value)" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-xs text-slate-900 dark:text-white focus:outline-none">
+                <option value="0">Không nghỉ (0 phút)</option>
+                <option value="5" selected>Nghỉ 5 phút</option>
+                <option value="10">Nghỉ 10 phút</option>
+                <option value="15">Nghỉ 15 phút</option>
+                <option value="20">Nghỉ 20 phút</option>
+                <option value="30">Nghỉ 30 phút</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center justify-center gap-3 pt-1">
+            <button onclick="toggleTimer()" id="focusMainPlayBtn" class="flex-1 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm smooth shadow-sm flex items-center justify-center gap-2">
+              <i class="fas fa-play"></i> Bắt đầu
+            </button>
+            <button onclick="endAndLogEarly()" class="px-5 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm smooth shadow-sm flex items-center gap-2">
+              <i class="fas fa-stop"></i> Lưu & Dừng
+            </button>
+            <button onclick="resetTimer()" class="w-14 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm smooth flex items-center justify-center" title="Đặt lại">
+              <i class="fas fa-redo"></i>
+            </button>
+          </div>
+
+          <!-- Shortcut Tip -->
+          <div class="text-xs text-slate-400 dark:text-slate-500 pt-1">
+            <span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono">Space</span> Bật/Dừng &nbsp;|&nbsp;
+            <span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono">← / →</span> Đổi bài nhạc
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- FLOATING MINIPLAYER (Clean Expand / Hide)  -->
+  <!-- ========================================== -->
+  <!-- Floating Mini Pill Trigger (Shown when minimized) -->
+  <div id="miniplayer-floating-pill" onclick="openMiniplayerFull()" class="hidden fixed bottom-16 sm:bottom-4 right-4 z-50 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white rounded-full pl-3.5 pr-2 py-1.5 shadow-2xl border border-surface-borderLight dark:border-surface-borderDark glass flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 smooth max-w-[260px]">
+    <div class="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white flex-shrink-0 animate-spin" id="floatingPillSpin" style="animation-duration: 3s;">
+      <i class="fas fa-music"></i>
+    </div>
+    <span class="text-xs font-extrabold truncate flex-1" id="floatingPillTitle">RandomVie</span>
+    <button onclick="event.stopPropagation(); togglePlayMusic()" class="w-6 h-6 rounded-full bg-slate-100 dark:bg-white/20 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white/30 flex items-center justify-center text-[10px] flex-shrink-0">
+      <i class="fas fa-play" id="floatingPlayIcon"></i>
+    </button>
+  </div>
+
+  <!-- Full Miniplayer Card Window -->
+  <div id="miniplayer-widget" class="fixed bottom-16 sm:bottom-4 right-4 z-50 w-[92vw] sm:w-80 bg-white dark:bg-surface-cardDark rounded-2xl p-4 shadow-2xl border border-surface-borderLight dark:border-surface-borderDark smooth">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-lg bg-red-600 text-white flex items-center justify-center text-xs">
+          <i class="fab fa-youtube"></i>
+        </div>
+        <span class="font-extrabold text-xs text-slate-900 dark:text-white">Player</span>
+      </div>
+      
+      <div class="flex items-center gap-1">
+        <button onclick="togglePlayerConfig()" class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white text-xs flex items-center justify-center smooth" title="Cài đặt Playlist">
+          <i class="fas fa-sliders-h text-[10px]"></i>
+        </button>
+        <button onclick="togglePlayerVideoBox()" class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white text-xs flex items-center justify-center smooth" title="Video frame">
+          <i class="fas fa-video text-[10px]"></i>
+        </button>
+        <button onclick="minimizeMiniplayerToPill()" class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white text-xs flex items-center justify-center smooth" title="Thu gọn">
+          <i class="fas fa-minus text-[10px]"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- YouTube Embed Frame (Hidden by default) -->
+    <div id="youtube-player-frame-box" class="hidden mb-2 rounded-xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 aspect-video">
+      <div id="youtube-player-iframe"></div>
+    </div>
+
+    <!-- Config Area -->
+    <div id="playerConfigArea" class="hidden flex-col gap-2 p-2.5 mb-2 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+      <div>
+        <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Playlist:</label>
+        <select id="playlistSelectDropdown" onchange="onPlaylistChange(this.value)" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 font-semibold text-slate-800 dark:text-white focus:outline-none">
+          <!-- Populated in JS -->
+        </select>
+      </div>
+      <div>
+        <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Google API Key (True Shuffle):</label>
+        <input type="text" id="youtubeApiKeyInput" placeholder="AIzaSy..." class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 font-semibold text-slate-800 dark:text-white focus:outline-none">
+      </div>
+      <div class="flex gap-1.5 pt-1">
+        <button onclick="fetchAndBuildTrueShuffle()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 rounded smooth text-[11px]">
+          🔄 Quét API
+        </button>
+        <button onclick="promptAddCustomPlaylist()" class="px-2 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded smooth text-[11px]">
+          ➕ Thêm
+        </button>
+      </div>
+    </div>
+
+    <!-- Track info & Controls -->
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <div class="truncate flex-1 pr-2">
+          <div class="font-extrabold text-xs text-slate-900 dark:text-white truncate" id="playerCurrentTrackTitle">Đang sẵn sàng...</div>
+          <div class="text-[10px] text-slate-400 truncate" id="playerCurrentPlaylistName">Playlist: RandomVie</div>
+        </div>
+        <div class="text-[10px] font-mono text-slate-400" id="playerTrackIndex">0/0</div>
+      </div>
+
+      <div class="flex items-center justify-between gap-1.5">
+        <button onclick="playPrevTrack()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs" title="Bài trước (←)">
+          <i class="fas fa-backward-step"></i>
+        </button>
+
+        <button onclick="togglePlayMusic()" id="playerPlayPauseBtn" class="flex-1 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center justify-center gap-1.5">
+          <i class="fas fa-play"></i> Phát
+        </button>
+
+        <button onclick="playNextTrack()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs" title="Bài sau (→)">
+          <i class="fas fa-forward-step"></i>
+        </button>
+
+        <button onclick="toggleTrueShuffle()" id="playerShuffleBtn" class="px-2 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-[11px] smooth flex items-center gap-1" title="True Shuffle">
+          <i class="fas fa-random"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MOBILE BOTTOM NAVIGATION BAR               -->
+  <!-- ========================================== -->
+  <div class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-surface-cardDark/95 glass border-t border-surface-borderLight dark:border-surface-borderDark px-2 py-1.5 flex justify-around items-center">
+    <button onclick="switchTab('overview')" id="m-tab-overview" class="flex flex-col items-center gap-0.5 text-blue-600 dark:text-blue-400 p-1 flex-1">
+      <i class="fas fa-th-large text-sm"></i>
+      <span class="text-[10px] font-bold">Tổng quan</span>
+    </button>
+    <button onclick="switchTab('gpa')" id="m-tab-gpa" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
+      <i class="fas fa-chart-pie text-sm"></i>
+      <span class="text-[10px] font-bold">GPA</span>
+    </button>
+    <button onclick="switchTab('timetable')" id="m-tab-timetable" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
+      <i class="fas fa-calendar-week text-sm"></i>
+      <span class="text-[10px] font-bold">TKB</span>
+    </button>
+    <button onclick="switchTab('tasks')" id="m-tab-tasks" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
+      <i class="fas fa-check-circle text-sm"></i>
+      <span class="text-[10px] font-bold">Nhiệm vụ</span>
+    </button>
+    <button onclick="switchTab('focus')" id="m-tab-focus" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
+      <i class="fas fa-stopwatch text-sm"></i>
+      <span class="text-[10px] font-bold">Focus</span>
+    </button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODALS                                     -->
+  <!-- ========================================== -->
+  <!-- MODAL: ADD / EDIT TIMETABLE CLASS -->
+  <div id="class-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-5 w-full max-w-md border border-surface-borderLight dark:border-surface-borderDark shadow-2xl smooth">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-book-open text-blue-600"></i> <span id="classModalTitle">Thêm Lớp học</span>
+        </h3>
+        <button onclick="closeModal('class-modal')" class="w-7 h-7 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <input type="hidden" id="class-edit-id" value="">
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Ngày trong tuần</label>
+          <select id="class-input-day" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+            <option value="1">Thứ Hai</option>
+            <option value="2">Thứ Ba</option>
+            <option value="3">Thứ Tư</option>
+            <option value="4">Thứ Năm</option>
+            <option value="5">Thứ Sáu</option>
+            <option value="6">Thứ Bảy</option>
+            <option value="0">Chủ Nhật</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Tên Môn học</label>
+          <input type="text" id="class-input-name" placeholder="Tên môn học" list="gpa-subject-datalist"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+          <datalist id="gpa-subject-datalist"></datalist>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Ca học</label>
+            <select id="class-input-shift" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+              <option value="Ca 1 (07:00 - 09:40)">Ca 1 (07:00 - 09:40)</option>
+              <option value="Ca 2 (09:50 - 12:30)">Ca 2 (09:50 - 12:30)</option>
+              <option value="Ca 3 (13:30 - 16:10)">Ca 3 (13:30 - 16:10)</option>
+              <option value="Ca 4 (16:20 - 19:00)">Ca 4 (16:20 - 19:00)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Phòng học</label>
+            <input type="text" id="class-input-room" placeholder="Phòng học" 
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Giảng viên (Tùy chọn)</label>
+            <input type="text" id="class-input-teacher" placeholder="Giảng viên" 
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Màu thẻ</label>
+            <select id="class-input-color" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+              <option value="blue">🔵 Xanh dương</option>
+              <option value="emerald">🟢 Xanh lục</option>
+              <option value="amber">🟡 Vàng hổ phách</option>
+              <option value="purple">🟣 Tím</option>
+              <option value="rose">🔴 Đỏ hồng</option>
+              <option value="teal">🩵 Xanh mòng két</option>
+              <option value="orange">🟠 Cam</option>
+              <option value="indigo">🔮 Chàm</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Ghi chú thêm</label>
+          <input type="text" id="class-input-notes" placeholder="Ghi chú thêm" 
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+        </div>
+
+        <div class="pt-2">
+          <button onclick="saveClassModal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl smooth shadow-sm text-xs">
+            Lưu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REAL-TIME CLOUD SYNC -->
+  <div id="cloud-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-5 w-full max-w-md border border-surface-borderLight dark:border-surface-borderDark shadow-2xl smooth">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-sync-alt text-blue-600"></i> Đồng bộ Real-Time
+        </h3>
+        <button onclick="closeModal('cloud-modal')" class="w-7 h-7 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="flex gap-2 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl mb-3 text-xs font-bold">
+        <button onclick="setSyncTab('firebase')" id="sync-tab-btn-firebase" class="flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-blue-600 shadow-sm">
+          🔥 Firebase Realtime
+        </button>
+        <button onclick="setSyncTab('gist')" id="sync-tab-btn-gist" class="flex-1 py-1.5 rounded-lg text-slate-500">
+          🐙 GitHub Gist
+        </button>
+      </div>
+
+      <!-- Firebase Section -->
+      <div id="sync-section-firebase" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Mã Phòng Sync (Room ID)</label>
+          <div class="flex gap-2">
+            <input type="text" id="firebaseRoomId" placeholder="typlex_study_2026"
+              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+            <button onclick="generateRandomRoomId()" class="px-2.5 py-2 bg-slate-100 dark:bg-slate-800 font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth">
+              🎲 Tạo
+            </button>
+          </div>
+          <span class="text-[10px] text-slate-400">Nhập cùng mã này trên PC và Điện thoại để tự kết nối.</span>
+        </div>
+
+        <!-- QR Code Pairing Box -->
+        <div class="p-3 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-200/60 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="font-bold text-slate-800 dark:text-slate-200 block">📱 Quét QR mở trên Điện thoại</span>
+              <span class="text-[10px] text-slate-400">Camera điện thoại quét để đồng bộ tức thì</span>
+            </div>
+            <button onclick="toggleSyncQrCode()" class="px-2.5 py-1.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-bold rounded-lg text-xs hover:bg-blue-100 smooth flex items-center gap-1">
+              <i class="fas fa-qrcode"></i> Mã QR
+            </button>
+          </div>
+          <div id="sync-qrcode-wrapper" class="hidden pt-2 flex flex-col items-center justify-center">
+            <div id="sync-qrcode-container" class="p-2.5 bg-white rounded-xl shadow-md inline-block"></div>
+            <div class="mt-2 flex items-center gap-1.5 w-full">
+              <input type="text" id="sync-share-url" readonly class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-[10px] font-mono text-slate-500 truncate select-all">
+              <button onclick="copySyncShareUrl()" class="px-2.5 py-1 bg-slate-200 dark:bg-slate-700 font-bold rounded-lg text-[10px] hover:bg-slate-300 dark:hover:bg-slate-600 smooth flex-shrink-0">
+                <i class="fas fa-copy"></i> Chép Link
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Firebase Database URL</label>
+          <input type="text" id="firebaseDbUrl" placeholder="https://your-project-default-rtdb.firebaseio.com"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-semibold text-slate-900 dark:text-white focus:outline-none">
+        </div>
+
+        <!-- 2-Minute Quick Guide Accordion -->
+        <details class="p-2.5 bg-blue-50/60 dark:bg-blue-950/30 rounded-xl border border-blue-200/50 dark:border-blue-800/40 text-[11px] text-slate-600 dark:text-slate-300">
+          <summary class="font-bold text-blue-600 dark:text-blue-400 cursor-pointer select-none">
+            💡 Cách lấy Database URL trong 2 phút (Hoàn toàn miễn phí)
+          </summary>
+          <div class="mt-2 space-y-1.5 pl-2 border-l-2 border-blue-400">
+            <p>1. Vào <a href="https://console.firebase.google.com" target="_blank" class="text-blue-500 underline font-bold">console.firebase.google.com</a> và tạo project.</p>
+            <p>2. Chọn menu <b>Build</b> ➔ <b>Realtime Database</b> ➔ Bấm <b>Create Database</b>.</p>
+            <p>3. Tại tab <b>Rules</b>, sửa thành <code>{".read": true, ".write": true}</code> rồi bấm <b>Publish</b>.</p>
+            <p>4. Copy link Database (dạng <code>https://...firebaseio.com</code>) dán vào ô bên trên.</p>
+            <p>5. Bấm <b>Kết nối Realtime</b> ➔ Quét mã QR trên điện thoại là tự động đồng bộ 2 chiều tức thì!</p>
+          </div>
+        </details>
+
+        <div class="pt-1">
+          <button onclick="connectFirebaseRealtime()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl smooth shadow-sm">
+            <i class="fas fa-link"></i> Kết nối Realtime
+          </button>
+        </div>
+      </div>
+
+      <!-- GitHub Gist Section -->
+      <div id="sync-section-gist" class="hidden space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">GitHub Access Token</label>
+          <input type="password" id="gistToken" placeholder="ghp_xxxxxxxxxxxx"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-semibold text-slate-900 dark:text-white focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Gist ID</label>
+          <input type="text" id="gistId" placeholder="1a2b3c4d5e..."
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-semibold text-slate-900 dark:text-white focus:outline-none">
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button onclick="pullGistData()" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-2 rounded-xl hover:bg-slate-200 smooth">
+            <i class="fas fa-download"></i> Tải về
+          </button>
+          <button onclick="pushGistData()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl smooth">
+            <i class="fas fa-upload"></i> Đẩy lên
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: APP SETTINGS -->
+  <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-5 w-full max-w-md border border-surface-borderLight dark:border-surface-borderDark shadow-2xl smooth">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-sliders-h text-blue-600"></i> Cài đặt
+        </h3>
+        <button onclick="closeModal('settings-modal')" class="w-7 h-7 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Tổng số tín chỉ toàn khóa</label>
+          <input type="number" id="setting-total-credits" min="1" value="120"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Mục tiêu học ngày (Phút)</label>
+          <input type="number" id="setting-daily-goal" min="10" value="360"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+        </div>
+
+        <div class="pt-2">
+          <button onclick="saveAppSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl smooth shadow-sm text-xs">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT APPLICATION CORE ENGINE                                -->
+  <!-- ================================================================= -->
+  <script>
+    // ==========================================
+    // 1. DATA STATE & DEFAULTS
+    // ==========================================
+    const DEFAULT_PLAYLISTS = [
+      { name: "RandomVie", id: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg" },
+      { name: "Motiv", id: "PL-WbqTnnds-nYKDLc0KdzMnxITwaLOB5V" },
+      { name: "Đánh đổi", id: "PL-WbqTnnds-kWA6AWXUsWtEnTRzb4CztA" },
+      { name: "BGM Study", id: "PLQDRDWUwyNp8" },
+      { name: "Ballad Chill", id: "PLWceaykcemU4Zc-t4FATmoFI4wwiK1frx" },
+      { name: "Hà Nội Lofi", id: "PLTe6ot-XY1pk" },
+      { name: "Lofi Girl Beats", id: "PLofht4PTcKYnaH8w5gkDC264ozRxEPmkW" }
+    ];
+
+    let state = {
+      version: "v5",
+      theme: "dark",
+      activeTab: "overview",
+      semesters: [],
+      activeSemesterIndex: -1,
+      totalCredits: 120,
+      targetCgpa: 3.5,
+      avgCredits: 3,
+      accumulatedCredits: 0,
+      cgpa: 0.0,
+      timetable: {
+        viewMode: "grid",
+        classes: [
+          {
+            id: "c_demo_1",
+            day: 1, // Thứ 2
+            name: "Xác suất thống kê",
+            shift: "Ca 2 (09:50 - 12:30)",
+            room: "203B",
+            teacher: "TS. Nguyễn Văn A",
+            color: "blue",
+            notes: "Mang máy tính Casio"
+          },
+          {
+            id: "c_demo_2",
+            day: 3, // Thứ 4
+            name: "Lập trình Web",
+            shift: "Ca 3 (13:30 - 16:10)",
+            room: "Lab 402",
+            teacher: "ThS. Hoàng",
+            color: "emerald",
+            notes: "Thực hành trên máy tính"
+          }
+        ]
+      },
+      calendar: {
+        selectedDateStr: getLocalYMD(new Date()),
+        days: {} // 'YYYY-MM-DD': { tasks: [ { id, text, completed } ], studyTime: 0 }
+      },
+      focus: {
+        timerMinutes: 25,
+        breakMinutes: 5,
+        dailyGoalMinutes: 360
+      },
+      player: {
+        selectedPlaylistId: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg",
+        apiKey: "",
+        customPlaylists: [...DEFAULT_PLAYLISTS],
+        isShuffle: true,
+        masterVideoIds: []
+      },
+      sync: {
+        syncProvider: "firebase",
+        firebaseRoomId: "typlex_default_room",
+        firebaseDbUrl: "https://typlex-workspace-default-rtdb.firebaseio.com",
+        gistToken: "",
+        gistId: ""
+      }
+    };
+
+    // Calendar Navigation State (Clean Integer arithmetic)
+    let calendarYear = new Date().getFullYear();
+    let calendarMonth = new Date().getMonth(); // 0 to 11
+
+    // Runtime state variables
+    let ytPlayer = null;
+    let shuffledQueue = [];
+    let currentQueueIndex = -1;
+    let isPlayingMusic = false;
+
+    let timerInterval = null;
+    let timerTimeLeft = 25 * 60;
+    let isTimerRunning = false;
+    let timerOriginalMinutes = 25;
+    let timerTargetEndTime = 0;
+
+    let gpaChart = null;
+    let isRemoteSyncUpdate = false;
+    let syncDebounceTimer = null;
+    let firebaseRef = null;
+
+    // 8-Color Palette System
+    const COLOR_CLASSES = {
+      blue: {
+        card: 'border-blue-500/40 bg-blue-50/70 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200',
+        badge: 'bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300'
+      },
+      emerald: {
+        card: 'border-emerald-500/40 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200',
+        badge: 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300'
+      },
+      amber: {
+        card: 'border-amber-500/40 bg-amber-50/70 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200',
+        badge: 'bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300'
+      },
+      purple: {
+        card: 'border-purple-500/40 bg-purple-50/70 dark:bg-purple-950/40 text-purple-900 dark:text-purple-200',
+        badge: 'bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300'
+      },
+      rose: {
+        card: 'border-rose-500/40 bg-rose-50/70 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200',
+        badge: 'bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300'
+      },
+      teal: {
+        card: 'border-teal-500/40 bg-teal-50/70 dark:bg-teal-950/40 text-teal-900 dark:text-teal-200',
+        badge: 'bg-teal-100 dark:bg-teal-900/60 text-teal-700 dark:text-teal-300'
+      },
+      orange: {
+        card: 'border-orange-500/40 bg-orange-50/70 dark:bg-orange-950/40 text-orange-900 dark:text-orange-200',
+        badge: 'bg-orange-100 dark:bg-orange-900/60 text-orange-700 dark:text-orange-300'
+      },
+      indigo: {
+        card: 'border-indigo-500/40 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200',
+        badge: 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300'
+      }
+    };
+
+    // ==========================================
+    // 2. HELPER UTILITIES
+    // ==========================================
+    function getLocalYMD(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function formatTimeMinutes(minutes) {
+      if (!minutes || minutes <= 0) return '0m';
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      if (h > 0 && m > 0) return `${h}h ${m}m`;
+      if (h > 0) return `${h}h`;
+      return `${m}m`;
+    }
+
+    function getDayNameVN(dayIndex) {
+      const names = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+      return names[dayIndex % 7];
+    }
+
+    // ==========================================
+    // 3. INITIALIZATION & CLEAN DATA LOADING
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+      loadStateFromStorage();
+      applyTheme();
+      initPlaylistsDropdown();
+      updateHeaderDate();
+      
+      renderSemesters();
+      recalculateAll();
+      renderTimetable();
+      initCalendar();
+      renderTodayOverview();
+
+      switchTab(state.activeTab || 'overview');
+      initSyncEngine();
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('SW registered'))
+          .catch(err => console.log('SW failed:', err));
+      }
+    });
+
+    function loadStateFromStorage() {
+      // 1. Check legacy storage
+      const gpaLegacy = localStorage.getItem('gpaTrackerState_v4');
+      let legacySemesters = null;
+      let legacyTotalCredits = null;
+      if (gpaLegacy) {
+        try {
+          const parsed = JSON.parse(gpaLegacy);
+          if (parsed.semesters && Array.isArray(parsed.semesters)) legacySemesters = parsed.semesters;
+          if (parsed.totalCredits) legacyTotalCredits = parsed.totalCredits;
+        } catch (e) { }
+      }
+
+      // 2. Load unified state
+      const savedV5 = localStorage.getItem('typlex_workspace_state_v5');
+      if (savedV5) {
+        try {
+          const parsed = JSON.parse(savedV5);
+          state = Object.assign(state, parsed);
+          if (parsed.gpa && parsed.gpa.semesters && (!state.semesters || state.semesters.length === 0)) {
+            state.semesters = parsed.gpa.semesters;
+          }
+        } catch (e) {
+          console.error('Error parsing state v5', e);
+        }
+      }
+
+      // 3. Preserve legacy if not empty
+      if (legacySemesters && (!state.semesters || state.semesters.length === 0)) {
+        state.semesters = legacySemesters;
+      }
+      if (legacyTotalCredits) {
+        state.totalCredits = legacyTotalCredits;
+      }
+
+      // 4. Auto-clean excessive empty dummy semesters (if accumulated > 6 empty ones)
+      if (state.semesters && state.semesters.length > 6) {
+        const meaningful = state.semesters.filter(s => s.subjects && s.subjects.length > 0 && s.subjects.some(sub => (sub.name && sub.name.trim()) || sub.midScore || sub.finalScore));
+        if (meaningful.length > 0) {
+          state.semesters = meaningful;
+        } else {
+          state.semesters = state.semesters.slice(0, 1);
+        }
+      }
+
+      // 5. Default 1 semester if empty
+      if (!state.semesters || state.semesters.length === 0) {
+        state.semesters = [
+          {
+            name: "Học kỳ 1",
+            subjects: [
+              { name: "Giải tích 1", credits: 3, midWeight: 40, finalWeight: 60, midScore: 8.5, finalScore: 9.0 },
+              { name: "Đại số tuyến tính", credits: 3, midWeight: 30, finalWeight: 70, midScore: 8.0, finalScore: 8.5 },
+              { name: "Tin học đại cương", credits: 3, midWeight: 40, finalWeight: 60, midScore: 9.0, finalScore: 9.5 }
+            ]
+          }
+        ];
+      }
+
+      // Safety check for all subjects array
+      state.semesters.forEach(sem => {
+        if (!sem.subjects || !Array.isArray(sem.subjects)) sem.subjects = [];
+      });
+
+      // Migrate legacy focus tasks if needed
+      const tasksLegacy = localStorage.getItem('focusTasksMap');
+      if (tasksLegacy) {
+        try {
+          const parsed = JSON.parse(tasksLegacy);
+          for (let d in parsed) {
+            if (Array.isArray(parsed[d])) {
+              state.calendar.days[d] = { tasks: parsed[d], studyTime: 0 };
+            } else if (parsed[d] && typeof parsed[d] === 'object') {
+              state.calendar.days[d] = parsed[d];
+            }
+          }
+        } catch (e) { }
+      }
+
+      // Populate UI input controls
+      if (document.getElementById('setting-total-credits')) document.getElementById('setting-total-credits').value = state.totalCredits || 120;
+      if (document.getElementById('setting-daily-goal')) document.getElementById('setting-daily-goal').value = state.focus.dailyGoalMinutes || 360;
+      if (document.getElementById('input-target-cgpa')) document.getElementById('input-target-cgpa').value = state.targetCgpa || 3.5;
+      if (document.getElementById('focusCustomMinutes')) document.getElementById('focusCustomMinutes').value = state.focus.timerMinutes || 25;
+      if (document.getElementById('focusBreakSelect')) document.getElementById('focusBreakSelect').value = state.focus.breakMinutes !== undefined ? state.focus.breakMinutes : 5;
+      if (document.getElementById('youtubeApiKeyInput')) document.getElementById('youtubeApiKeyInput').value = state.player.apiKey || '';
+      if (document.getElementById('firebaseRoomId')) document.getElementById('firebaseRoomId').value = state.sync.firebaseRoomId || 'typlex_default_room';
+      if (document.getElementById('gistToken')) document.getElementById('gistToken').value = state.sync.gistToken || '';
+      if (document.getElementById('gistId')) document.getElementById('gistId').value = state.sync.gistId || '';
+    }
+
+    function cleanupEmptySemesters() {
+      if (!state.semesters || state.semesters.length <= 1) return;
+      const meaningful = state.semesters.filter(s => s.subjects && s.subjects.length > 0 && s.subjects.some(sub => (sub.name && sub.name.trim()) || sub.midScore || sub.finalScore));
+      if (meaningful.length > 0) {
+        state.semesters = meaningful;
+      } else {
+        state.semesters = [state.semesters[0]];
+      }
+      state.activeSemesterIndex = 0;
+      saveState();
+      renderSemesters();
+    }
+
+    function saveState(broadcastSync = true) {
+      try {
+        localStorage.setItem('typlex_workspace_state_v5', JSON.stringify(state));
+        localStorage.setItem('gpaTrackerState_v4', JSON.stringify({
+          semesters: state.semesters,
+          totalCredits: state.totalCredits,
+          theme: state.theme
+        }));
+      } catch (e) {
+        console.error('Failed to save state', e);
+      }
+
+      if (broadcastSync && !isRemoteSyncUpdate) {
+        debounceBroadcastCloud();
+      }
+    }
+
+    // ==========================================
+    // 4. THEME & NAVIGATION
+    // ==========================================
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+      saveState();
+    }
+
+    function applyTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('themeIcon');
+      if (state.theme === 'dark') {
+        html.classList.add('dark');
+        icon.className = 'fas fa-sun text-amber-500';
+      } else {
+        html.classList.remove('dark');
+        icon.className = 'fas fa-moon text-blue-500';
+      }
+      if (gpaChart) updateChart();
+    }
+
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      const activeView = document.getElementById(`view-${tabId}`);
+      if (activeView) activeView.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.className = 'nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+      });
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = 'nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm';
+      }
+
+      ['overview', 'gpa', 'timetable', 'tasks', 'focus'].forEach(t => {
+        const mBtn = document.getElementById(`m-tab-${t}`);
+        if (mBtn) {
+          mBtn.className = t === tabId ? 'flex flex-col items-center gap-0.5 text-blue-600 dark:text-blue-400 p-1 flex-1' : 'flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1';
+        }
+      });
+
+      if (tabId === 'overview') renderTodayOverview();
+      if (tabId === 'gpa') {
+        renderSemesters();
+        updateChart();
+      }
+      if (tabId === 'timetable') renderTimetable();
+      if (tabId === 'tasks') {
+        goToTodayCalendar();
+      }
+    }
+
+    function updateHeaderDate() {
+      const now = new Date();
+      const heroDate = document.getElementById('heroDateString');
+      if (heroDate) {
+        heroDate.textContent = `${getDayNameVN(now.getDay())}, ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+      }
+    }
+
+    // ==========================================
+    // 5. TAB 1: OVERVIEW DASHBOARD
+    // ==========================================
+    function renderTodayOverview() {
+      const now = new Date();
+      const todayStr = getLocalYMD(now);
+      const todayDayIndex = now.getDay();
+
+      if (document.getElementById('hero-cgpa')) document.getElementById('hero-cgpa').textContent = (state.cgpa || 0).toFixed(2);
+      if (document.getElementById('hero-credits-badge')) document.getElementById('hero-credits-badge').textContent = `${state.accumulatedCredits || 0}/${state.totalCredits || 120}`;
+      
+      const todayData = state.calendar.days[todayStr] || { tasks: [], studyTime: 0 };
+      const todayMinutes = todayData.studyTime || 0;
+      if (document.getElementById('hero-today-study')) document.getElementById('hero-today-study').textContent = formatTimeMinutes(todayMinutes);
+
+      // Today's Classes
+      const dayClasses = (state.timetable.classes || []).filter(c => c.day === todayDayIndex);
+      const classBox = document.getElementById('overview-today-classes');
+
+      if (classBox) {
+        if (dayClasses.length === 0) {
+          classBox.innerHTML = `
+            <div class="text-center py-4 text-slate-400 text-xs">
+              Không có lịch học hôm nay.
+            </div>
+          `;
+        } else {
+          classBox.innerHTML = dayClasses.map(c => {
+            const pal = COLOR_CLASSES[c.color] || COLOR_CLASSES.blue;
+            return `
+              <div class="p-2.5 rounded-xl border ${pal.card} flex items-center justify-between gap-2 smooth shadow-sm">
+                <div class="truncate">
+                  <div class="font-extrabold text-xs text-slate-900 dark:text-white truncate">${c.name}</div>
+                  <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-2">
+                    <span>${c.shift}</span>
+                    <span>Phòng ${c.room || '?'}</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg ${pal.badge} shadow-sm flex-shrink-0">
+                  ${c.room || 'Phòng'}
+                </span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Today's Tasks
+      const taskBox = document.getElementById('overview-today-tasks');
+      const todayTasks = todayData.tasks || [];
+      const completedCount = todayTasks.filter(t => t.completed).length;
+      if (document.getElementById('overviewTaskCount')) document.getElementById('overviewTaskCount').textContent = `${completedCount}/${todayTasks.length}`;
+
+      if (taskBox) {
+        if (todayTasks.length === 0) {
+          taskBox.innerHTML = `
+            <div class="text-center py-4 text-slate-400 text-xs">
+              Chưa có nhiệm vụ nào hôm nay.
+            </div>
+          `;
+        } else {
+          taskBox.innerHTML = todayTasks.map((t, idx) => `
+            <div class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 smooth cursor-pointer" onclick="toggleTodayTask(${idx})">
+              <input type="checkbox" ${t.completed ? 'checked' : ''} class="w-3.5 h-3.5 rounded accent-blue-600 cursor-pointer">
+              <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate ${t.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">
+                ${t.text}
+              </span>
+            </div>
+          `).join('');
+        }
+      }
+
+      updateTimerDisplay();
+    }
+
+    function addOverviewQuickTask() {
+      const input = document.getElementById('overviewQuickTaskInput');
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const todayStr = getLocalYMD(new Date());
+      if (!state.calendar.days[todayStr]) {
+        state.calendar.days[todayStr] = { tasks: [], studyTime: 0 };
+      }
+      state.calendar.days[todayStr].tasks.push({
+        id: 't_' + Date.now(),
+        text: text,
+        completed: false
+      });
+      input.value = '';
+      saveState();
+      renderTodayOverview();
+      renderCalendar();
+    }
+
+    function toggleTodayTask(idx) {
+      const todayStr = getLocalYMD(new Date());
+      if (state.calendar.days[todayStr] && state.calendar.days[todayStr].tasks[idx]) {
+        state.calendar.days[todayStr].tasks[idx].completed = !state.calendar.days[todayStr].tasks[idx].completed;
+        saveState();
+        renderTodayOverview();
+        renderCalendar();
+      }
+    }
+
+    // ==========================================
+    // 6. TAB 2: GPA TRACKER (ORIGINAL PROVEN LOGIC)
+    // ==========================================
+    function getGradeInfo(rawScore) {
+      // Đảm bảo làm tròn 1 chữ số thập phân cho việc xếp loại chuẩn gốc
+      const score = Math.round(rawScore * 10) / 10;
+      if (score >= 9.0) return { letter: 'A+', gpa: 4.0, bg: 'bg-emerald-100 dark:bg-emerald-500/20', text: 'text-emerald-700 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-500/30' };
+      if (score >= 8.5) return { letter: 'A', gpa: 3.7, bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-300', border: 'border-emerald-200 dark:border-emerald-500/30' };
+      if (score >= 8.0) return { letter: 'B+', gpa: 3.5, bg: 'bg-blue-100 dark:bg-blue-500/20', text: 'text-blue-700 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-500/30' };
+      if (score >= 7.0) return { letter: 'B', gpa: 3.0, bg: 'bg-blue-50 dark:bg-blue-500/10', text: 'text-blue-600 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-500/30' };
+      if (score >= 6.5) return { letter: 'C+', gpa: 2.5, bg: 'bg-amber-100 dark:bg-amber-500/20', text: 'text-amber-700 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-500/30' };
+      if (score >= 5.5) return { letter: 'C', gpa: 2.0, bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-600 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-500/30' };
+      if (score >= 5.0) return { letter: 'D+', gpa: 1.5, bg: 'bg-orange-100 dark:bg-orange-500/20', text: 'text-orange-700 dark:text-orange-400', border: 'border-orange-200 dark:border-orange-500/30' };
+      if (score >= 4.0) return { letter: 'D', gpa: 1.0, bg: 'bg-orange-50 dark:bg-orange-500/10', text: 'text-orange-600 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-500/30' };
+      return { letter: 'F', gpa: 0, bg: 'bg-red-100 dark:bg-red-500/20', text: 'text-red-700 dark:text-red-400', border: 'border-red-200 dark:border-red-500/30' };
+    }
+
+    function toggleAccordion(sIndex) {
+      if (state.activeSemesterIndex === sIndex) {
+        state.activeSemesterIndex = -1;
+      } else {
+        state.activeSemesterIndex = sIndex;
+      }
+      saveState();
+      renderSemesters();
+    }
+
+    function renderSemesters() {
+      const container = document.getElementById('semesters-container');
+      if (!container) return;
+
+      if (!state.semesters || state.semesters.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white dark:bg-surface-cardDark border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl p-10 text-center flex flex-col items-center">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Chưa có dữ liệu học kỳ</h3>
+            <button onclick="addSemester()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs smooth">
+              Tạo Học kỳ mới
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = state.semesters.map((sem, sIndex) => {
+        const isExpanded = state.activeSemesterIndex === sIndex;
+        const subjects = sem.subjects || [];
+
+        return `
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl border border-surface-borderLight dark:border-surface-borderDark overflow-hidden smooth shadow-sm ${isExpanded ? 'ring-1 ring-blue-500/30' : ''}">
+          
+          <!-- Accordion Header -->
+          <div class="p-3.5 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50/50 dark:bg-slate-900/30 cursor-pointer" onclick="toggleAccordion(${sIndex})">
+            
+            <div class="flex items-center gap-2.5 w-full sm:w-auto flex-1">
+              <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center text-xs smooth ${isExpanded ? 'rotate-180 text-blue-500' : ''}">
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <input type="text" value="${sem.name || ''}" onclick="event.stopPropagation()" onchange="updateSemesterName(${sIndex}, this.value)" 
+                class="text-sm sm:text-base font-extrabold bg-transparent border-none outline-none text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 smooth">
+            </div>
+            
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end" onclick="event.stopPropagation()">
+              <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm text-xs font-bold">
+                <span class="text-slate-400 text-[10px] uppercase">GPA</span>
+                <span class="text-blue-600 dark:text-blue-400 text-xs font-black" id="sem-gpa-${sIndex}">0.00</span>
+              </div>
+              <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm text-xs font-bold">
+                <span class="text-slate-400 text-[10px] uppercase">Tín</span>
+                <span class="text-emerald-600 dark:text-emerald-400 text-xs font-black" id="sem-credits-${sIndex}">0</span>
+              </div>
+              <button onclick="deleteSemester(${sIndex})" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-red-500 smooth flex items-center justify-center text-xs" title="Xóa học kỳ">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Accordion Body -->
+          <div class="accordion-content ${isExpanded ? '' : 'collapsed'} border-t border-slate-100 dark:border-slate-800">
+            <div class="p-3.5 sm:p-4">
+              <!-- Desktop Table Header -->
+              <div class="hidden md:grid grid-cols-12 gap-2 mb-2 px-2 text-[10px] font-extrabold text-slate-400 uppercase">
+                <div class="col-span-4">Môn học</div>
+                <div class="col-span-1 text-center">Tín</div>
+                <div class="col-span-1 text-center">GK(%)</div>
+                <div class="col-span-1 text-center">CK(%)</div>
+                <div class="col-span-1 text-center">Đ.GK</div>
+                <div class="col-span-1 text-center">Đ.CK</div>
+                <div class="col-span-1 text-center">Hệ 10</div>
+                <div class="col-span-1 text-center">Xếp loại</div>
+                <div class="col-span-1"></div>
+              </div>
+
+              <!-- Subjects List -->
+              <div class="space-y-2">
+                ${subjects.map((sub, subIndex) => `
+                  <div class="subject-row grid grid-cols-6 md:grid-cols-12 gap-1.5 items-center bg-slate-50/70 dark:bg-slate-900/40 p-2 rounded-xl border border-slate-200/50 dark:border-slate-800 relative" data-sem="${sIndex}" data-sub="${subIndex}">
+                    
+                    <div class="col-span-6 md:col-span-4">
+                      <input type="text" class="auto-save sub-name w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-none" value="${sub.name || ''}" placeholder="Tên môn học">
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                      <input type="number" min="0" step="1" class="auto-recalc sub-credits w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-1 py-1.5 text-center text-xs font-bold text-slate-900 dark:text-white focus:outline-none" value="${sub.credits !== undefined ? sub.credits : 3}">
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                      <input type="number" min="0" max="100" class="auto-recalc mid-weight w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-1 py-1.5 text-center text-xs font-bold text-slate-500" value="${sub.midWeight !== undefined ? sub.midWeight : 40}">
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                      <input type="number" min="0" max="100" class="auto-recalc final-weight w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-1 py-1.5 text-center text-xs font-bold text-slate-500" value="${sub.finalWeight !== undefined ? sub.finalWeight : 60}">
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                      <input type="number" min="0" max="10" step="0.1" class="auto-recalc mid-score w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-1 py-1.5 text-center text-xs font-black text-blue-600 dark:text-blue-400 focus:outline-none" value="${sub.midScore !== undefined ? sub.midScore : 0}">
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                      <input type="number" min="0" max="10" step="0.1" class="auto-recalc final-score w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-1 py-1.5 text-center text-xs font-black text-blue-600 dark:text-blue-400 focus:outline-none" value="${sub.finalScore !== undefined ? sub.finalScore : 0}">
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1 text-center font-black text-xs text-slate-800 dark:text-slate-200 out-total">0.0</div>
+                    
+                    <div class="col-span-2 md:col-span-1 text-center">
+                      <div class="out-letter-container mx-auto w-8 h-6 rounded flex items-center justify-center font-black text-[11px] border">
+                        <span class="out-letter">-</span>
+                      </div>
+                    </div>
+                    
+                    <div class="col-span-4 md:col-span-1 flex items-center justify-center gap-1">
+                      <button onclick="quickAddToTimetable('${sub.name || ''}')" title="Thêm vào TKB" class="w-6 h-6 rounded text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center text-xs"><i class="fas fa-calendar-plus"></i></button>
+                      <button onclick="deleteSubject(${sIndex}, ${subIndex})" title="Xóa môn" class="w-6 h-6 rounded text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <!-- Footer Add Button -->
+              <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="addSubject(${sIndex})" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                  <i class="fas fa-plus"></i> Thêm môn học
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `}).join('');
+
+      recalculateAll();
+      updateGPADataList();
+    }
+
+    function addSemester() {
+      if (!state.semesters) state.semesters = [];
+      const num = state.semesters.length + 1;
+      state.semesters.push({
+        name: `Học kỳ ${num}`,
+        subjects: [
+          { name: '', credits: 3, midWeight: 40, finalWeight: 60, midScore: 0, finalScore: 0 }
+        ]
+      });
+      state.activeSemesterIndex = state.semesters.length - 1;
+      saveState();
+      renderSemesters();
+    }
+
+    function deleteSemester(sIndex) {
+      if (confirm('Bạn có chắc chắn muốn xóa học kỳ này?')) {
+        state.semesters.splice(sIndex, 1);
+        if (state.activeSemesterIndex === sIndex) {
+          state.activeSemesterIndex = state.semesters.length - 1;
+        } else if (state.activeSemesterIndex > sIndex) {
+          state.activeSemesterIndex--;
+        }
+        saveState();
+        renderSemesters();
+      }
+    }
+
+    function addSubject(sIndex) {
+      if (state.semesters[sIndex]) {
+        if (!state.semesters[sIndex].subjects) state.semesters[sIndex].subjects = [];
+        state.semesters[sIndex].subjects.push({
+          name: '', credits: 3, midWeight: 40, finalWeight: 60, midScore: 0, finalScore: 0
+        });
+        saveState();
+        renderSemesters();
+      }
+    }
+
+    function deleteSubject(sIndex, subIndex) {
+      if (confirm('Xóa môn học này?')) {
+        state.semesters[sIndex].subjects.splice(subIndex, 1);
+        saveState();
+        renderSemesters();
+      }
+    }
+
+    function updateSemesterName(sIndex, name) {
+      if (state.semesters[sIndex]) {
+        state.semesters[sIndex].name = name;
+        saveState();
+      }
+    }
+
+    document.addEventListener('input', (e) => {
+      if (e.target.matches('.mid-weight')) {
+        const finalWeightInput = e.target.closest('.subject-row').querySelector('.final-weight');
+        const midVal = parseFloat(e.target.value);
+        if (!isNaN(midVal) && finalWeightInput) finalWeightInput.value = Math.max(0, 100 - midVal);
+      }
+      if (e.target.matches('.final-weight')) {
+        const midWeightInput = e.target.closest('.subject-row').querySelector('.mid-weight');
+        const finalVal = parseFloat(e.target.value);
+        if (!isNaN(finalVal) && midWeightInput) midWeightInput.value = Math.max(0, 100 - finalVal);
+      }
+      if (e.target.matches('.auto-recalc') || e.target.matches('.auto-save')) {
+        syncStateFromDOM();
+        recalculateAll();
+      }
+    });
+
+    document.addEventListener('blur', (e) => {
+      if (e.target.matches('.mid-score') || e.target.matches('.final-score')) {
+        let val = parseFloat(e.target.value);
+        if (!isNaN(val)) {
+          val = Math.round(val * 10) / 10;
+          e.target.value = val;
+          syncStateFromDOM();
+          recalculateAll();
+        }
+      }
+    }, true);
+
+    function syncStateFromDOM() {
+      document.querySelectorAll('.subject-row').forEach(row => {
+        const sIndex = parseInt(row.getAttribute('data-sem'));
+        const subIndex = parseInt(row.getAttribute('data-sub'));
+        if (state.semesters[sIndex] && state.semesters[sIndex].subjects && state.semesters[sIndex].subjects[subIndex]) {
+          const sub = state.semesters[sIndex].subjects[subIndex];
+          sub.name = row.querySelector('.sub-name').value;
+          sub.credits = parseFloat(row.querySelector('.sub-credits').value) || 0;
+          sub.midWeight = parseFloat(row.querySelector('.mid-weight').value) || 0;
+          sub.finalWeight = parseFloat(row.querySelector('.final-weight').value) || 0;
+          sub.midScore = parseFloat(row.querySelector('.mid-score').value) || 0;
+          sub.finalScore = parseFloat(row.querySelector('.final-score').value) || 0;
+        }
+      });
+      saveState();
+    }
+
+    function recalculateAll() {
+      let totalCreditsAll = 0;
+      let totalPointsAll = 0;
+
+      (state.semesters || []).forEach((sem, sIndex) => {
+        let semCredits = 0;
+        let semPoints = 0;
+
+        (sem.subjects || []).forEach((sub, subIndex) => {
+          const row = document.querySelector(`.subject-row[data-sem="${sIndex}"][data-sub="${subIndex}"]`);
+
+          // Chuẩn hóa điểm hệ 10 làm tròn 1 chữ số thập phân
+          let totalScore = (sub.midScore * sub.midWeight / 100) + (sub.finalScore * sub.finalWeight / 100);
+          totalScore = Math.round(totalScore * 10) / 10;
+          const grade = getGradeInfo(totalScore);
+
+          if (row) {
+            row.querySelector('.out-total').textContent = totalScore.toFixed(1);
+            const letterContainer = row.querySelector('.out-letter-container');
+            letterContainer.className = `out-letter-container mx-auto w-8 h-6 rounded flex items-center justify-center font-black text-[11px] border ${grade.bg} ${grade.border} ${grade.text}`;
+            row.querySelector('.out-letter').textContent = grade.letter;
+          }
+
+          semCredits += sub.credits;
+          semPoints += (grade.gpa * sub.credits);
+        });
+
+        let semGPA = semCredits > 0 ? (semPoints / semCredits) : 0;
+        semGPA = Math.round(semGPA * 100) / 100;
+        const semGpaEl = document.getElementById(`sem-gpa-${sIndex}`);
+        if (semGpaEl) semGpaEl.textContent = semGPA.toFixed(2);
+
+        const semCreditsEl = document.getElementById(`sem-credits-${sIndex}`);
+        if (semCreditsEl) semCreditsEl.textContent = semCredits;
+
+        totalCreditsAll += semCredits;
+        totalPointsAll += semPoints;
+      });
+
+      state.accumulatedCredits = totalCreditsAll;
+      let rawCgpa = totalCreditsAll > 0 ? (totalPointsAll / totalCreditsAll) : 0;
+      state.cgpa = Math.round(rawCgpa * 100) / 100;
+
+      const heroCGPA = document.getElementById('hero-cgpa');
+      if (heroCGPA) heroCGPA.textContent = state.cgpa.toFixed(2);
+      const heroCredits = document.getElementById('hero-credits-badge');
+      if (heroCredits) heroCredits.textContent = `${totalCreditsAll}/${state.totalCredits}`;
+
+      const gpaSummaryCGPA = document.getElementById('gpa-summary-cgpa');
+      if (gpaSummaryCGPA) gpaSummaryCGPA.textContent = state.cgpa.toFixed(2);
+      const gpaSummaryCredits = document.getElementById('gpa-summary-credits');
+      if (gpaSummaryCredits) gpaSummaryCredits.textContent = `${totalCreditsAll}/${state.totalCredits}`;
+
+      updateGoalForecast();
+      updateChart();
+    }
+
+    function updateChart() {
+      const canvas = document.getElementById('gpaChartCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const labels = (state.semesters || []).map(s => s.name);
+      const data = (state.semesters || []).map(sem => {
+        let sc = 0, sp = 0;
+        (sem.subjects || []).forEach(sub => {
+          let t10 = Math.round(((sub.midScore * sub.midWeight / 100) + (sub.finalScore * sub.finalWeight / 100)) * 10) / 10;
+          const g = getGradeInfo(t10);
+          sc += sub.credits;
+          sp += (g.gpa * sub.credits);
+        });
+        return sc > 0 ? Math.round((sp / sc) * 100) / 100 : 0;
+      });
+
+      const textColor = state.theme === 'dark' ? '#94A3B8' : '#475569';
+      const gridColor = state.theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+
+      if (gpaChart) {
+        gpaChart.data.labels = labels;
+        gpaChart.data.datasets[0].data = data;
+        gpaChart.options.scales.x.ticks.color = textColor;
+        gpaChart.options.scales.y.ticks.color = textColor;
+        gpaChart.options.scales.x.grid.color = gridColor;
+        gpaChart.options.scales.y.grid.color = gridColor;
+        gpaChart.update();
+      } else {
+        gpaChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'GPA',
+              data: data,
+              borderColor: '#3B82F6',
+              backgroundColor: 'rgba(59, 130, 246, 0.15)',
+              borderWidth: 2.5,
+              pointBackgroundColor: '#FFFFFF',
+              pointBorderColor: '#3B82F6',
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              fill: true,
+              tension: 0.35
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: state.theme === 'dark' ? '#101626' : '#FFFFFF',
+                titleColor: state.theme === 'dark' ? '#FFFFFF' : '#0F172A',
+                bodyColor: state.theme === 'dark' ? '#94A3B8' : '#475569',
+                borderColor: state.theme === 'dark' ? '#1E293B' : '#E2E8F0',
+                borderWidth: 1,
+                padding: 8,
+                callbacks: { label: ctx => `GPA: ${ctx.parsed.y.toFixed(2)}` }
+              }
+            },
+            scales: {
+              x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+              y: { min: 0, max: 4.0, grid: { color: gridColor }, ticks: { color: textColor, stepSize: 1, font: { size: 10 } } }
+            }
+          }
+        });
+      }
+    }
+
+    function updateGoalForecast() {
+      const targetInput = document.getElementById('input-target-cgpa');
+      const targetCGPA = parseFloat(targetInput ? targetInput.value : state.targetCgpa) || 0;
+      const avgCredits = parseFloat(document.getElementById('input-avg-credits')?.value) || 3;
+      state.targetCgpa = targetCGPA;
+
+      const remaining = Math.max(0, (state.totalCredits || 120) - (state.accumulatedCredits || 0));
+      const remEl = document.getElementById('goal-remaining-credits');
+      if (remEl) remEl.textContent = remaining;
+
+      const resultBox = document.getElementById('goal-forecast-result');
+      if (!resultBox) return;
+
+      if (!targetCGPA) {
+        resultBox.innerHTML = '<span class="text-slate-500">Nhập mục tiêu CGPA để xem chi tiết lộ trình.</span>';
+        return;
+      }
+
+      if (remaining <= 0) {
+        resultBox.innerHTML = '<div class="text-emerald-500 font-bold">Đã hoàn thành đủ tín chỉ toàn khóa!</div>';
+        return;
+      }
+
+      const requiredGPA = (targetCGPA * state.totalCredits - state.cgpa * state.accumulatedCredits) / remaining;
+
+      if (requiredGPA > 4.0) {
+        resultBox.innerHTML = `<div class="text-red-400 font-bold">GPA yêu cầu: ${requiredGPA.toFixed(2)} (> 4.0). Mục tiêu quá cao.</div>`;
+        return;
+      }
+
+      if (requiredGPA <= 0) {
+        resultBox.innerHTML = '<div class="text-emerald-500 font-bold">CGPA hiện tại đã đảm bảo đạt mục tiêu!</div>';
+        return;
+      }
+
+      const numSubjects = Math.ceil(remaining / avgCredits);
+      const grades = [
+        { name: 'A+', gpa: 4.0, bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-400' },
+        { name: 'A', gpa: 3.7, bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600 dark:text-emerald-300' },
+        { name: 'B+', gpa: 3.5, bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-400' },
+        { name: 'B', gpa: 3.0, bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-600 dark:text-blue-300' },
+        { name: 'C+', gpa: 2.5, bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-400' },
+        { name: 'C', gpa: 2.0, bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-600 dark:text-amber-300' },
+        { name: 'D+', gpa: 1.5, bg: 'bg-orange-100 dark:bg-orange-900/40', text: 'text-orange-700 dark:text-orange-400' },
+        { name: 'D', gpa: 1.0, bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-600 dark:text-orange-300' }
+      ];
+
+      let highGrade, lowGrade;
+      for (let i = 0; i < grades.length - 1; i++) {
+        if (grades[i].gpa >= requiredGPA && grades[i + 1].gpa <= requiredGPA) {
+          highGrade = grades[i]; lowGrade = grades[i + 1]; break;
+        }
+      }
+
+      let msg = `
+        <div class="space-y-2">
+          <div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-800">
+            <span class="font-bold text-slate-500">GPA cần đạt:</span>
+            <span class="text-base font-black text-blue-500">${requiredGPA.toFixed(2)}</span>
+          </div>
+          <div class="text-[10px] text-slate-400">Lộ trình ${numSubjects} môn (${avgCredits} tín/môn):</div>
+      `;
+
+      if (!highGrade) {
+        msg += `<div class="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-lg font-bold text-slate-700 dark:text-slate-200"><span>Tất cả các môn</span> <span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 font-black">A+</span></div>`;
+      } else if (highGrade.gpa === lowGrade.gpa || requiredGPA === lowGrade.gpa) {
+        msg += `<div class="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-lg font-bold text-slate-700 dark:text-slate-200"><span>Tất cả các môn</span> <span class="px-2 py-0.5 rounded ${lowGrade.bg} ${lowGrade.text} font-black">${lowGrade.name}</span></div>`;
+      } else {
+        const nHigh = Math.round(numSubjects * (requiredGPA - lowGrade.gpa) / (highGrade.gpa - lowGrade.gpa));
+        const nLow = numSubjects - nHigh;
+        if (nHigh > 0) msg += `<div class="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-lg font-bold text-slate-700 dark:text-slate-200"><span>${nHigh} môn đạt</span> <span class="px-2 py-0.5 rounded ${highGrade.bg} ${highGrade.text} font-black">${highGrade.name}</span></div>`;
+        if (nLow > 0) msg += `<div class="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-lg font-bold text-slate-700 dark:text-slate-200"><span>${nLow} môn đạt</span> <span class="px-2 py-0.5 rounded ${lowGrade.bg} ${lowGrade.text} font-black">${lowGrade.name}</span></div>`;
+      }
+      msg += `</div>`;
+      resultBox.innerHTML = msg;
+    }
+
+    function updateGPADataList() {
+      const datalist = document.getElementById('gpa-subject-datalist');
+      if (!datalist) return;
+      const names = new Set();
+      (state.semesters || []).forEach(sem => {
+        (sem.subjects || []).forEach(sub => {
+          if (sub.name && sub.name.trim()) names.add(sub.name.trim());
+        });
+      });
+      datalist.innerHTML = Array.from(names).map(n => `<option value="${n}">`).join('');
+    }
+
+    function quickAddToTimetable(subjectName) {
+      if (!subjectName) return;
+      openAddClassModal();
+      document.getElementById('class-input-name').value = subjectName;
+    }
+
+    // ==========================================
+    // 7. TAB 3: THỜI KHÓA BIỂU (4 CA CHUẨN)
+    // ==========================================
+    function setTimetableViewMode(mode) {
+      state.timetable.viewMode = mode;
+      const gridView = document.getElementById('timetable-grid-view');
+      const listView = document.getElementById('timetable-list-view');
+      const btnGrid = document.getElementById('btn-tkb-grid');
+      const btnList = document.getElementById('btn-tkb-list');
+
+      if (mode === 'grid') {
+        gridView.classList.remove('hidden');
+        listView.classList.add('hidden');
+        btnGrid.className = 'px-3 py-1 rounded text-xs font-bold smooth bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm';
+        btnList.className = 'px-3 py-1 rounded text-xs font-bold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+      } else {
+        gridView.classList.add('hidden');
+        listView.classList.remove('hidden');
+        btnList.className = 'px-3 py-1 rounded text-xs font-bold smooth bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm';
+        btnGrid.className = 'px-3 py-1 rounded text-xs font-bold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+      }
+      renderTimetable();
+      saveState();
+    }
+
+    function renderTimetable() {
+      const todayDay = new Date().getDay();
+
+      document.querySelectorAll('.tkb-day-header').forEach(el => {
+        const d = parseInt(el.getAttribute('data-day'));
+        if (d === todayDay) {
+          el.className = 'py-2.5 rounded-xl tkb-day-header bg-blue-600 text-white font-extrabold shadow-sm';
+        } else {
+          el.className = 'py-2.5 rounded-xl tkb-day-header bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+        }
+      });
+
+      // 4 ca học chuẩn theo yêu cầu:
+      // Ca 1: 7h-9h40 | Ca 2: 9h50-12h30 | Ca 3: 13h30-16h10 | Ca 4: 16h20-19h
+      const shifts = [
+        { label: "Ca 1", time: "07:00 - 09:40" },
+        { label: "Ca 2", time: "09:50 - 12:30" },
+        { label: "Ca 3", time: "13:30 - 16:10" },
+        { label: "Ca 4", time: "16:20 - 19:00" }
+      ];
+
+      const daysOfWeek = [1, 2, 3, 4, 5, 6, 0];
+      const matrixBody = document.getElementById('timetable-matrix-body');
+      if (matrixBody) {
+        matrixBody.innerHTML = shifts.map(sh => {
+          return `
+            <div class="grid grid-cols-8 gap-2 items-stretch">
+              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 text-center flex flex-col justify-center min-h-[68px]">
+                <span class="font-extrabold text-xs text-blue-600 dark:text-blue-400">${sh.label}</span>
+                <span class="text-[10px] text-slate-400 font-mono mt-0.5">${sh.time}</span>
+              </div>
+
+              ${daysOfWeek.map(d => {
+                const matches = (state.timetable.classes || []).filter(c => c.day === d && c.shift.includes(sh.label));
+                const isTodayCol = d === todayDay;
+
+                return `
+                  <div class="p-1.5 rounded-xl border ${isTodayCol ? 'bg-blue-50/20 dark:bg-blue-900/10 border-blue-400/30' : 'bg-slate-50/40 dark:bg-slate-900/20 border-slate-200/40 dark:border-slate-800/40'} flex flex-col gap-1.5 justify-center min-h-[68px]">
+                    ${matches.map(c => renderClassCard(c)).join('')}
+                    ${matches.length === 0 ? `
+                      <button onclick="openAddClassModalFor(${d}, '${sh.label} (${sh.time})')" class="w-full h-full min-h-[40px] rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 hover:border-blue-400 hover:text-blue-500 flex items-center justify-center text-xs smooth">
+                        <i class="fas fa-plus opacity-30 text-[10px]"></i>
+                      </button>
+                    ` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        }).join('');
+      }
+
+      const dayCardsBox = document.getElementById('timetable-day-cards');
+      if (dayCardsBox) {
+        dayCardsBox.innerHTML = daysOfWeek.map(d => {
+          const classesThisDay = (state.timetable.classes || []).filter(c => c.day === d);
+          const isToday = d === todayDay;
+
+          return `
+            <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border ${isToday ? 'border-blue-500 ring-1 ring-blue-500/30' : 'border-surface-borderLight dark:border-surface-borderDark'} shadow-sm">
+              <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
+                <span class="font-extrabold text-xs text-slate-900 dark:text-white">${getDayNameVN(d)}</span>
+                <button onclick="openAddClassModalFor(${d})" class="text-xs text-blue-600 dark:text-blue-400 font-bold">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+
+              <div class="space-y-2">
+                ${classesThisDay.map(c => renderClassCard(c, true)).join('')}
+                ${classesThisDay.length === 0 ? '<div class="text-center py-3 text-xs text-slate-400">Không có lớp.</div>' : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function renderClassCard(c, isDetailed = false) {
+      const pal = COLOR_CLASSES[c.color] || COLOR_CLASSES.blue;
+
+      return `
+        <div class="p-2 rounded-xl border ${pal.card} relative group text-xs smooth shadow-sm">
+          <div class="flex items-start justify-between gap-1">
+            <div class="font-extrabold text-xs leading-tight text-slate-900 dark:text-white truncate">${c.name}</div>
+            <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 smooth">
+              <button onclick="editClass('${c.id}')" class="text-slate-400 hover:text-blue-600"><i class="fas fa-pencil-alt text-[10px]"></i></button>
+              <button onclick="deleteClass('${c.id}')" class="text-slate-400 hover:text-red-600"><i class="fas fa-trash-alt text-[10px]"></i></button>
+            </div>
+          </div>
+          
+          <div class="text-[10px] font-bold text-slate-600 dark:text-slate-300 mt-1 flex items-center gap-1.5">
+            <span class="px-1.5 py-0.5 rounded ${pal.badge}">
+              P.${c.room || '?'}
+            </span>
+            ${isDetailed ? `<span class="text-[10px] text-slate-400">${c.shift}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function openAddClassModalFor(day, shift = 'Ca 1 (07:00 - 09:40)') {
+      openAddClassModal();
+      document.getElementById('class-input-day').value = day;
+      document.getElementById('class-input-shift').value = shift;
+    }
+
+    function openAddClassModal() {
+      document.getElementById('class-edit-id').value = '';
+      document.getElementById('classModalTitle').textContent = 'Thêm Lớp học';
+      document.getElementById('class-input-name').value = '';
+      document.getElementById('class-input-room').value = '';
+      document.getElementById('class-input-teacher').value = '';
+      document.getElementById('class-input-notes').value = '';
+      openModal('class-modal');
+    }
+
+    function editClass(classId) {
+      const cls = (state.timetable.classes || []).find(c => c.id === classId);
+      if (!cls) return;
+      document.getElementById('class-edit-id').value = cls.id;
+      document.getElementById('classModalTitle').textContent = 'Sửa Lớp học';
+      document.getElementById('class-input-day').value = cls.day;
+      document.getElementById('class-input-name').value = cls.name;
+      document.getElementById('class-input-shift').value = cls.shift;
+      document.getElementById('class-input-room').value = cls.room || '';
+      document.getElementById('class-input-teacher').value = cls.teacher || '';
+      document.getElementById('class-input-color').value = cls.color || 'blue';
+      document.getElementById('class-input-notes').value = cls.notes || '';
+      openModal('class-modal');
+    }
+
+    function saveClassModal() {
+      const id = document.getElementById('class-edit-id').value;
+      const name = document.getElementById('class-input-name').value.trim();
+      const day = parseInt(document.getElementById('class-input-day').value);
+      const shift = document.getElementById('class-input-shift').value;
+      const room = document.getElementById('class-input-room').value.trim();
+      const teacher = document.getElementById('class-input-teacher').value.trim();
+      const color = document.getElementById('class-input-color').value;
+      const notes = document.getElementById('class-input-notes').value.trim();
+
+      if (!name) {
+        alert('Vui lòng nhập tên môn học!');
+        return;
+      }
+
+      if (!state.timetable.classes) state.timetable.classes = [];
+
+      if (id) {
+        const item = state.timetable.classes.find(c => c.id === id);
+        if (item) {
+          item.name = name; item.day = day; item.shift = shift;
+          item.room = room; item.teacher = teacher; item.color = color; item.notes = notes;
+        }
+      } else {
+        state.timetable.classes.push({
+          id: 'c_' + Date.now(),
+          name, day, shift, room, teacher, color, notes
+        });
+      }
+
+      saveState();
+      closeModal('class-modal');
+      renderTimetable();
+      renderTodayOverview();
+    }
+
+    function deleteClass(classId) {
+      if (confirm('Xóa lớp học này?')) {
+        state.timetable.classes = state.timetable.classes.filter(c => c.id !== classId);
+        saveState();
+        renderTimetable();
+        renderTodayOverview();
+      }
+    }
+
+    // ==========================================
+    // 8. TAB 4: LỊCH THÁNG & NHIỆM VỤ
+    // ==========================================
+    function initCalendar() {
+      const now = new Date();
+      calendarYear = now.getFullYear();
+      calendarMonth = now.getMonth();
+      state.calendar.selectedDateStr = getLocalYMD(now);
+      renderCalendar();
+    }
+
+    function changeCalendarMonth(offset) {
+      calendarMonth += offset;
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear--;
+      } else if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear++;
+      }
+      renderCalendar();
+    }
+
+    function goToTodayCalendar() {
+      const now = new Date();
+      calendarYear = now.getFullYear();
+      calendarMonth = now.getMonth();
+      state.calendar.selectedDateStr = getLocalYMD(now);
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+      if (document.getElementById('calendarMonthYearDisplay')) {
+        document.getElementById('calendarMonthYearDisplay').textContent = `${monthNames[calendarMonth]}, ${calendarYear}`;
+      }
+
+      const grid = document.getElementById('calendarGridCells');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const firstDayIndex = new Date(calendarYear, calendarMonth, 1).getDay();
+      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      const todayStr = getLocalYMD(new Date());
+
+      // Padding cells before day 1
+      for (let i = 0; i < firstDayIndex; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'rounded-xl opacity-10 bg-slate-500/10 min-h-[50px]';
+        grid.appendChild(empty);
+      }
+
+      // Days in month
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateObj = new Date(calendarYear, calendarMonth, d);
+        const dateStr = getLocalYMD(dateObj);
+        const dayData = state.calendar.days[dateStr] || { tasks: [], studyTime: 0 };
+        const studyTime = dayData.studyTime || 0;
+        const totalTasks = (dayData.tasks || []).length;
+        const completedTasks = (dayData.tasks || []).filter(t => t.completed).length;
+
+        const isToday = dateStr === todayStr;
+        const isSelected = dateStr === state.calendar.selectedDateStr;
+
+        let bgClass = 'bg-slate-50 dark:bg-slate-900/60 border-slate-200/60 dark:border-slate-800';
+        if (studyTime >= (state.focus.dailyGoalMinutes || 360)) {
+          bgClass = 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300';
+        } else if (studyTime > 0) {
+          bgClass = 'bg-blue-950/40 border-blue-500/50 text-blue-300';
+        }
+
+        const cell = document.createElement('div');
+        cell.className = `p-2 rounded-xl border ${bgClass} ${isSelected ? 'ring-2 ring-blue-500' : ''} ${isToday ? 'border-2 border-blue-500' : ''} cursor-pointer hover:border-blue-400 smooth flex flex-col justify-between overflow-hidden min-h-[50px] shadow-sm`;
+        cell.onclick = () => selectCalendarDate(dateStr);
+
+        cell.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-black leading-none">
+            <span>${d}</span>
+            ${studyTime > 0 ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-600/30 text-blue-300">${studyTime}m</span>` : ''}
+          </div>
+          <div class="text-[10px] truncate mt-1">
+            ${totalTasks > 0 ? `
+              <span class="px-1.5 py-0.5 rounded font-bold ${completedTasks === totalTasks ? 'text-emerald-400' : 'text-amber-300'}">
+                ☑ ${completedTasks}/${totalTasks}
+              </span>
+            ` : ''}
+          </div>
+        `;
+        grid.appendChild(cell);
+      }
+
+      renderSelectedDateDetails();
+    }
+
+    function selectCalendarDate(dateStr) {
+      state.calendar.selectedDateStr = dateStr;
+      renderCalendar();
+    }
+
+    function renderSelectedDateDetails() {
+      const dateStr = state.calendar.selectedDateStr || getLocalYMD(new Date());
+      const parts = dateStr.split('-');
+      if (document.getElementById('selectedDateTitle')) {
+        document.getElementById('selectedDateTitle').textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      
+      const dayData = state.calendar.days[dateStr] || { tasks: [], studyTime: 0 };
+      const studyTime = dayData.studyTime || 0;
+      if (document.getElementById('selectedDateStudyMinutes')) {
+        document.getElementById('selectedDateStudyMinutes').textContent = `${studyTime} phút (${formatTimeMinutes(studyTime)})`;
+      }
+      if (document.getElementById('inlineStudyMinutesInput')) {
+        document.getElementById('inlineStudyMinutesInput').value = studyTime;
+      }
+
+      const list = document.getElementById('selectedDateTaskList');
+      if (!list) return;
+      if (!dayData.tasks || dayData.tasks.length === 0) {
+        list.innerHTML = `
+          <div class="text-center py-6 text-slate-400 text-xs">
+            Chưa có nhiệm vụ nào cho ngày này.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = dayData.tasks.map((t, idx) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 smooth">
+          <label class="flex items-center gap-2.5 cursor-pointer flex-1 truncate">
+            <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleSelectedDateTask(${idx})" class="w-4 h-4 rounded accent-blue-600 cursor-pointer">
+            <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate ${t.completed ? 'line-through text-slate-400' : ''}">
+              ${t.text}
+            </span>
+          </label>
+          <button onclick="deleteSelectedDateTask(${idx})" class="w-6 h-6 text-slate-400 hover:text-red-500 text-xs flex items-center justify-center">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function saveInlineStudyTime(val) {
+      const mins = parseInt(val) || 0;
+      const dateStr = state.calendar.selectedDateStr || getLocalYMD(new Date());
+      if (!state.calendar.days[dateStr]) state.calendar.days[dateStr] = { tasks: [], studyTime: 0 };
+      state.calendar.days[dateStr].studyTime = Math.max(0, mins);
+      saveState();
+      renderCalendar();
+      renderTodayOverview();
+    }
+
+    function saveSelectedDateTask() {
+      const input = document.getElementById('newTaskInput');
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const dateStr = state.calendar.selectedDateStr;
+      if (!state.calendar.days[dateStr]) {
+        state.calendar.days[dateStr] = { tasks: [], studyTime: 0 };
+      }
+      state.calendar.days[dateStr].tasks.push({
+        id: 't_' + Date.now(),
+        text: text,
+        completed: false
+      });
+      input.value = '';
+      saveState();
+      renderCalendar();
+      renderTodayOverview();
+    }
+
+    function toggleSelectedDateTask(idx) {
+      const dateStr = state.calendar.selectedDateStr;
+      if (state.calendar.days[dateStr] && state.calendar.days[dateStr].tasks[idx]) {
+        state.calendar.days[dateStr].tasks[idx].completed = !state.calendar.days[dateStr].tasks[idx].completed;
+        saveState();
+        renderCalendar();
+        renderTodayOverview();
+      }
+    }
+
+    function deleteSelectedDateTask(idx) {
+      const dateStr = state.calendar.selectedDateStr;
+      if (state.calendar.days[dateStr]) {
+        state.calendar.days[dateStr].tasks.splice(idx, 1);
+        saveState();
+        renderCalendar();
+        renderTodayOverview();
+      }
+    }
+
+    function clearCompletedTasks() {
+      const dateStr = state.calendar.selectedDateStr;
+      if (state.calendar.days[dateStr]) {
+        state.calendar.days[dateStr].tasks = state.calendar.days[dateStr].tasks.filter(t => !t.completed);
+        saveState();
+        renderCalendar();
+        renderTodayOverview();
+      }
+    }
+
+    // ==========================================
+    // 9. TAB 5: FOCUS ROOM (CLEAN & DIRECT)
+    // ==========================================
+    function onCustomMinutesChange(val) {
+      const m = parseInt(val) || 25;
+      state.focus.timerMinutes = m;
+      timerOriginalMinutes = m;
+      timerTimeLeft = m * 60;
+      pauseTimer();
+      updateTimerDisplay();
+      saveState();
+    }
+
+    function onBreakDurationChange(val) {
+      const bMins = parseInt(val) || 0;
+      state.focus.breakMinutes = bMins;
+      saveState();
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerTimeLeft / 60);
+      const s = timerTimeLeft % 60;
+      const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      
+      const bigEl = document.getElementById('focusTimerBigDisplay');
+      if (bigEl) bigEl.textContent = str;
+      const overEl = document.getElementById('overviewTimerDisplay');
+      if (overEl) overEl.textContent = str;
+
+      const mainBtn = document.getElementById('focusMainPlayBtn');
+      if (mainBtn) {
+        mainBtn.innerHTML = isTimerRunning ? '<i class="fas fa-pause"></i> Dừng' : '<i class="fas fa-play"></i> Bắt đầu';
+        mainBtn.className = isTimerRunning ? 'flex-1 py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-sm smooth shadow-sm flex items-center justify-center gap-2' : 'flex-1 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm smooth shadow-sm flex items-center justify-center gap-2';
+      }
+      const overBtn = document.getElementById('overviewTimerBtn');
+      if (overBtn) {
+        overBtn.innerHTML = isTimerRunning ? '<i class="fas fa-pause"></i> Dừng' : '<i class="fas fa-play"></i> Bắt đầu';
+      }
+    }
+
+    function startTimer() {
+      if (isTimerRunning) return;
+      isTimerRunning = true;
+      timerTargetEndTime = Date.now() + (timerTimeLeft * 1000);
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timerTimeLeft = Math.round((timerTargetEndTime - Date.now()) / 1000);
+        if (timerTimeLeft <= 0) {
+          timerTimeLeft = 0;
+          clearInterval(timerInterval);
+          isTimerRunning = false;
+          updateTimerDisplay();
+          playChimeSound();
+          logStudyTime(timerOriginalMinutes);
+          
+          const breakMins = state.focus.breakMinutes !== undefined ? state.focus.breakMinutes : 5;
+          if (breakMins > 0) {
+            if (confirm(`Hoàn thành ${timerOriginalMinutes} phút học! Bắt đầu nghỉ ${breakMins} phút ngay?`)) {
+              timerOriginalMinutes = breakMins;
+              timerTimeLeft = breakMins * 60;
+              startTimer();
+              return;
+            }
+          } else {
+            alert(`Hoàn thành ${timerOriginalMinutes} phút tập trung! Đã ghi nhận vào lịch.`);
+          }
+          resetTimer();
+        } else {
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      updateTimerDisplay();
+    }
+
+    function toggleTimer() {
+      if (isTimerRunning) pauseTimer(); else startTimer();
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      const m = parseInt(document.getElementById('focusCustomMinutes')?.value) || state.focus.timerMinutes || 25;
+      timerOriginalMinutes = m;
+      timerTimeLeft = timerOriginalMinutes * 60;
+      updateTimerDisplay();
+    }
+
+    function endAndLogEarly() {
+      if (!isTimerRunning && timerTimeLeft === timerOriginalMinutes * 60) {
+        alert("Bộ đếm chưa chạy!");
+        return;
+      }
+      const elapsedSeconds = (timerOriginalMinutes * 60) - Math.max(0, timerTimeLeft);
+      const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+      
+      pauseTimer();
+      if (elapsedMinutes >= 1) {
+        logStudyTime(elapsedMinutes);
+        alert(`Đã lưu ${elapsedMinutes} phút tập trung vào ngày hôm nay.`);
+      } else {
+        alert("Phiên học dưới 1 phút chưa được tính.");
+      }
+      resetTimer();
+    }
+
+    function logStudyTime(minutes) {
+      const todayStr = getLocalYMD(new Date());
+      if (!state.calendar.days[todayStr]) {
+        state.calendar.days[todayStr] = { tasks: [], studyTime: 0 };
+      }
+      state.calendar.days[todayStr].studyTime = (state.calendar.days[todayStr].studyTime || 0) + minutes;
+      saveState();
+      renderTodayOverview();
+      renderCalendar();
+    }
+
+    function playChimeSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (e) { }
+    }
+
+    // ==========================================
+    // 10. MINIPLAYER (CLEAN FLOATING / MINIMIZE)
+    // ==========================================
+    function toggleMiniplayer() {
+      const widget = document.getElementById('miniplayer-widget');
+      const pill = document.getElementById('miniplayer-floating-pill');
+      if (widget.classList.contains('hidden')) {
+        openMiniplayerFull();
+      } else {
+        minimizeMiniplayerToPill();
+      }
+    }
+
+    function openMiniplayerFull() {
+      const widget = document.getElementById('miniplayer-widget');
+      const pill = document.getElementById('miniplayer-floating-pill');
+      widget.classList.remove('hidden');
+      pill.classList.add('hidden');
+    }
+
+    function minimizeMiniplayerToPill() {
+      const widget = document.getElementById('miniplayer-widget');
+      const pill = document.getElementById('miniplayer-floating-pill');
+      widget.classList.add('hidden');
+      pill.classList.remove('hidden');
+    }
+
+    function togglePlayerConfig() {
+      const area = document.getElementById('playerConfigArea');
+      area.classList.toggle('hidden');
+      area.classList.toggle('flex');
+    }
+
+    function togglePlayerVideoBox() {
+      const frameBox = document.getElementById('youtube-player-frame-box');
+      frameBox.classList.toggle('hidden');
+    }
+
+    function initPlaylistsDropdown() {
+      const select = document.getElementById('playlistSelectDropdown');
+      if (!select) return;
+      const list = state.player.customPlaylists || DEFAULT_PLAYLISTS;
+      select.innerHTML = list.map(pl => `
+        <option value="${pl.id}" ${pl.id === state.player.selectedPlaylistId ? 'selected' : ''}>
+          ${pl.name}
+        </option>
+      `).join('');
+    }
+
+    function onPlaylistChange(plId, autoPlay = false) {
+      state.player.selectedPlaylistId = plId;
+      const list = state.player.customPlaylists || DEFAULT_PLAYLISTS;
+      const found = list.find(p => p.id === plId);
+      if (found) {
+        const titleEl = document.getElementById('playerCurrentPlaylistName');
+        if (titleEl) titleEl.textContent = `Playlist: ${found.name}`;
+        const overName = document.getElementById('overviewMusicName');
+        if (overName) overName.textContent = found.name;
+        const pillTitle = document.getElementById('floatingPillTitle');
+        if (pillTitle) pillTitle.textContent = found.name;
+      }
+      saveState();
+      if (ytPlayer) {
+        if (autoPlay && typeof ytPlayer.loadPlaylist === 'function') {
+          ytPlayer.loadPlaylist({ list: plId, listType: 'playlist' });
+        } else if (typeof ytPlayer.cuePlaylist === 'function') {
+          ytPlayer.cuePlaylist({ list: plId, listType: 'playlist' });
+        }
+      }
+    }
+
+    const ytScript = document.createElement('script');
+    ytScript.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(ytScript);
+
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('youtube-player-iframe', {
+        height: '100%',
+        width: '100%',
+        playerVars: {
+          'playsinline': 1, 'controls': 1, 'rel': 0, 'autoplay': 0
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange,
+          'onError': onPlayerError
+        }
+      });
+    }
+
+    function onPlayerReady() {
+      if (state.player.selectedPlaylistId) {
+        onPlaylistChange(state.player.selectedPlaylistId, false); // Do not autoplay on startup
+      }
+    }
+
+    function onPlayerStateChange(event) {
+      const playBtn = document.getElementById('playerPlayPauseBtn');
+      const dot = document.getElementById('musicPlayingDot');
+      const pillIcon = document.getElementById('floatingPlayIcon');
+      const pillSpin = document.getElementById('floatingPillSpin');
+
+      if (event.data === YT.PlayerState.PLAYING) {
+        isPlayingMusic = true;
+        if (playBtn) playBtn.innerHTML = '<i class="fas fa-pause"></i> Dừng';
+        if (dot) dot.classList.remove('hidden');
+        if (pillIcon) pillIcon.className = 'fas fa-pause';
+        if (pillSpin) pillSpin.classList.add('animate-spin');
+        document.getElementById('overviewMusicStatus').textContent = 'Đang phát 🎵';
+      } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+        isPlayingMusic = false;
+        if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i> Phát';
+        if (dot) dot.classList.add('hidden');
+        if (pillIcon) pillIcon.className = 'fas fa-play';
+        if (pillSpin) pillSpin.classList.remove('animate-spin');
+        document.getElementById('overviewMusicStatus').textContent = 'Tạm dừng';
+        if (event.data === YT.PlayerState.ENDED) playNextTrack();
+      }
+    }
+
+    function onPlayerError() { playNextTrack(); }
+
+    function togglePlayMusic() {
+      if (!ytPlayer) return;
+      if (isPlayingMusic) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
+    }
+
+    function playNextTrack() {
+      if (shuffledQueue.length > 0) {
+        currentQueueIndex = (currentQueueIndex + 1) % shuffledQueue.length;
+        ytPlayer.loadVideoById(shuffledQueue[currentQueueIndex]);
+        document.getElementById('playerTrackIndex').textContent = `${currentQueueIndex + 1}/${shuffledQueue.length}`;
+      } else if (ytPlayer && typeof ytPlayer.nextVideo === 'function') {
+        ytPlayer.nextVideo();
+      }
+    }
+
+    function playPrevTrack() {
+      if (shuffledQueue.length > 0) {
+        currentQueueIndex = (currentQueueIndex - 1 + shuffledQueue.length) % shuffledQueue.length;
+        ytPlayer.loadVideoById(shuffledQueue[currentQueueIndex]);
+        document.getElementById('playerTrackIndex').textContent = `${currentQueueIndex + 1}/${shuffledQueue.length}`;
+      } else if (ytPlayer && typeof ytPlayer.previousVideo === 'function') {
+        ytPlayer.previousVideo();
+      }
+    }
+
+    function toggleTrueShuffle() {
+      if (state.player.masterVideoIds && state.player.masterVideoIds.length > 0) {
+        shuffledQueue = [...state.player.masterVideoIds].sort(() => Math.random() - 0.5);
+        currentQueueIndex = 0;
+        ytPlayer.loadVideoById(shuffledQueue[0]);
+        document.getElementById('playerTrackIndex').textContent = `1/${shuffledQueue.length}`;
+        alert(`Đã bật True Shuffle cho ${shuffledQueue.length} bài hát!`);
+      } else {
+        alert("Nhập Google Cloud API Key và bấm 'Quét API' để xáo trộn!");
+        togglePlayerConfig();
+      }
+    }
+
+    async function fetchAndBuildTrueShuffle() {
+      const apiKey = document.getElementById('youtubeApiKeyInput').value.trim();
+      const plId = state.player.selectedPlaylistId;
+      if (!apiKey || !plId) return alert('Thiếu API Key hoặc Playlist!');
+      state.player.apiKey = apiKey;
+      saveState();
+
+      let videoIds = [], nextPageToken = '', loop = 0;
+      try {
+        do {
+          const res = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId=${plId}&key=${apiKey}&pageToken=${nextPageToken}`);
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message);
+          if (data.items) {
+            data.items.forEach(item => {
+              if (item.contentDetails && item.contentDetails.videoId) videoIds.push(item.contentDetails.videoId);
+            });
+          }
+          nextPageToken = data.nextPageToken || '';
+          loop++;
+        } while (nextPageToken !== '' && loop < 50);
+
+        state.player.masterVideoIds = videoIds;
+        saveState();
+        shuffledQueue = [...videoIds].sort(() => Math.random() - 0.5);
+        currentQueueIndex = 0;
+        ytPlayer.loadVideoById(shuffledQueue[0]);
+        document.getElementById('playerTrackIndex').textContent = `1/${shuffledQueue.length}`;
+        alert(`Đã nạp ${videoIds.length} bài hát vào True Shuffle.`);
+      } catch (err) {
+        alert('Lỗi Google API: ' + err.message);
+      }
+    }
+
+    function promptAddCustomPlaylist() {
+      const name = prompt('Tên Playlist mới:');
+      if (!name) return;
+      const id = prompt('ID Playlist YouTube:');
+      if (!id) return;
+
+      state.player.customPlaylists.push({ name, id });
+      saveState();
+      initPlaylistsDropdown();
+      onPlaylistChange(id);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (e.code === 'Space') {
+        e.preventDefault(); toggleTimer();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault(); playNextTrack();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault(); playPrevTrack();
+      }
+    });
+
+    // ==========================================
+    // 11. CLOUD SYNC & EXPORT
+    // ==========================================
+    function setSyncTab(provider) {
+      document.getElementById('sync-section-firebase').classList.toggle('hidden', provider !== 'firebase');
+      document.getElementById('sync-section-gist').classList.toggle('hidden', provider !== 'gist');
+      const bFb = document.getElementById('sync-tab-btn-firebase');
+      const bGist = document.getElementById('sync-tab-btn-gist');
+      if (provider === 'firebase') {
+        bFb.className = 'flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-blue-600 shadow-sm';
+        bGist.className = 'flex-1 py-1.5 rounded-lg text-slate-500';
+      } else {
+        bGist.className = 'flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-blue-600 shadow-sm';
+        bFb.className = 'flex-1 py-1.5 rounded-lg text-slate-500';
+      }
+    }
+
+    function generateRandomRoomId() {
+      const r = 'room_' + Math.random().toString(36).substring(2, 10);
+      document.getElementById('firebaseRoomId').value = r;
+      state.sync.firebaseRoomId = r;
+      saveState();
+      const wrapper = document.getElementById('sync-qrcode-wrapper');
+      if (wrapper && !wrapper.classList.contains('hidden')) {
+        toggleSyncQrCode(); // re-render QR with new Room ID
+      }
+    }
+
+    function toggleSyncQrCode() {
+      const wrapper = document.getElementById('sync-qrcode-wrapper');
+      const container = document.getElementById('sync-qrcode-container');
+      const input = document.getElementById('sync-share-url');
+      if (!wrapper || !container) return;
+
+      const roomId = document.getElementById('firebaseRoomId')?.value.trim() || state.sync.firebaseRoomId || 'typlex_default_room';
+      
+      let baseUrl = window.location.origin + window.location.pathname;
+      if (window.location.protocol === 'file:') {
+        baseUrl = `http://192.168.1.4:8080/index.html`;
+      }
+      const fullUrl = `${baseUrl}?room=${encodeURIComponent(roomId)}`;
+      if (input) input.value = fullUrl;
+
+      container.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(container, {
+          text: fullUrl,
+          width: 140,
+          height: 140,
+          colorDark: "#0F172A",
+          colorLight: "#FFFFFF",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } else {
+        container.innerHTML = `<div class="text-xs p-2 text-slate-500">Mở link: <br><b>${fullUrl}</b></div>`;
+      }
+      wrapper.classList.remove('hidden');
+    }
+
+    function copySyncShareUrl() {
+      const input = document.getElementById('sync-share-url');
+      if (!input) return;
+      navigator.clipboard.writeText(input.value).then(() => {
+        alert('Đã sao chép link đồng bộ! Dán link này vào trình duyệt điện thoại.');
+      }).catch(() => {
+        input.select();
+        document.execCommand('copy');
+        alert('Đã sao chép link đồng bộ!');
+      });
+    }
+
+    function initSyncEngine() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('room')) {
+          const r = urlParams.get('room');
+          if (r) {
+            state.sync.firebaseRoomId = r;
+            state.sync.syncProvider = 'firebase';
+            const roomInp = document.getElementById('firebaseRoomId');
+            if (roomInp) roomInp.value = r;
+            saveState(false);
+          }
+        }
+      } catch (e) {}
+
+      if (state.sync.syncProvider === 'firebase' && state.sync.firebaseRoomId) {
+        connectFirebaseRealtime();
+      }
+    }
+
+    function connectFirebaseRealtime() {
+      const roomId = document.getElementById('firebaseRoomId').value.trim() || 'typlex_default_room';
+      const dbUrl = document.getElementById('firebaseDbUrl').value.trim() || 'https://typlex-workspace-default-rtdb.firebaseio.com';
+      state.sync.firebaseRoomId = roomId;
+      state.sync.firebaseDbUrl = dbUrl;
+      state.sync.syncProvider = 'firebase';
+      saveState(false);
+
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp({ databaseURL: dbUrl });
+        }
+        const db = firebase.database();
+        firebaseRef = db.ref('workspaces/' + roomId);
+
+        firebaseRef.on('value', (snapshot) => {
+          const remoteData = snapshot.val();
+          if (remoteData && remoteData.version) {
+            isRemoteSyncUpdate = true;
+            state = Object.assign(state, remoteData);
+            if (remoteData.gpa && remoteData.gpa.semesters && (!state.semesters || state.semesters.length === 0)) {
+              state.semesters = remoteData.gpa.semesters;
+            }
+            saveState(false);
+            applyTheme();
+            renderSemesters();
+            recalculateAll();
+            renderTimetable();
+            renderCalendar();
+            renderTodayOverview();
+            isRemoteSyncUpdate = false;
+            updateSyncBadge('🟢 Realtime');
+          }
+        });
+
+        updateSyncBadge('🟢 Realtime');
+        closeModal('cloud-modal');
+      } catch (err) {
+        console.error('Firebase error:', err);
+        updateSyncBadge('🟡 Local');
+      }
+    }
+
+    function debounceBroadcastCloud() {
+      if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
+      syncDebounceTimer = setTimeout(() => {
+        if (firebaseRef) firebaseRef.set(state).catch(e => console.error(e));
+        if (state.sync.gistToken && state.sync.gistId) pushGistData(true);
+      }, 1200);
+    }
+
+    async function pushGistData(silent = false) {
+      const token = document.getElementById('gistToken').value.trim() || state.sync.gistToken;
+      let gistId = document.getElementById('gistId').value.trim() || state.sync.gistId;
+      if (!token) {
+        if (!silent) alert('Thiếu GitHub Token!');
+        return;
+      }
+
+      state.sync.gistToken = token;
+      state.sync.gistId = gistId;
+      saveState(false);
+
+      const payload = { "typlex_workspace_data.json": { content: JSON.stringify(state) } };
+
+      try {
+        let res;
+        if (gistId) {
+          res = await fetch(`https://api.github.com/gists/${gistId}`, {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify({ files: payload })
+          });
+        } else {
+          res = await fetch('https://api.github.com/gists', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify({ description: "Typlex Workspace Backup", public: false, files: payload })
+          });
+        }
+
+        if (!res.ok) throw new Error('API Error');
+        const data = await res.json();
+        if (!gistId && data.id) {
+          state.sync.gistId = data.id;
+          document.getElementById('gistId').value = data.id;
+          saveState(false);
+        }
+        if (!silent) alert('Đẩy dữ liệu lên Gist thành công!');
+        updateSyncBadge('🟢 Gist');
+      } catch (err) {
+        if (!silent) alert('Lỗi Gist: ' + err.message);
+      }
+    }
+
+    async function pullGistData() {
+      const token = document.getElementById('gistToken').value.trim() || state.sync.gistToken;
+      const gistId = document.getElementById('gistId').value.trim() || state.sync.gistId;
+      if (!token || !gistId) return alert('Thiếu Token hoặc Gist ID!');
+
+      try {
+        const res = await fetch(`https://api.github.com/gists/${gistId}?t=${Date.now()}`, {
+          headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        const data = await res.json();
+        const file = data.files['typlex_workspace_data.json'] || data.files['gpa_tracker_data.json'];
+        if (!file) throw new Error('Không tìm thấy file data');
+
+        const remote = JSON.parse(file.content);
+        if (remote) {
+          state = Object.assign(state, remote);
+          if (remote.gpa && remote.gpa.semesters && (!state.semesters || state.semesters.length === 0)) {
+            state.semesters = remote.gpa.semesters;
+          }
+          saveState(false);
+          applyTheme();
+          renderSemesters();
+          recalculateAll();
+          renderTimetable();
+          renderCalendar();
+          renderTodayOverview();
+          alert('Tải từ Gist thành công!');
+          closeModal('cloud-modal');
+        }
+      } catch (err) {
+        alert('Lỗi tải: ' + err.message);
+      }
+    }
+
+    function updateSyncBadge(text) {
+      const badge = document.getElementById('syncStatusBadge');
+      if (badge) {
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${text}`;
+      }
+    }
+
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `typlex_workspace_backup_${getLocalYMD(new Date())}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function importJSONFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported) {
+            state = Object.assign(state, imported);
+            if (imported.gpa && imported.gpa.semesters && (!state.semesters || state.semesters.length === 0)) {
+              state.semesters = imported.gpa.semesters;
+            }
+            saveState();
+            applyTheme();
+            renderSemesters();
+            recalculateAll();
+            renderTimetable();
+            renderCalendar();
+            renderTodayOverview();
+            alert('Khôi phục JSON thành công!');
+          }
+        } catch (err) {
+          alert('File JSON không hợp lệ!');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    // ==========================================
+    // 12. MODAL CONTROLLERS & SETTINGS
+    // ==========================================
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function saveAppSettings() {
+      const totalCreds = parseFloat(document.getElementById('setting-total-credits').value) || 120;
+      const dailyGoal = parseInt(document.getElementById('setting-daily-goal').value) || 360;
+
+      state.totalCredits = totalCreds;
+      state.focus.dailyGoalMinutes = dailyGoal;
+      saveState();
+      recalculateAll();
+      renderTodayOverview();
+      renderCalendar();
+      closeModal('settings-modal');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "Typlex All-in-One Workspace & GPA Tracker",
+  "short_name": "Typlex Workspace",
+  "description": "Không gian làm việc & học tập All-in-One: GPA Tracker, Thời khóa biểu, Lịch nhiệm vụ, Focus Pomodoro & Miniplayer",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0B0F19",
+  "theme_color": "#0F172A",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

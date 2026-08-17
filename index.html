@@ -22,15 +22,10 @@
   <!-- External Libraries via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Firebase Compat for Instant Real-Time Synchronization -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <!-- Tailwind Configuration -->
   <script>
@@ -130,11 +125,6 @@
           <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold">Workspace</span>
         </div>
       </div>
-
-      <!-- Sync Status Indicator -->
-      <div class="hidden sm:flex items-center gap-1.5 text-[11px] text-slate-400 pl-2 border-l border-slate-200 dark:border-slate-800" id="syncStatusBadge">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online
-      </div>
     </div>
 
     <!-- Desktop Navigation Tabs -->
@@ -156,16 +146,10 @@
       </button>
     </div>
 
-    <!-- Action Buttons (Sync, Settings, Theme) -->
+    <!-- Action Buttons (Settings, Theme) -->
     <div class="flex items-center gap-1.5">
-      <!-- Cloud Sync Button -->
-      <button onclick="openModal('cloud-modal')" class="px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 smooth text-xs font-bold flex items-center justify-center gap-1.5 border border-blue-200/40 dark:border-blue-700/30" title="Đồng bộ Real-time">
-        <i class="fas fa-cloud"></i>
-        <span>Sync</span>
-      </button>
-
       <!-- Settings Modal Button -->
-      <button onclick="openModal('settings-modal')" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50" title="Cài đặt">
+      <button onclick="openModal('settings-modal')" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50" title="Cài đặt & Sao lưu">
         <i class="fas fa-cog"></i>
       </button>
 
@@ -179,7 +163,7 @@
   <!-- ========================================== -->
   <!-- MAIN APP CONTAINER                         -->
   <!-- ========================================== -->
-  <main class="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-5 max-w-7xl w-full mx-auto">
+  <main class="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 max-w-[1680px] w-full mx-auto flex flex-col">
 
     <!-- ======================================================= -->
     <!-- TAB 1: OVERVIEW DASHBOARD (COMPACT NATURAL HEIGHT)       -->
@@ -442,16 +426,22 @@
     <!-- ======================================================= -->
     <!-- TAB 3: THỜI KHÓA BIỂU                                  -->
     <!-- ======================================================= -->
-    <div id="view-timetable" class="tab-view hidden space-y-3 mobile-pb">
+    <div id="view-timetable" class="tab-view hidden space-y-3.5 mobile-pb lg:flex-1 lg:flex lg:flex-col lg:min-h-0">
 
       <!-- Timetable Header Bar -->
-      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-        <div class="flex items-center gap-2">
-          <i class="fas fa-calendar-alt text-blue-600"></i>
-          <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Thời khóa biểu</h2>
+      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-black">
+            <i class="fas fa-calendar-week"></i>
+          </div>
+          <div>
+            <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Thời khóa biểu</h2>
+            <span class="text-[11px] font-semibold text-slate-400 hidden sm:inline">Quản lý lịch học theo tuần và từng ca</span>
+          </div>
         </div>
 
         <div class="flex items-center gap-2">
+          <!-- Grid / List Switcher -->
           <div class="bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg flex items-center border border-slate-200/60 dark:border-slate-700/60">
             <button onclick="setTimetableViewMode('grid')" id="btn-tkb-grid" class="px-3 py-1 rounded text-xs font-bold smooth bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm">
               <i class="fas fa-table"></i> Lưới
@@ -461,36 +451,43 @@
             </button>
           </div>
 
+          <!-- Clean Broom Button (Icon only) -->
+          <button onclick="cleanupTimetable()" title="Dọn dẹp các lớp học không còn môn trong bảng điểm"
+            class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50">
+            <i class="fas fa-broom"></i>
+          </button>
+
+          <!-- Add Class Button -->
           <button onclick="openAddClassModal()" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center gap-1">
-            <i class="fas fa-plus"></i> Thêm Lớp
+            <i class="fas fa-plus"></i> <span class="hidden sm:inline">Thêm Lớp</span>
           </button>
         </div>
       </div>
 
-      <!-- Weekly Grid View -->
-      <div id="timetable-grid-view" class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark overflow-x-auto shadow-sm">
-        <div class="min-w-[800px]">
+      <!-- Weekly Grid View: Expands to fill available desktop height -->
+      <div id="timetable-grid-view" class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 lg:p-5 border border-surface-borderLight dark:border-surface-borderDark overflow-x-auto shadow-sm lg:flex-1 lg:flex lg:flex-col lg:min-h-0">
+        <div class="min-w-[860px] lg:flex-1 lg:flex lg:flex-col lg:min-h-0">
           <!-- Day Headers -->
-          <div class="grid grid-cols-8 gap-2 mb-2 text-center text-xs font-extrabold uppercase">
-            <div class="py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400">Ca / Giờ</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="1">Thứ 2</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="2">Thứ 3</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="3">Thứ 4</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="4">Thứ 5</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="5">Thứ 6</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="6">Thứ 7</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200" data-day="0">Chủ Nhật</div>
+          <div class="grid grid-cols-8 gap-2.5 mb-2.5 text-center text-xs font-extrabold uppercase flex-shrink-0">
+            <div class="py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 flex items-center justify-center">Ca / Giờ</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="1">Thứ 2</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="2">Thứ 3</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="3">Thứ 4</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="4">Thứ 5</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="5">Thứ 6</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="6">Thứ 7</div>
+            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="0">Chủ Nhật</div>
           </div>
 
-          <!-- Shifts Grid Body (4 exact user shifts) -->
-          <div id="timetable-matrix-body" class="space-y-2">
+          <!-- Shifts Grid Body: 4 rows dynamically expanding to fill available desktop height -->
+          <div id="timetable-matrix-body" class="grid grid-rows-4 gap-2.5 lg:flex-1 lg:min-h-0">
             <!-- Rendered dynamically -->
           </div>
         </div>
       </div>
 
       <!-- Day Cards / List View -->
-      <div id="timetable-list-view" class="hidden space-y-3">
+      <div id="timetable-list-view" class="hidden space-y-3.5 lg:flex-1 lg:overflow-y-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5" id="timetable-day-cards">
           <!-- Rendered dynamically -->
         </div>
@@ -501,96 +498,116 @@
     <!-- ======================================================= -->
     <!-- TAB 4: LỊCH & NHIỆM VỤ                                  -->
     <!-- ======================================================= -->
-    <div id="view-tasks" class="tab-view hidden space-y-3 mobile-pb">
+    <div id="view-tasks" class="tab-view hidden space-y-3.5 mobile-pb lg:flex-1 lg:flex lg:flex-col lg:min-h-0">
 
       <!-- Calendar & Tasks Header -->
-      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-        <div class="flex items-center gap-2">
-          <i class="fas fa-calendar-check text-blue-600"></i>
-          <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Lịch & Nhiệm vụ</h2>
+      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-black">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div>
+            <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Lịch & Nhiệm vụ</h2>
+            <span class="text-[11px] font-semibold text-slate-400 hidden sm:inline">Theo dõi tiến độ học tập và công việc hàng ngày</span>
+          </div>
         </div>
 
-        <button onclick="goToTodayCalendar()" class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth">
-          Hôm nay
+        <button onclick="goToTodayCalendar()" class="px-3.5 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 font-bold text-xs smooth border border-blue-200/50 dark:border-blue-700/30 flex items-center gap-1.5">
+          <i class="fas fa-calendar-day"></i> Hôm nay
         </button>
       </div>
 
       <!-- Main Layout: Month Heatmap (Left) + Day Details (Right) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:flex-1 lg:min-h-0 items-stretch">
         
-        <!-- Left: Interactive Month Calendar -->
-        <div class="lg:col-span-7 bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+        <!-- Left: Interactive Month Calendar (7 cols on lg, 8 cols on xl) -->
+        <div class="lg:col-span-7 xl:col-span-8 bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm flex flex-col justify-between h-full">
           
-          <!-- Month Selector -->
-          <div class="flex items-center justify-between mb-3">
-            <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center smooth">
-              <i class="fas fa-chevron-left text-xs"></i>
-            </button>
-            <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white" id="calendarMonthYearDisplay">Tháng 8, 2026</h3>
-            <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center smooth">
-              <i class="fas fa-chevron-right text-xs"></i>
-            </button>
+          <!-- Month Selector Header -->
+          <div class="flex items-center justify-between mb-3.5 flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center smooth">
+                <i class="fas fa-chevron-left text-xs"></i>
+              </button>
+              <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center smooth">
+                <i class="fas fa-chevron-right text-xs"></i>
+              </button>
+              <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white pl-1" id="calendarMonthYearDisplay">Tháng 8, 2026</h3>
+            </div>
+
+            <!-- Heatmap Legend -->
+            <div class="hidden sm:flex items-center gap-3 text-xs text-slate-400">
+              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> ≥6h</div>
+              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> &gt;0h</div>
+              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border-2 border-blue-500"></span> Hôm nay</div>
+            </div>
           </div>
 
           <!-- Weekday Headers -->
-          <div class="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-extrabold text-slate-400 uppercase">
-            <div>CN</div><div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div>
+          <div class="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-black text-slate-400 uppercase flex-shrink-0">
+            <div class="py-1">CN</div><div class="py-1">T2</div><div class="py-1">T3</div><div class="py-1">T4</div><div class="py-1">T5</div><div class="py-1">T6</div><div class="py-1">T7</div>
           </div>
 
           <!-- Month Grid Cells -->
-          <div class="grid grid-cols-7 gap-2" id="calendarGridCells">
+          <div class="grid grid-cols-7 gap-2 flex-1 min-h-[420px] lg:min-h-[480px]" id="calendarGridCells">
             <!-- Rendered dynamically -->
           </div>
 
-          <!-- Compact Legend -->
-          <div class="flex items-center justify-center gap-4 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-emerald-600"></span> ≥6h</div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-blue-600"></span> &gt;0h</div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded border-2 border-blue-500"></span> Hôm nay</div>
+          <!-- Mobile Legend -->
+          <div class="flex sm:hidden items-center justify-center gap-4 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 flex-shrink-0">
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> ≥6h</div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> &gt;0h</div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border-2 border-blue-500"></span> Hôm nay</div>
           </div>
         </div>
 
         <!-- Right: Selected Day Task List & Direct Study Time Editor -->
-        <div class="lg:col-span-5 bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark space-y-3 shadow-sm">
+        <div class="lg:col-span-5 xl:col-span-4 bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between h-full shadow-sm">
           
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800 flex-shrink-0">
             <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase block">Chi tiết ngày</span>
-              <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white" id="selectedDateTitle">16/08/2026</h3>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Chi tiết ngày</span>
+              <h3 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white" id="selectedDateTitle">16/08/2026</h3>
             </div>
             <div class="text-right">
-              <span class="text-sm font-black text-amber-500" id="selectedDateStudyMinutes">0 phút</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Thời gian học</span>
+              <span class="text-base font-black text-amber-500" id="selectedDateStudyMinutes">0 phút</span>
             </div>
           </div>
 
           <!-- Quick Inline Study Time Editor -->
-          <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2">
-            <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Thời gian học ngày:</span>
+          <div class="my-3 p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2 flex-shrink-0">
+            <span class="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+              <i class="fas fa-stopwatch text-blue-500"></i> Phút học:
+            </span>
             <div class="flex items-center gap-1.5">
               <input type="number" id="inlineStudyMinutesInput" min="0" max="1440" step="5" value="0"
-                class="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-center font-bold text-xs text-slate-900 dark:text-white focus:outline-none"
+                class="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs font-black text-center text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                 onchange="saveInlineStudyTime(this.value)">
-              <span class="text-xs font-bold text-slate-400">phút</span>
+              <button onclick="saveInlineStudyTime(document.getElementById('inlineStudyMinutesInput').value)"
+                class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs smooth">
+                Lưu
+              </button>
             </div>
           </div>
 
           <!-- Add Task Input -->
-          <div class="flex gap-2">
-            <input type="text" id="newTaskInput" placeholder="Nhiệm vụ cần làm..." 
+          <div class="flex gap-2 mb-3 flex-shrink-0">
+            <input type="text" id="newTaskInput" placeholder="Nhiệm vụ cần làm (Enter)..." 
               class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
               onkeypress="if(event.key==='Enter') saveSelectedDateTask()">
-            <button onclick="saveSelectedDateTask()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm">
+            <button onclick="saveSelectedDateTask()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center gap-1">
               <i class="fas fa-plus"></i>
             </button>
           </div>
 
-          <!-- Task List -->
-          <div id="selectedDateTaskList" class="space-y-2 max-h-64 sm:max-h-72 overflow-y-auto pr-1">
+          <!-- Task List with flex-1 scrolling -->
+          <div id="selectedDateTaskList" class="flex-1 space-y-2 max-h-64 sm:max-h-72 lg:max-h-none overflow-y-auto pr-1 min-h-[160px]">
             <!-- Rendered dynamically -->
           </div>
 
           <!-- Task Bottom Actions -->
-          <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 flex-shrink-0">
             <button onclick="clearCompletedTasks()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 font-bold text-xs smooth flex items-center gap-1">
               <i class="fas fa-trash-alt"></i> Xóa việc đã xong
             </button>
@@ -885,136 +902,19 @@
     </div>
   </div>
 
-  <!-- MODAL: REAL-TIME CLOUD SYNC -->
-  <div id="cloud-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-5 w-full max-w-md border border-surface-borderLight dark:border-surface-borderDark shadow-2xl smooth">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-          <i class="fas fa-sync-alt text-blue-600"></i> Đồng bộ Real-Time
-        </h3>
-        <button onclick="closeModal('cloud-modal')" class="w-7 h-7 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-
-      <div class="flex gap-2 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl mb-3 text-xs font-bold">
-        <button onclick="setSyncTab('firebase')" id="sync-tab-btn-firebase" class="flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-blue-600 shadow-sm">
-          🔥 Firebase Realtime
-        </button>
-        <button onclick="setSyncTab('gist')" id="sync-tab-btn-gist" class="flex-1 py-1.5 rounded-lg text-slate-500">
-          🐙 GitHub Gist
-        </button>
-      </div>
-
-      <!-- Firebase Section -->
-      <div id="sync-section-firebase" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Mã Phòng Sync (Room ID)</label>
-          <div class="flex gap-2">
-            <input type="text" id="firebaseRoomId" placeholder="typlex_study_2026"
-              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
-            <button onclick="generateRandomRoomId()" class="px-2.5 py-2 bg-slate-100 dark:bg-slate-800 font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth">
-              🎲 Tạo
-            </button>
-          </div>
-          <span class="text-[10px] text-slate-400">Nhập cùng mã này trên PC và Điện thoại để tự kết nối.</span>
-        </div>
-
-        <!-- QR Code Pairing Box -->
-        <div class="p-3 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-200/60 dark:border-slate-800 space-y-2">
-          <div class="flex items-center justify-between">
-            <div>
-              <span class="font-bold text-slate-800 dark:text-slate-200 block">📱 Quét QR mở trên Điện thoại</span>
-              <span class="text-[10px] text-slate-400">Camera điện thoại quét để đồng bộ tức thì</span>
-            </div>
-            <button onclick="toggleSyncQrCode()" class="px-2.5 py-1.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-bold rounded-lg text-xs hover:bg-blue-100 smooth flex items-center gap-1">
-              <i class="fas fa-qrcode"></i> Mã QR
-            </button>
-          </div>
-          <div id="sync-qrcode-wrapper" class="hidden pt-2 flex flex-col items-center justify-center">
-            <div id="sync-qrcode-container" class="p-2.5 bg-white rounded-xl shadow-md inline-block"></div>
-            <div class="mt-2 flex items-center gap-1.5 w-full">
-              <input type="text" id="sync-share-url" readonly class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-[10px] font-mono text-slate-500 truncate select-all">
-              <button onclick="copySyncShareUrl()" class="px-2.5 py-1 bg-slate-200 dark:bg-slate-700 font-bold rounded-lg text-[10px] hover:bg-slate-300 dark:hover:bg-slate-600 smooth flex-shrink-0">
-                <i class="fas fa-copy"></i> Chép Link
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Firebase Database URL</label>
-          <input type="text" id="firebaseDbUrl" placeholder="https://your-project-default-rtdb.firebaseio.com"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-semibold text-slate-900 dark:text-white focus:outline-none">
-        </div>
-
-        <!-- 2-Minute Quick Guide Accordion -->
-        <details class="p-2.5 bg-blue-50/60 dark:bg-blue-950/30 rounded-xl border border-blue-200/50 dark:border-blue-800/40 text-[11px] text-slate-600 dark:text-slate-300">
-          <summary class="font-bold text-blue-600 dark:text-blue-400 cursor-pointer select-none">
-            💡 Cách lấy Database URL trong 2 phút (Hoàn toàn miễn phí)
-          </summary>
-          <div class="mt-2 space-y-1.5 pl-2 border-l-2 border-blue-400">
-            <p>1. Vào <a href="https://console.firebase.google.com" target="_blank" class="text-blue-500 underline font-bold">console.firebase.google.com</a> và tạo project.</p>
-            <p>2. Chọn menu <b>Build</b> ➔ <b>Realtime Database</b> ➔ Bấm <b>Create Database</b>.</p>
-            <p>3. Tại tab <b>Rules</b>, sửa thành <code>{".read": true, ".write": true}</code> rồi bấm <b>Publish</b>.</p>
-            <p>4. Copy link Database (dạng <code>https://...firebaseio.com</code>) dán vào ô bên trên.</p>
-            <p>5. Bấm <b>Kết nối Realtime</b> ➔ Quét mã QR trên điện thoại là tự động đồng bộ 2 chiều tức thì!</p>
-          </div>
-        </details>
-
-        <div class="flex gap-2 pt-1">
-          <button onclick="connectFirebaseRealtime(true)" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl smooth shadow-sm flex items-center justify-center gap-1">
-            <i class="fas fa-link"></i> Kết nối
-          </button>
-          <button onclick="forcePushToFirebase()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl smooth shadow-sm flex items-center justify-center gap-1" title="Đẩy dữ liệu máy tính này lên Cloud làm chuẩn">
-            <i class="fas fa-cloud-upload-alt"></i> Đẩy lên Cloud
-          </button>
-          <button onclick="forcePullFromFirebase()" class="px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold py-2 rounded-xl smooth flex items-center justify-center gap-1" title="Tải dữ liệu từ Cloud về máy">
-            <i class="fas fa-cloud-download-alt"></i> Tải về
-          </button>
-        </div>
-      </div>
-
-      <!-- GitHub Gist Section -->
-      <div id="sync-section-gist" class="hidden space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">GitHub Access Token</label>
-          <input type="password" id="gistToken" placeholder="ghp_xxxxxxxxxxxx"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-semibold text-slate-900 dark:text-white focus:outline-none">
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Gist ID</label>
-          <input type="text" id="gistId" placeholder="1a2b3c4d5e..."
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-semibold text-slate-900 dark:text-white focus:outline-none">
-        </div>
-
-        <div class="flex gap-2 pt-1">
-          <button onclick="pullGistData()" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-2 rounded-xl hover:bg-slate-200 smooth">
-            <i class="fas fa-download"></i> Tải về
-          </button>
-          <button onclick="pushGistData()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl smooth">
-            <i class="fas fa-upload"></i> Đẩy lên
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- MODAL: APP SETTINGS -->
+  <!-- MODAL: APP SETTINGS & BACKUP -->
   <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
     <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-5 w-full max-w-md border border-surface-borderLight dark:border-surface-borderDark shadow-2xl smooth">
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-          <i class="fas fa-sliders-h text-blue-600"></i> Cài đặt
+          <i class="fas fa-sliders-h text-blue-600"></i> Cài đặt & Sao lưu
         </h3>
         <button onclick="closeModal('settings-modal')" class="w-7 h-7 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
           <i class="fas fa-times"></i>
         </button>
       </div>
 
-      <div class="space-y-3 text-xs">
+      <div class="space-y-3.5 text-xs">
         <div>
           <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Tổng số tín chỉ toàn khóa</label>
           <input type="number" id="setting-total-credits" min="1" value="120"
@@ -1027,10 +927,24 @@
             class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
         </div>
 
-        <div class="pt-2">
+        <div>
           <button onclick="saveAppSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl smooth shadow-sm text-xs">
-            Lưu thay đổi
+            Lưu cài đặt
           </button>
+        </div>
+
+        <!-- Manual Backup / Restore Section -->
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+          <span class="block font-bold text-slate-700 dark:text-slate-300">📁 Sao lưu & Phục hồi dữ liệu</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="exportDataJSON()" class="py-2 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl smooth flex items-center justify-center gap-1.5">
+              <i class="fas fa-file-export text-blue-500"></i> Xuất file JSON
+            </button>
+            <label class="py-2 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl smooth flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fas fa-file-import text-emerald-500"></i> Nhập file JSON
+              <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="importDataJSON(event)">
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -1104,13 +1018,6 @@
         customPlaylists: [...DEFAULT_PLAYLISTS],
         isShuffle: true,
         masterVideoIds: []
-      },
-      sync: {
-        syncProvider: "firebase",
-        firebaseRoomId: "typlex_default_room",
-        firebaseDbUrl: "https://typlex-workspace-default-rtdb.firebaseio.com",
-        gistToken: "",
-        gistId: ""
       }
     };
 
@@ -1131,9 +1038,6 @@
     let timerTargetEndTime = 0;
 
     let gpaChart = null;
-    let isRemoteSyncUpdate = false;
-    let syncDebounceTimer = null;
-    let firebaseRef = null;
 
     // 8-Color Palette System
     const COLOR_CLASSES = {
@@ -1211,7 +1115,6 @@
       renderTodayOverview();
 
       switchTab(state.activeTab || 'overview');
-      initSyncEngine();
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
@@ -1255,7 +1158,6 @@
       if (!state.timetable.classes) state.timetable.classes = [];
       if (!state.focus) state.focus = { timerMinutes: 25, breakMinutes: 5, dailyGoalMinutes: 360 };
       if (!state.player) state.player = { selectedPlaylistId: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg", apiKey: "", customPlaylists: [...DEFAULT_PLAYLISTS], isShuffle: true, masterVideoIds: [] };
-      if (!state.sync) state.sync = { syncProvider: "firebase", firebaseRoomId: "typlex_default_room", firebaseDbUrl: "https://typlex-workspace-default-rtdb.firebaseio.com", gistToken: "", gistId: "" };
 
       // 3. Preserve legacy if not empty
       if (legacySemesters && (!state.semesters || state.semesters.length === 0)) {
@@ -1316,9 +1218,6 @@
       if (document.getElementById('focusCustomMinutes')) document.getElementById('focusCustomMinutes').value = state.focus.timerMinutes || 25;
       if (document.getElementById('focusBreakSelect')) document.getElementById('focusBreakSelect').value = state.focus.breakMinutes !== undefined ? state.focus.breakMinutes : 5;
       if (document.getElementById('youtubeApiKeyInput')) document.getElementById('youtubeApiKeyInput').value = state.player.apiKey || '';
-      if (document.getElementById('firebaseRoomId')) document.getElementById('firebaseRoomId').value = state.sync.firebaseRoomId || 'typlex_default_room';
-      if (document.getElementById('gistToken')) document.getElementById('gistToken').value = state.sync.gistToken || '';
-      if (document.getElementById('gistId')) document.getElementById('gistId').value = state.sync.gistId || '';
     }
 
     function cleanupEmptySemesters() {
@@ -1334,7 +1233,7 @@
       renderSemesters();
     }
 
-    function saveState(broadcastSync = true) {
+    function saveState() {
       try {
         localStorage.setItem('typlex_workspace_state_v5', JSON.stringify(state));
         localStorage.setItem('gpaTrackerState_v4', JSON.stringify({
@@ -1344,10 +1243,6 @@
         }));
       } catch (e) {
         console.error('Failed to save state', e);
-      }
-
-      if (broadcastSync && !isRemoteSyncUpdate) {
-        debounceBroadcastCloud();
       }
     }
 
@@ -2043,10 +1938,10 @@
       if (matrixBody) {
         matrixBody.innerHTML = shifts.map(sh => {
           return `
-            <div class="grid grid-cols-8 gap-2 items-stretch">
-              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 text-center flex flex-col justify-center min-h-[68px]">
-                <span class="font-extrabold text-xs text-blue-600 dark:text-blue-400">${sh.label}</span>
-                <span class="text-[10px] text-slate-400 font-mono mt-0.5">${sh.time}</span>
+            <div class="grid grid-cols-8 gap-2.5 items-stretch h-full min-h-[105px] lg:min-h-[120px]">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 text-center flex flex-col justify-center items-center h-full shadow-sm">
+                <span class="font-black text-xs sm:text-sm text-blue-600 dark:text-blue-400 uppercase tracking-wide">${sh.label}</span>
+                <span class="text-[10px] text-slate-400 font-mono mt-1 px-1.5 py-0.5 rounded bg-slate-200/50 dark:bg-slate-800/80">${sh.time}</span>
               </div>
 
               ${daysOfWeek.map(d => {
@@ -2054,11 +1949,12 @@
                 const isTodayCol = d === todayDay;
 
                 return `
-                  <div class="p-1.5 rounded-xl border ${isTodayCol ? 'bg-blue-50/20 dark:bg-blue-900/10 border-blue-400/30' : 'bg-slate-50/40 dark:bg-slate-900/20 border-slate-200/40 dark:border-slate-800/40'} flex flex-col gap-1.5 justify-center min-h-[68px]">
+                  <div class="p-2 rounded-xl border ${isTodayCol ? 'bg-blue-50/25 dark:bg-blue-950/20 border-blue-400/40 ring-1 ring-blue-400/20' : 'bg-slate-50/50 dark:bg-slate-900/30 border-slate-200/50 dark:border-slate-800/50'} flex flex-col gap-2 justify-center h-full transition-colors">
                     ${matches.map(c => renderClassCard(c)).join('')}
                     ${matches.length === 0 ? `
-                      <button onclick="openAddClassModalFor(${d}, '${sh.label} (${sh.time})')" class="w-full h-full min-h-[40px] rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 hover:border-blue-400 hover:text-blue-500 flex items-center justify-center text-xs smooth">
-                        <i class="fas fa-plus opacity-30 text-[10px]"></i>
+                      <button onclick="openAddClassModalFor(${d}, '${sh.label} (${sh.time})')" class="w-full h-full min-h-[60px] rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50/10 flex flex-col items-center justify-center gap-1 text-xs smooth group" title="Thêm môn vào ${getDayNameVN(d)} - ${sh.label}">
+                        <i class="fas fa-plus opacity-40 group-hover:opacity-100 group-hover:scale-110 smooth text-xs"></i>
+                        <span class="text-[10px] opacity-0 group-hover:opacity-80 smooth font-bold">Thêm</span>
                       </button>
                     ` : ''}
                   </div>
@@ -2098,19 +1994,20 @@
       const pal = COLOR_CLASSES[c.color] || COLOR_CLASSES.blue;
 
       return `
-        <div class="p-2 rounded-xl border ${pal.card} relative group text-xs smooth shadow-sm">
-          <div class="flex items-start justify-between gap-1">
-            <div class="font-extrabold text-xs leading-tight text-slate-900 dark:text-white truncate">${c.name}</div>
-            <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 smooth">
-              <button onclick="editClass('${c.id}')" class="text-slate-400 hover:text-blue-600"><i class="fas fa-pencil-alt text-[10px]"></i></button>
-              <button onclick="deleteClass('${c.id}')" class="text-slate-400 hover:text-red-600"><i class="fas fa-trash-alt text-[10px]"></i></button>
+        <div class="p-2.5 rounded-xl border ${pal.card} relative group text-xs smooth shadow-sm flex flex-col justify-between h-full min-h-[68px]">
+          <div class="flex items-start justify-between gap-1.5">
+            <div class="font-extrabold text-xs leading-tight text-slate-900 dark:text-white line-clamp-2">${c.name}</div>
+            <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 smooth flex-shrink-0">
+              <button onclick="editClass('${c.id}')" class="text-slate-400 hover:text-blue-600 p-0.5"><i class="fas fa-pencil-alt text-[10px]"></i></button>
+              <button onclick="deleteClass('${c.id}')" class="text-slate-400 hover:text-red-600 p-0.5"><i class="fas fa-trash-alt text-[10px]"></i></button>
             </div>
           </div>
           
-          <div class="text-[10px] font-bold text-slate-600 dark:text-slate-300 mt-1 flex items-center gap-1.5">
-            <span class="px-1.5 py-0.5 rounded ${pal.badge}">
+          <div class="text-[10px] font-bold text-slate-600 dark:text-slate-300 mt-2 flex items-center justify-between gap-1">
+            <span class="px-2 py-0.5 rounded-md ${pal.badge} font-black">
               P.${c.room || '?'}
             </span>
+            ${c.teacher ? `<span class="truncate text-[10px] text-slate-400 max-w-[90px]" title="${c.teacher}">${c.teacher}</span>` : ''}
             ${isDetailed ? `<span class="text-[10px] text-slate-400">${c.shift}</span>` : ''}
           </div>
         </div>
@@ -2245,7 +2142,7 @@
       // Padding cells before day 1
       for (let i = 0; i < firstDayIndex; i++) {
         const empty = document.createElement('div');
-        empty.className = 'rounded-xl opacity-10 bg-slate-500/10 min-h-[50px]';
+        empty.className = 'rounded-xl opacity-10 bg-slate-500/10 min-h-[70px] lg:min-h-[85px]';
         grid.appendChild(empty);
       }
 
@@ -2269,18 +2166,18 @@
         }
 
         const cell = document.createElement('div');
-        cell.className = `p-2 rounded-xl border ${bgClass} ${isSelected ? 'ring-2 ring-blue-500' : ''} ${isToday ? 'border-2 border-blue-500' : ''} cursor-pointer hover:border-blue-400 smooth flex flex-col justify-between overflow-hidden min-h-[50px] shadow-sm`;
+        cell.className = `p-2 sm:p-2.5 rounded-xl border ${bgClass} ${isSelected ? 'ring-2 ring-blue-500 shadow-md scale-[1.02]' : ''} ${isToday ? 'border-2 border-blue-500 font-bold' : ''} cursor-pointer hover:border-blue-400 hover:shadow-sm smooth flex flex-col justify-between overflow-hidden min-h-[70px] lg:min-h-[85px]`;
         cell.onclick = () => selectCalendarDate(dateStr);
 
         cell.innerHTML = `
           <div class="flex items-center justify-between text-xs font-black leading-none">
-            <span>${d}</span>
-            ${studyTime > 0 ? `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-600/30 text-blue-300">${studyTime}m</span>` : ''}
+            <span class="${isToday ? 'text-blue-600 dark:text-blue-400 text-sm' : 'text-slate-700 dark:text-slate-200'}">${d}</span>
+            ${studyTime > 0 ? `<span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-blue-600/30 text-blue-300">${studyTime}m</span>` : ''}
           </div>
           <div class="text-[10px] truncate mt-1">
             ${totalTasks > 0 ? `
-              <span class="px-1.5 py-0.5 rounded font-bold ${completedTasks === totalTasks ? 'text-emerald-400' : 'text-amber-300'}">
-                ☑ ${completedTasks}/${totalTasks}
+              <span class="px-1.5 py-0.5 rounded-md font-extrabold text-[9px] ${completedTasks === totalTasks ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-300'}">
+                ✓ ${completedTasks}/${totalTasks}
               </span>
             ` : ''}
           </div>
@@ -2757,376 +2654,9 @@
     });
 
     // ==========================================
-    // 11. CLOUD SYNC & EXPORT
+    // 11. LOCAL JSON BACKUP & RESTORE
     // ==========================================
-    function setSyncTab(provider) {
-      document.getElementById('sync-section-firebase').classList.toggle('hidden', provider !== 'firebase');
-      document.getElementById('sync-section-gist').classList.toggle('hidden', provider !== 'gist');
-      const bFb = document.getElementById('sync-tab-btn-firebase');
-      const bGist = document.getElementById('sync-tab-btn-gist');
-      if (provider === 'firebase') {
-        bFb.className = 'flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-blue-600 shadow-sm';
-        bGist.className = 'flex-1 py-1.5 rounded-lg text-slate-500';
-      } else {
-        bGist.className = 'flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-blue-600 shadow-sm';
-        bFb.className = 'flex-1 py-1.5 rounded-lg text-slate-500';
-      }
-    }
-
-    function generateRandomRoomId() {
-      const r = 'room_' + Math.random().toString(36).substring(2, 10);
-      document.getElementById('firebaseRoomId').value = r;
-      state.sync.firebaseRoomId = r;
-      saveState();
-      const wrapper = document.getElementById('sync-qrcode-wrapper');
-      if (wrapper && !wrapper.classList.contains('hidden')) {
-        toggleSyncQrCode(); // re-render QR with new Room ID
-      }
-    }
-
-    function toggleSyncQrCode() {
-      const wrapper = document.getElementById('sync-qrcode-wrapper');
-      const container = document.getElementById('sync-qrcode-container');
-      const input = document.getElementById('sync-share-url');
-      if (!wrapper || !container) return;
-
-      const roomId = document.getElementById('firebaseRoomId')?.value.trim() || state.sync.firebaseRoomId || 'typlex_default_room';
-      const dbUrl = document.getElementById('firebaseDbUrl')?.value.trim() || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com';
-      
-      let baseUrl = window.location.origin + window.location.pathname;
-      if (window.location.protocol === 'file:') {
-        baseUrl = `http://192.168.1.4:8080/index.html`;
-      }
-      const fullUrl = `${baseUrl}?room=${encodeURIComponent(roomId)}&db=${encodeURIComponent(dbUrl)}`;
-      if (input) input.value = fullUrl;
-
-      container.innerHTML = '';
-      if (typeof QRCode !== 'undefined') {
-        new QRCode(container, {
-          text: fullUrl,
-          width: 140,
-          height: 140,
-          colorDark: "#0F172A",
-          colorLight: "#FFFFFF",
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      } else {
-        container.innerHTML = `<div class="text-xs p-2 text-slate-500">Mở link: <br><b>${fullUrl}</b></div>`;
-      }
-      wrapper.classList.remove('hidden');
-    }
-
-    function copySyncShareUrl() {
-      const input = document.getElementById('sync-share-url');
-      if (!input) return;
-      navigator.clipboard.writeText(input.value).then(() => {
-        alert('Đã sao chép link đồng bộ! Dán link này vào trình duyệt điện thoại.');
-      }).catch(() => {
-        input.select();
-        document.execCommand('copy');
-        alert('Đã sao chép link đồng bộ!');
-      });
-    }
-
-    function initSyncEngine() {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        let hasParams = false;
-        if (urlParams.has('room')) {
-          const r = urlParams.get('room');
-          if (r) {
-            state.sync.firebaseRoomId = r;
-            const roomInp = document.getElementById('firebaseRoomId');
-            if (roomInp) roomInp.value = r;
-            hasParams = true;
-          }
-        }
-        if (urlParams.has('db')) {
-          const db = decodeURIComponent(urlParams.get('db'));
-          if (db) {
-            state.sync.firebaseDbUrl = db;
-            const dbInp = document.getElementById('firebaseDbUrl');
-            if (dbInp) dbInp.value = db;
-            hasParams = true;
-          }
-        }
-        if (hasParams) {
-          state.sync.syncProvider = 'firebase';
-          saveState(false);
-        }
-      } catch (e) {}
-
-      if (state.sync.syncProvider === 'firebase' && state.sync.firebaseRoomId) {
-        connectFirebaseRealtime(false);
-      }
-    }
-
-    function broadcastToFirebase(notifySuccess = false) {
-      if (!firebaseRef) return;
-      try {
-        const cleanData = JSON.parse(JSON.stringify(state));
-        cleanData.lastModified = Date.now();
-        state.lastModified = cleanData.lastModified;
-
-        firebaseRef.set(cleanData)
-          .then(() => {
-            updateSyncBadge('🟢 Realtime (Đã sync)');
-            if (notifySuccess) alert('Đã đẩy toàn bộ dữ liệu máy tính lên Cloud Firebase thành công!');
-          })
-          .catch(err => {
-            console.error('Firebase save error:', err);
-            if (err && err.message && err.message.includes('PERMISSION_DENIED')) {
-              updateSyncBadge('🔴 Lỗi Quyền Database');
-              alert('Lỗi quyền Firebase Database! Vui lòng vào Firebase Console > Realtime Database > Rules và đổi thành { ".read": true, ".write": true }.');
-            } else {
-              updateSyncBadge('🔴 Lỗi kết nối');
-            }
-          });
-      } catch (e) {
-        console.error('Serialization error:', e);
-      }
-    }
-
-    function forcePushToFirebase() {
-      const roomId = document.getElementById('firebaseRoomId')?.value.trim() || state.sync.firebaseRoomId || 'typlex_default_room';
-      const dbUrl = document.getElementById('firebaseDbUrl')?.value.trim() || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com';
-      state.sync.firebaseRoomId = roomId;
-      state.sync.firebaseDbUrl = dbUrl;
-      state.sync.syncProvider = 'firebase';
-      saveState(false);
-
-      try {
-        if (!firebase.apps.length) {
-          firebase.initializeApp({ databaseURL: dbUrl });
-        }
-        const db = firebase.database();
-        firebaseRef = db.ref('workspaces/' + roomId);
-        broadcastToFirebase(true);
-        closeModal('cloud-modal');
-      } catch (e) {
-        alert('Lỗi: ' + e.message);
-      }
-    }
-
-    function forcePullFromFirebase() {
-      const roomId = document.getElementById('firebaseRoomId')?.value.trim() || state.sync.firebaseRoomId || 'typlex_default_room';
-      const dbUrl = document.getElementById('firebaseDbUrl')?.value.trim() || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com';
-      state.sync.firebaseRoomId = roomId;
-      state.sync.firebaseDbUrl = dbUrl;
-      state.sync.syncProvider = 'firebase';
-      saveState(false);
-
-      try {
-        if (!firebase.apps.length) {
-          firebase.initializeApp({ databaseURL: dbUrl });
-        }
-        const db = firebase.database();
-        firebaseRef = db.ref('workspaces/' + roomId);
-        firebaseRef.once('value').then(snapshot => {
-          const remoteData = snapshot.val();
-          if (remoteData && remoteData.version) {
-            applyRemoteData(remoteData);
-            alert('Đã tải dữ liệu mới nhất từ Cloud về máy thành công!');
-            closeModal('cloud-modal');
-          } else {
-            alert('Phòng trên Cloud hiện chưa có dữ liệu!');
-          }
-        }).catch(e => {
-          alert('Lỗi tải dữ liệu: ' + e.message);
-        });
-      } catch (e) {
-        alert('Lỗi: ' + e.message);
-      }
-    }
-
-    function connectFirebaseRealtime(userAction = false) {
-      const roomId = (document.getElementById('firebaseRoomId')?.value || state.sync.firebaseRoomId || 'typlex_default_room').trim();
-      const dbUrl = (document.getElementById('firebaseDbUrl')?.value || state.sync.firebaseDbUrl || 'https://typlex-workspace-default-rtdb.firebaseio.com').trim();
-      state.sync.firebaseRoomId = roomId;
-      state.sync.firebaseDbUrl = dbUrl;
-      state.sync.syncProvider = 'firebase';
-      saveState(false);
-
-      try {
-        if (!firebase.apps.length) {
-          firebase.initializeApp({ databaseURL: dbUrl });
-        }
-        const db = firebase.database();
-        firebaseRef = db.ref('workspaces/' + roomId);
-
-        firebaseRef.once('value').then(snapshot => {
-          const remoteData = snapshot.val();
-          if (!remoteData || !remoteData.version) {
-            // Room is empty on cloud! Push local state to cloud immediately
-            broadcastToFirebase(false);
-          } else {
-            const localCredits = state.accumulatedCredits || 0;
-            const remoteCredits = remoteData.accumulatedCredits || 0;
-            const localSemestersCount = (state.semesters || []).length;
-            const remoteSemestersCount = (remoteData.semesters || []).length;
-
-            if (userAction && (localCredits > remoteCredits || localSemestersCount > remoteSemestersCount)) {
-              const keepLocal = confirm(`Dữ liệu trên máy (${localCredits} tín chỉ, ${localSemestersCount} học kỳ) nhiều hơn trên Cloud (${remoteCredits} tín chỉ, ${remoteSemestersCount} học kỳ).\n\nBạn có muốn ĐẨY dữ liệu máy lên Cloud để các thiết bị khác (điện thoại) nhận dữ liệu này không?\n\n- Bấm [OK] để Đẩy dữ liệu máy lên Cloud\n- Bấm [Cancel] để Tải dữ liệu từ Cloud về máy`);
-              if (keepLocal) {
-                broadcastToFirebase(true);
-                return;
-              }
-            }
-
-            const remoteTime = remoteData.lastModified || 0;
-            const localTime = state.lastModified || 0;
-
-            if (remoteTime >= localTime || localCredits <= remoteCredits) {
-              applyRemoteData(remoteData);
-            } else {
-              broadcastToFirebase(false);
-            }
-          }
-        }).catch(e => {
-          console.warn('Initial check warning:', e);
-          broadcastToFirebase(false);
-        });
-
-        firebaseRef.off();
-        firebaseRef.on('value', (snapshot) => {
-          const remoteData = snapshot.val();
-          if (remoteData && remoteData.version) {
-            const remoteTime = remoteData.lastModified || 0;
-            const localTime = state.lastModified || 0;
-            if (remoteTime > localTime || !state.semesters || state.semesters.length === 0) {
-              applyRemoteData(remoteData);
-            }
-          }
-        });
-
-        updateSyncBadge('🟢 Realtime');
-        if (userAction) {
-          closeModal('cloud-modal');
-          alert(`Đã kết nối thành công tới phòng [${roomId}]!`);
-        }
-      } catch (err) {
-        console.error('Firebase error:', err);
-        updateSyncBadge('🔴 Lỗi kết nối');
-        if (userAction) alert('Lỗi kết nối Firebase: ' + err.message);
-      }
-    }
-
-    function applyRemoteData(remoteData) {
-      isRemoteSyncUpdate = true;
-      state = Object.assign(state, remoteData);
-      if (!state.calendar) state.calendar = {};
-      if (!state.calendar.days) state.calendar.days = {};
-      if (!state.calendar.selectedDateStr) state.calendar.selectedDateStr = getLocalYMD(new Date());
-      if (!state.timetable) state.timetable = { viewMode: "grid", classes: [] };
-      if (!state.timetable.classes) state.timetable.classes = [];
-      if (!state.focus) state.focus = { timerMinutes: 25, breakMinutes: 5, dailyGoalMinutes: 360 };
-      if (!state.player) state.player = { selectedPlaylistId: "PLWceaykcemU4RtMMeGdBqlAfgeQt8y6Bg", apiKey: "", customPlaylists: [...DEFAULT_PLAYLISTS], isShuffle: true, masterVideoIds: [] };
-      
-      saveState(false);
-      applyTheme();
-      renderSemesters();
-      recalculateAll();
-      renderTimetable();
-      renderCalendar();
-      renderTodayOverview();
-      isRemoteSyncUpdate = false;
-      updateSyncBadge('🟢 Realtime');
-    }
-
-    function debounceBroadcastCloud() {
-      if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
-      syncDebounceTimer = setTimeout(() => {
-        broadcastToFirebase(false);
-        if (state.sync.gistToken && state.sync.gistId) pushGistData(true);
-      }, 400);
-    }
-
-    async function pushGistData(silent = false) {
-      const token = document.getElementById('gistToken').value.trim() || state.sync.gistToken;
-      let gistId = document.getElementById('gistId').value.trim() || state.sync.gistId;
-      if (!token) {
-        if (!silent) alert('Thiếu GitHub Token!');
-        return;
-      }
-
-      state.sync.gistToken = token;
-      state.sync.gistId = gistId;
-      saveState(false);
-
-      const payload = { "typlex_workspace_data.json": { content: JSON.stringify(state) } };
-
-      try {
-        let res;
-        if (gistId) {
-          res = await fetch(`https://api.github.com/gists/${gistId}`, {
-            method: 'PATCH',
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-            body: JSON.stringify({ files: payload })
-          });
-        } else {
-          res = await fetch('https://api.github.com/gists', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-            body: JSON.stringify({ description: "Typlex Workspace Backup", public: false, files: payload })
-          });
-        }
-
-        if (!res.ok) throw new Error('API Error');
-        const data = await res.json();
-        if (!gistId && data.id) {
-          state.sync.gistId = data.id;
-          document.getElementById('gistId').value = data.id;
-          saveState(false);
-        }
-        if (!silent) alert('Đẩy dữ liệu lên Gist thành công!');
-        updateSyncBadge('🟢 Gist');
-      } catch (err) {
-        if (!silent) alert('Lỗi Gist: ' + err.message);
-      }
-    }
-
-    async function pullGistData() {
-      const token = document.getElementById('gistToken').value.trim() || state.sync.gistToken;
-      const gistId = document.getElementById('gistId').value.trim() || state.sync.gistId;
-      if (!token || !gistId) return alert('Thiếu Token hoặc Gist ID!');
-
-      try {
-        const res = await fetch(`https://api.github.com/gists/${gistId}?t=${Date.now()}`, {
-          headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-        });
-        const data = await res.json();
-        const file = data.files['typlex_workspace_data.json'] || data.files['gpa_tracker_data.json'];
-        if (!file) throw new Error('Không tìm thấy file data');
-
-        const remote = JSON.parse(file.content);
-        if (remote) {
-          state = Object.assign(state, remote);
-          if (remote.gpa && remote.gpa.semesters && (!state.semesters || state.semesters.length === 0)) {
-            state.semesters = remote.gpa.semesters;
-          }
-          saveState(false);
-          applyTheme();
-          renderSemesters();
-          recalculateAll();
-          renderTimetable();
-          renderCalendar();
-          renderTodayOverview();
-          alert('Tải từ Gist thành công!');
-          closeModal('cloud-modal');
-        }
-      } catch (err) {
-        alert('Lỗi tải: ' + err.message);
-      }
-    }
-
-    function updateSyncBadge(text) {
-      const badge = document.getElementById('syncStatusBadge');
-      if (badge) {
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${text}`;
-      }
-    }
-
-    function exportJSON() {
+    function exportDataJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
       const a = document.createElement('a');
       a.setAttribute("href", dataStr);
@@ -3136,7 +2666,7 @@
       a.remove();
     }
 
-    function importJSONFile(event) {
+    function importDataJSON(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -3155,10 +2685,11 @@
             renderTimetable();
             renderCalendar();
             renderTodayOverview();
-            alert('Khôi phục JSON thành công!');
+            alert('Khôi phục dữ liệu từ file JSON thành công!');
+            closeModal('settings-modal');
           }
         } catch (err) {
-          alert('File JSON không hợp lệ!');
+          alert('File JSON không hợp lệ hoặc bị lỗi định dạng!');
         }
       };
       reader.readAsText(file);

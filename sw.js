@@ -1,4 +1,4 @@
-const CACHE_NAME = 'typlex-workspace-cache-v1';
+const CACHE_NAME = 'typlex-workspace-cache-v2';
 const urlsToCache = [
   './',
   './index.html',
@@ -34,12 +34,9 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   const url = event.request.url;
-  // Bypass external APIs and real-time streams
+  // Bypass external APIs and media
   if (
-    url.includes('firebaseio.com') ||
-    url.includes('firebasedatabase.app') ||
     url.includes('googleapis.com') ||
-    url.includes('api.github.com') ||
     url.includes('youtube.com') ||
     url.includes('ytimg.com')
   ) {

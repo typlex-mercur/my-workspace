@@ -53,11 +53,10 @@ Hệ thống cá nhân All-in-One kết hợp toàn diện giữa **GPA Tracker*
   - `Space`: Bắt đầu / Tạm dừng Focus Timer.
   - `←` / `→`: Chuyển bài hát trước / sau.
 
-### 7. ☁️ Đồng bộ Thời gian thực (Real-time Cloud Sync) & Mobile PWA
-- **Firebase Realtime Sync**: Đồng bộ hai chiều tức thì (< 0.2s) giữa Máy tính và Điện thoại qua WebSocket/Listeners mà không cần tải lại trang.
-- **GitHub Gist Sync**: Tương thích cấu hình Gist cá nhân (Token + Gist ID) với cơ chế tự động Push & Pull.
+### 7. 💾 Sao lưu & Phục hồi JSON Local & Mobile PWA
+- **Lưu trữ Offline 100%**: Mọi dữ liệu (Điểm số, TKB, Nhiệm vụ, Cài đặt) được lưu an toàn trong `localStorage` của trình duyệt.
+- **Xuất / Nhập JSON (Backup & Restore)**: Mở menu Cài đặt ⚙️ để tải bản sao lưu file `.json` hoặc nhập dữ liệu sang máy/thiết bị khác chỉ với 1 chạm.
 - **PWA (Progressive Web App)**: Cài đặt trực tiếp lên màn hình chính điện thoại (Add to Home Screen) trên cả iOS và Android, hỗ trợ sử dụng mượt mà khi offline.
-- **Xuất / Nhập JSON**: Tải bản sao lưu toàn bộ dữ liệu chỉ bằng 1 click.
 
 ---
 
@@ -72,9 +71,7 @@ Hệ thống cá nhân All-in-One kết hợp toàn diện giữa **GPA Tracker*
 - Mở liên kết trên trình duyệt Safari (iOS) hoặc Chrome (Android).
 - Chọn **"Thêm vào Màn hình chính" (Add to Home Screen)** để cài đặt ứng dụng độc lập như Native App.
 
-### 3. Cài đặt Đồng bộ Real-Time giữa PC và Điện thoại
-1. Nhấn nút **Sync** (icon đám mây) ở thanh điều hướng trên cùng.
-2. Chọn tab **Firebase Realtime**:
-   - Nhập một **Mã phòng (Room ID)** chung cho cả 2 thiết bị (ví dụ: `my_study_room_2026`).
-   - Nhấn **Kết nối Realtime**.
-3. Từ lúc này, mọi thay đổi (thêm điểm, thêm môn, sửa TKB, tick task) trên PC sẽ ngay lập tức xuất hiện trên Điện thoại trong tích tắc!
+### 3. Sao lưu & Đồng bộ Dữ liệu Thủ công
+1. Nhấn nút **Cài đặt ⚙️** ở thanh điều hướng trên cùng.
+2. Chọn **Xuất file JSON** để tải file sao lưu về máy.
+3. Trên thiết bị mới hoặc trình duyệt khác, mở **Cài đặt ⚙️** $\to$ Chọn **Nhập file JSON** để khôi phục toàn bộ dữ liệu.

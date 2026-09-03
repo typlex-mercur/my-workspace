@@ -110,39 +110,39 @@
   <!-- ========================================== -->
   <!-- TOP NAVIGATION BAR                         -->
   <!-- ========================================== -->
-  <nav class="h-14 flex-shrink-0 z-40 bg-white dark:bg-surface-dark border-b border-surface-borderLight dark:border-surface-borderDark px-4 lg:px-6 flex items-center justify-between">
+  <nav class="h-14 flex-shrink-0 z-40 bg-white dark:bg-surface-dark border-b border-surface-borderLight dark:border-surface-borderDark px-4 lg:px-8 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <!-- Brand Logo -->
       <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchTab('overview')">
         <img src="icon.png" class="w-8 h-8 rounded-lg shadow-sm object-cover border border-slate-200 dark:border-slate-800" alt="Typlex Logo">
         <div class="flex items-center gap-2">
           <span class="font-black text-base tracking-tight text-slate-900 dark:text-slate-100">Typlex</span>
-          <span class="text-[11px] px-1.5 py-0.5 rounded font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Workspace</span>
+          <span class="text-[10px] sm:text-[11px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">Workspace</span>
         </div>
       </div>
     </div>
 
     <!-- Desktop Navigation Tabs -->
-    <div class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
-      <button onclick="switchTab('overview')" id="tab-btn-overview" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-700">
+    <div class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
+      <button onclick="switchTab('overview')" id="tab-btn-overview" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold smooth bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-700">
         Tổng quan
       </button>
-      <button onclick="switchTab('gpa')" id="tab-btn-gpa" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
+      <button onclick="switchTab('gpa')" id="tab-btn-gpa" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
         Bảng điểm
       </button>
-      <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
+      <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
         Thời khóa biểu
       </button>
-      <button onclick="switchTab('tasks')" id="tab-btn-tasks" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
+      <button onclick="switchTab('tasks')" id="tab-btn-tasks" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
         Lịch & Nhiệm vụ
       </button>
-      <button onclick="switchTab('focus')" id="tab-btn-focus" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
+      <button onclick="switchTab('focus')" id="tab-btn-focus" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">
         Tập trung
       </button>
     </div>
 
     <!-- Action Buttons (Settings, Theme) -->
-    <div class="flex items-center gap-1.5">
+    <div class="flex items-center gap-2">
       <!-- Settings Modal Button -->
       <button onclick="openModal('settings-modal')" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200 dark:border-slate-700 shadow-sm" title="Cài đặt & Sao lưu">
         <i class="fas fa-cog"></i>
@@ -158,7 +158,7 @@
   <!-- ========================================== -->
   <!-- MAIN APP CONTAINER                         -->
   <!-- ========================================== -->
-  <main class="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 max-w-7xl w-full mx-auto">
+  <main class="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 max-w-[1720px] w-full mx-auto">
 
     <!-- ======================================================= -->
     <!-- TAB 1: OVERVIEW DASHBOARD                               -->
@@ -166,29 +166,53 @@
     <div id="view-overview" class="tab-view space-y-4 mobile-pb">
       
       <!-- Top Stats Overview Bar -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">CGPA tích lũy</span>
-          <div class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-1" id="hero-cgpa">0.00</div>
-          <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1 block">Thang điểm 4.0</span>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4">
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">CGPA tích lũy</span>
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 mt-2" id="hero-cgpa">0.00</div>
+          <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
+            <span>Thang điểm 4.0</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/40">GPA</span>
+          </div>
         </div>
 
-        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">Tín chỉ tích lũy</span>
-          <div class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-1" id="hero-credits-badge">0/120</div>
-          <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1 block">Tín chỉ hoàn thành</span>
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Tín chỉ tích lũy</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 mt-2" id="hero-credits-badge">0/120</div>
+          <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
+            <span>Tín hoàn thành</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/40">Tín chỉ</span>
+          </div>
         </div>
 
-        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">Tập trung hôm nay</span>
-          <div class="text-2xl font-extrabold text-amber-500 dark:text-amber-400 mt-1" id="hero-today-study">0m</div>
-          <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1 block">Bộ đếm thời gian</span>
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Tập trung hôm nay</span>
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-amber-500 dark:text-amber-400 mt-2" id="hero-today-study">0m</div>
+          <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
+            <span>Đồng hồ học tập</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/40">Focus</span>
+          </div>
         </div>
 
-        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">Thời gian</span>
-          <div class="text-base font-bold text-slate-900 dark:text-slate-100 mt-2 truncate" id="heroDateString">Thứ Hai</div>
-          <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1 block">Lịch hiện tại</span>
+        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+          <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Thời gian</span>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+          </div>
+          <div class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 mt-2.5 truncate" id="heroDateString">Thứ Hai</div>
+          <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
+            <span>Lịch hệ thống</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-900/40">Live</span>
+          </div>
         </div>
       </div>
 
@@ -578,6 +602,15 @@
             <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wider mt-2" id="focusModeLabel">
               Đồng hồ
             </div>
+          </div>
+
+          <!-- Preset Chips -->
+          <div class="flex items-center justify-center gap-2 pt-1">
+            <button onclick="setFocusPreset(15)" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">15p</button>
+            <button onclick="setFocusPreset(25)" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">25p</button>
+            <button onclick="setFocusPreset(45)" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">45p</button>
+            <button onclick="setFocusPreset(60)" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">60p</button>
+            <button onclick="setFocusPreset(90)" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">90p</button>
           </div>
 
           <!-- Direct Focus Minutes & Break Dropdown -->
@@ -976,39 +1009,39 @@
 
     let gpaChart = null;
 
-    // 8-Color Palette System (Neutral cards + High-contrast badges)
+    // 8-Color Palette System (Clean left-border accent + High-contrast badges)
     const COLOR_CLASSES = {
       blue: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-blue-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-blue-50 text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200/60 dark:border-blue-900/50'
       },
       emerald: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-emerald-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-900/50'
       },
       amber: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-amber-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/50'
       },
       purple: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-purple-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-purple-50 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/60 dark:border-purple-900/50'
       },
       rose: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-rose-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-rose-50 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200/60 dark:border-rose-900/50'
       },
       teal: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300 border border-teal-200 dark:border-teal-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-teal-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-teal-50 text-teal-700 dark:bg-teal-950/70 dark:text-teal-300 border border-teal-200/60 dark:border-teal-900/50'
       },
       orange: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300 border border-orange-200 dark:border-orange-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-orange-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-orange-50 text-orange-700 dark:bg-orange-950/70 dark:text-orange-300 border border-orange-200/60 dark:border-orange-900/50'
       },
       indigo: {
-        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
-        badge: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900'
+        card: 'border border-slate-200/90 dark:border-slate-800 border-l-[3.5px] border-l-indigo-500 bg-white dark:bg-[#111726] text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/70 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-900/50'
       }
     };
 
@@ -1212,11 +1245,11 @@
       if (activeView) activeView.classList.remove('hidden');
 
       document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.className = 'nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100';
+        btn.className = 'nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100';
       });
       const activeBtn = document.getElementById(`tab-btn-${tabId}`);
       if (activeBtn) {
-        activeBtn.className = 'nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-700';
+        activeBtn.className = 'nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold smooth bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm border border-slate-200 dark:border-slate-700';
       }
 
       ['overview', 'gpa', 'timetable', 'tasks', 'focus'].forEach(t => {
@@ -1275,11 +1308,12 @@
           classBox.innerHTML = dayClasses.map(c => {
             const pal = COLOR_CLASSES[c.color] || COLOR_CLASSES.blue;
             return `
-              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between gap-2 shadow-sm">
+              <div class="p-3 rounded-xl border ${pal.card} flex items-center justify-between gap-3 shadow-sm hover:shadow transition-all">
                 <div class="truncate">
-                  <div class="font-bold text-xs text-slate-900 dark:text-slate-100 truncate">${c.name}</div>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
-                    <span>${c.shift}</span>
+                  <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate">${c.name}</div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
+                    <span class="font-mono">${c.shift}</span>
+                    <span class="text-slate-300 dark:text-slate-700">•</span>
                     <span>Phòng ${c.room || '?'}</span>
                   </div>
                 </div>
@@ -1856,13 +1890,13 @@
       document.querySelectorAll('.tkb-day-header').forEach(el => {
         const d = parseInt(el.getAttribute('data-day'));
         if (d === todayDay) {
-          el.className = 'py-2 rounded-lg tkb-day-header bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold shadow-sm';
+          el.className = 'py-2.5 rounded-xl tkb-day-header bg-blue-600 text-white font-extrabold shadow-sm';
         } else {
-          el.className = 'py-2 rounded-lg tkb-day-header bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold';
+          el.className = 'py-2.5 rounded-xl tkb-day-header bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold';
         }
       });
 
-      // 4 ca học chuẩn theo yêu cầu:
+      // 4 ca học chuẩn:
       // Ca 1: 7h-9h40 | Ca 2: 9h50-12h30 | Ca 3: 13h30-16h10 | Ca 4: 16h20-19h
       const shifts = [
         { label: "Ca 1", time: "07:00 - 09:40" },
@@ -1876,10 +1910,10 @@
       if (matrixBody) {
         matrixBody.innerHTML = shifts.map(sh => {
           return `
-            <div class="grid grid-cols-8 gap-2.5 items-stretch">
-              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 text-center flex flex-col justify-center items-center min-h-[88px] sm:min-h-[96px] shadow-sm">
-                <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 uppercase tracking-wide">${sh.label}</span>
-                <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1">${sh.time}</span>
+            <div class="grid grid-cols-8 gap-2.5 sm:gap-3 items-stretch">
+              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-center flex flex-col justify-center items-center min-h-[105px] sm:min-h-[120px] lg:min-h-[135px] shadow-sm">
+                <span class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-slate-100 uppercase tracking-wider">${sh.label}</span>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1.5 font-medium">${sh.time}</span>
               </div>
 
               ${daysOfWeek.map(d => {
@@ -1887,11 +1921,11 @@
                 const isTodayCol = d === todayDay;
 
                 return `
-                  <div class="p-1.5 sm:p-2 rounded-xl border ${isTodayCol ? 'bg-slate-100/70 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800'} flex flex-col gap-1.5 justify-center min-h-[88px] sm:min-h-[96px]">
+                  <div class="p-1.5 sm:p-2 rounded-2xl border ${isTodayCol ? 'bg-blue-50/25 dark:bg-blue-950/15 border-blue-200/80 dark:border-blue-900/50 ring-1 ring-blue-500/20' : 'bg-slate-50/60 dark:bg-slate-900/50 border-slate-200/80 dark:border-slate-800/80'} flex flex-col gap-2 justify-center min-h-[105px] sm:min-h-[120px] lg:min-h-[135px]">
                     ${matches.map(c => renderClassCard(c)).join('')}
                     ${matches.length === 0 ? `
-                      <button onclick="openAddClassModalFor(${d}, '${sh.label} (${sh.time})')" class="w-full h-full min-h-[52px] rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-700 dark:hover:text-slate-300 flex items-center justify-center text-xs smooth" title="Thêm môn">
-                        <i class="fas fa-plus text-xs"></i>
+                      <button onclick="openAddClassModalFor(${d}, '${sh.label} (${sh.time})')" class="w-full h-full min-h-[68px] rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/80 dark:hover:bg-slate-800/50 flex items-center justify-center text-xs smooth group" title="Thêm môn">
+                        <i class="fas fa-plus text-xs group-hover:scale-125 transition-transform"></i>
                       </button>
                     ` : ''}
                   </div>
@@ -1909,17 +1943,17 @@
           const isToday = d === todayDay;
 
           return `
-            <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border ${isToday ? 'border-slate-400 dark:border-slate-600 ring-1 ring-slate-400/20' : 'border-surface-borderLight dark:border-surface-borderDark'} shadow-sm">
-              <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
-                <span class="font-bold text-xs text-slate-900 dark:text-slate-100">${getDayNameVN(d)}</span>
-                <button onclick="openAddClassModalFor(${d})" class="text-xs text-slate-700 dark:text-slate-300 font-bold hover:text-blue-600 dark:hover:text-blue-400">
+            <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border ${isToday ? 'border-blue-400 dark:border-blue-500 ring-2 ring-blue-500/20' : 'border-surface-borderLight dark:border-surface-borderDark'} shadow-sm">
+              <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
+                <span class="font-extrabold text-sm text-slate-900 dark:text-slate-100">${getDayNameVN(d)}</span>
+                <button onclick="openAddClassModalFor(${d})" class="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 flex items-center justify-center text-xs transition-colors">
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
 
-              <div class="space-y-2">
+              <div class="space-y-2.5">
                 ${classesThisDay.map(c => renderClassCard(c, true)).join('')}
-                ${classesThisDay.length === 0 ? '<div class="text-center py-3 text-xs text-slate-500 dark:text-slate-400">Không có lớp.</div>' : ''}
+                ${classesThisDay.length === 0 ? '<div class="text-center py-4 text-xs text-slate-400 dark:text-slate-500">Không có lớp học.</div>' : ''}
               </div>
             </div>
           `;
@@ -1931,17 +1965,17 @@
       const pal = COLOR_CLASSES[c.color] || COLOR_CLASSES.blue;
 
       return `
-        <div class="p-2 sm:p-2.5 rounded-xl border ${pal.card} relative text-xs smooth shadow-sm flex flex-col justify-between gap-1.5 h-full min-h-[76px]">
-          <div class="flex items-start justify-between gap-1">
+        <div class="p-2.5 sm:p-3 rounded-xl border ${pal.card} relative text-xs smooth shadow-sm flex flex-col justify-between gap-2 h-full min-h-[80px] hover:shadow transition-all group">
+          <div class="flex items-start justify-between gap-1.5">
             <div class="font-bold text-xs sm:text-[13px] leading-snug text-slate-900 dark:text-slate-100 break-words flex-1">${c.name}</div>
-            <div class="flex items-center gap-1 flex-shrink-0 pt-0.5">
-              <button onclick="editClass('${c.id}')" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800" title="Sửa"><i class="fas fa-pencil-alt text-[10px]"></i></button>
-              <button onclick="deleteClass('${c.id}')" class="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800" title="Xóa"><i class="fas fa-trash-alt text-[10px]"></i></button>
+            <div class="flex items-center gap-1 flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+              <button onclick="editClass('${c.id}')" class="text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Sửa"><i class="fas fa-pencil-alt text-[10px]"></i></button>
+              <button onclick="deleteClass('${c.id}')" class="text-slate-400 hover:text-red-600 dark:hover:text-red-400 p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Xóa"><i class="fas fa-trash-alt text-[10px]"></i></button>
             </div>
           </div>
           
           <div class="text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center justify-between gap-1 mt-auto pt-1">
-            <span class="px-2 py-0.5 rounded ${pal.badge} text-[11px] font-bold">
+            <span class="px-2 py-0.5 rounded-md ${pal.badge} text-[11px] font-bold">
               P.${c.room || '?'}
             </span>
             ${isDetailed ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">${c.shift}</span>` : ''}
@@ -2078,7 +2112,7 @@
       // Padding cells before day 1
       for (let i = 0; i < firstDayIndex; i++) {
         const empty = document.createElement('div');
-        empty.className = 'rounded-lg bg-slate-50 dark:bg-slate-900/40 border border-transparent min-h-[56px]';
+        empty.className = 'rounded-xl bg-slate-50/40 dark:bg-slate-900/30 border border-transparent min-h-[78px] sm:min-h-[88px] lg:min-h-[96px]';
         grid.appendChild(empty);
       }
 
@@ -2094,18 +2128,33 @@
         const isToday = dateStr === todayStr;
         const isSelected = dateStr === state.calendar.selectedDateStr;
 
+        const hasHighStudy = studyTime >= 360;
+        const hasSomeStudy = studyTime > 0 && !hasHighStudy;
+        
+        let heatmapBg = 'bg-white dark:bg-surface-cardDark';
+        if (hasHighStudy) {
+          heatmapBg = 'bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800/70';
+        } else if (hasSomeStudy) {
+          heatmapBg = 'bg-blue-50/60 dark:bg-blue-950/25 border-blue-200 dark:border-blue-900/60';
+        }
+
         const cell = document.createElement('div');
-        cell.className = `p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 ${isSelected ? 'ring-2 ring-slate-900 dark:ring-slate-100' : ''} ${isToday && !isSelected ? 'border-slate-400 dark:border-slate-500 font-bold' : ''} cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 smooth flex flex-col justify-between overflow-hidden min-h-[56px] shadow-sm`;
+        cell.className = `p-2 sm:p-2.5 rounded-xl border ${heatmapBg} ${isSelected ? 'ring-2 ring-blue-600 dark:ring-blue-400 z-10 shadow-md' : 'border-slate-200/80 dark:border-slate-800'} cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 smooth flex flex-col justify-between overflow-hidden min-h-[78px] sm:min-h-[88px] lg:min-h-[96px] shadow-sm`;
         cell.onclick = () => selectCalendarDate(dateStr);
 
         cell.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold leading-none">
-            <span class="${isToday ? 'text-slate-900 dark:text-slate-100 font-extrabold underline' : 'text-slate-700 dark:text-slate-300'}">${d}</span>
-            ${studyTime > 0 ? `<span class="text-[10px] font-mono font-semibold px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${studyTime}m</span>` : ''}
+            ${isToday ? `
+              <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[11px] font-extrabold shadow-sm">${d}</span>
+            ` : `
+              <span class="text-slate-700 dark:text-slate-300 pl-0.5">${d}</span>
+            `}
+            ${studyTime > 0 ? `<span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md ${hasHighStudy ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800'}">${studyTime}m</span>` : ''}
           </div>
-          <div class="text-[11px] truncate mt-1">
+          <div class="text-[11px] truncate mt-auto pt-1">
             ${totalTasks > 0 ? `
-              <span class="font-medium text-[10px] ${completedTasks === totalTasks ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}">
+              <span class="font-semibold text-[10px] px-1.5 py-0.5 rounded-md flex items-center gap-1 w-fit ${completedTasks === totalTasks ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/50' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50'}">
+                <span class="w-1.5 h-1.5 rounded-full ${completedTasks === totalTasks ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
                 ${completedTasks}/${totalTasks} việc
               </span>
             ` : ''}
@@ -2238,6 +2287,12 @@
       pauseTimer();
       updateTimerDisplay();
       saveState();
+    }
+
+    function setFocusPreset(mins) {
+      const input = document.getElementById('focusCustomMinutes');
+      if (input) input.value = mins;
+      onCustomMinutesChange(mins);
     }
 
     function onBreakDurationChange(val) {

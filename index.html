@@ -1088,7 +1088,10 @@
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
-          .then(() => console.log('SW registered'))
+          .then(reg => {
+            reg.update();
+            console.log('SW registered & updated');
+          })
           .catch(err => console.log('SW failed:', err));
       }
     });

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'typlex-workspace-cache-v2';
+const CACHE_NAME = 'typlex-workspace-cache-v3';
 const urlsToCache = [
   './',
   './index.html',

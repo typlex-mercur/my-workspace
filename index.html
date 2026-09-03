@@ -46,11 +46,11 @@
             },
             surface: {
               light: '#F8FAFC',
-              dark: '#090D16',
+              dark: '#0B0F19',
               cardLight: '#FFFFFF',
-              cardDark: '#101626',
+              cardDark: '#111827',
               borderLight: '#E2E8F0',
-              borderDark: '#1E293B',
+              borderDark: '#1F2937',
             }
           }
         }
@@ -82,12 +82,7 @@
     }
     input[type=number] { appearance: textfield; -moz-appearance: textfield; }
 
-    .smooth { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-
-    .glass {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
+    .smooth { transition: all 0.15s ease; }
 
     /* Accordion transitions */
     .accordion-content {
@@ -110,51 +105,51 @@
   </style>
 </head>
 
-<body class="bg-surface-light text-slate-800 dark:bg-surface-dark dark:text-slate-100 h-screen overflow-hidden flex flex-col transition-colors duration-300">
+<body class="bg-surface-light text-slate-900 dark:bg-surface-dark dark:text-slate-100 h-screen overflow-hidden flex flex-col transition-colors duration-200">
 
   <!-- ========================================== -->
   <!-- TOP NAVIGATION BAR                         -->
   <!-- ========================================== -->
-  <nav class="h-14 flex-shrink-0 z-40 bg-white/95 dark:bg-surface-dark/95 glass border-b border-surface-borderLight dark:border-surface-borderDark px-4 lg:px-6 flex items-center justify-between">
+  <nav class="h-14 flex-shrink-0 z-40 bg-white dark:bg-surface-dark border-b border-surface-borderLight dark:border-surface-borderDark px-4 lg:px-6 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <!-- Brand Logo -->
       <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchTab('overview')">
-        <img src="icon.png" class="w-8 h-8 rounded-xl shadow-sm object-cover border border-slate-200/50 dark:border-slate-800" alt="Typlex Logo">
+        <img src="icon.png" class="w-8 h-8 rounded-lg shadow-sm object-cover border border-slate-200 dark:border-slate-800" alt="Typlex Logo">
         <div class="flex items-center gap-2">
           <span class="font-black text-base tracking-tight text-slate-900 dark:text-white">Typlex</span>
-          <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold">Workspace</span>
+          <span class="text-[11px] px-1.5 py-0.5 rounded font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Workspace</span>
         </div>
       </div>
     </div>
 
     <!-- Desktop Navigation Tabs -->
-    <div class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800">
-      <button onclick="switchTab('overview')" id="tab-btn-overview" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm">
-        <i class="fas fa-th-large"></i> Tổng quan
+    <div class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
+      <button onclick="switchTab('overview')" id="tab-btn-overview" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-700">
+        Tổng quan
       </button>
-      <button onclick="switchTab('gpa')" id="tab-btn-gpa" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-        <i class="fas fa-chart-pie"></i> GPA Tracker
+      <button onclick="switchTab('gpa')" id="tab-btn-gpa" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Bảng điểm
       </button>
-      <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-        <i class="fas fa-calendar-week"></i> Thời khóa biểu
+      <button onclick="switchTab('timetable')" id="tab-btn-timetable" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Thời khóa biểu
       </button>
-      <button onclick="switchTab('tasks')" id="tab-btn-tasks" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-        <i class="fas fa-check-circle"></i> Lịch & Nhiệm vụ
+      <button onclick="switchTab('tasks')" id="tab-btn-tasks" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Lịch & Nhiệm vụ
       </button>
-      <button onclick="switchTab('focus')" id="tab-btn-focus" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-        <i class="fas fa-stopwatch"></i> Focus
+      <button onclick="switchTab('focus')" id="tab-btn-focus" class="nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Tập trung
       </button>
     </div>
 
     <!-- Action Buttons (Settings, Theme) -->
     <div class="flex items-center gap-1.5">
       <!-- Settings Modal Button -->
-      <button onclick="openModal('settings-modal')" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50" title="Cài đặt & Sao lưu">
+      <button onclick="openModal('settings-modal')" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200 dark:border-slate-700 shadow-sm" title="Cài đặt & Sao lưu">
         <i class="fas fa-cog"></i>
       </button>
 
       <!-- Theme Toggle Button -->
-      <button onclick="toggleTheme()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50" title="Chuyển Sáng/Tối">
+      <button onclick="toggleTheme()" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200 dark:border-slate-700 shadow-sm" title="Chuyển Sáng/Tối">
         <i class="fas fa-sun text-amber-500" id="themeIcon"></i>
       </button>
     </div>
@@ -172,58 +167,39 @@
       
       <!-- Top Stats Overview Bar -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-base flex-shrink-0">
-            <i class="fas fa-star"></i>
-          </div>
-          <div>
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">CGPA</span>
-            <div class="text-xl font-black text-slate-900 dark:text-white" id="hero-cgpa">0.00</div>
-          </div>
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">CGPA tích lũy</span>
+          <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1" id="hero-cgpa">0.00</div>
+          <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 block">Thang điểm 4.0</span>
         </div>
 
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-base flex-shrink-0">
-            <i class="fas fa-award"></i>
-          </div>
-          <div>
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Tín chỉ</span>
-            <div class="text-xl font-black text-emerald-600 dark:text-emerald-400" id="hero-credits-badge">0/120</div>
-          </div>
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">Tín chỉ tích lũy</span>
+          <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1" id="hero-credits-badge">0/120</div>
+          <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 block">Tín chỉ hoàn thành</span>
         </div>
 
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base flex-shrink-0">
-            <i class="fas fa-clock"></i>
-          </div>
-          <div>
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Focus Hôm nay</span>
-            <div class="text-xl font-black text-amber-500 dark:text-amber-400" id="hero-today-study">0m</div>
-          </div>
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">Tập trung hôm nay</span>
+          <div class="text-2xl font-extrabold text-amber-500 dark:text-amber-400 mt-1" id="hero-today-study">0m</div>
+          <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 block">Bộ đếm thời gian</span>
         </div>
 
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-3.5 shadow-sm">
-          <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base flex-shrink-0">
-            <i class="fas fa-calendar-day"></i>
-          </div>
-          <div>
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Hôm nay</span>
-            <div class="text-xs font-black text-slate-800 dark:text-slate-200 truncate" id="heroDateString">Thứ Hai</div>
-          </div>
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">Thời gian</span>
+          <div class="text-base font-bold text-slate-900 dark:text-white mt-2 truncate" id="heroDateString">Thứ Hai</div>
+          <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-1 block">Lịch hiện tại</span>
         </div>
       </div>
 
-      <!-- Overview Main Cards (Compact Natural Height stopping around horizontal red-line mark) -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3.5 items-start">
+      <!-- Overview Main Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
 
         <!-- Card 1: Today's Classes -->
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-          <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
-            <div class="flex items-center gap-2">
-              <i class="fas fa-calendar-day text-blue-500 text-xs"></i>
-              <h3 class="font-extrabold text-xs text-slate-900 dark:text-white">Lớp học</h3>
-            </div>
-            <button onclick="switchTab('timetable')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline">
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Lớp học hôm nay</h3>
+            <button onclick="switchTab('timetable')" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">
               Xem TKB →
             </button>
           </div>
@@ -233,21 +209,18 @@
         </div>
 
         <!-- Card 2: Today's Tasks -->
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-          <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
-            <div class="flex items-center gap-2">
-              <i class="fas fa-tasks text-emerald-500 text-xs"></i>
-              <h3 class="font-extrabold text-xs text-slate-900 dark:text-white">Nhiệm vụ</h3>
-            </div>
-            <span class="text-[11px] text-slate-400 font-bold" id="overviewTaskCount">0/0</span>
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Nhiệm vụ trong ngày</h3>
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400" id="overviewTaskCount">0/0</span>
           </div>
 
-          <div class="flex gap-2 mb-2.5">
+          <div class="flex gap-2 mb-3">
             <input type="text" id="overviewQuickTaskInput" placeholder="Thêm việc cần làm..." 
-              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600"
               onkeypress="if(event.key==='Enter') addOverviewQuickTask()">
-            <button onclick="addOverviewQuickTask()" class="px-3 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 smooth">
-              <i class="fas fa-plus"></i>
+            <button onclick="addOverviewQuickTask()" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold smooth">
+              Thêm
             </button>
           </div>
 
@@ -257,47 +230,44 @@
         </div>
 
         <!-- Card 3: Quick Focus & Miniplayer Bar -->
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between gap-3 shadow-sm">
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark flex flex-col justify-between gap-3 shadow-sm">
           <div>
-            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
-              <div class="flex items-center gap-2">
-                <i class="fas fa-stopwatch text-amber-500 text-xs"></i>
-                <h3 class="font-extrabold text-xs text-slate-900 dark:text-white">Đồng hồ</h3>
-              </div>
-              <button onclick="switchTab('focus')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline">
-                Phòng Focus →
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white">Bộ bấm giờ</h3>
+              <button onclick="switchTab('focus')" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                Toàn màn hình →
               </button>
             </div>
 
             <!-- Compact Timer Preview -->
-            <div class="bg-slate-50 dark:bg-slate-900/60 rounded-xl p-3 text-center border border-slate-200/60 dark:border-slate-800">
+            <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 text-center border border-slate-200 dark:border-slate-700">
               <div class="text-3xl sm:text-4xl font-black font-mono tracking-wider text-amber-500 dark:text-amber-400 mb-2" id="overviewTimerDisplay">25:00</div>
               <div class="flex items-center justify-center gap-2">
-                <button onclick="toggleTimer()" id="overviewTimerBtn" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs smooth flex items-center gap-1.5">
+                <button onclick="toggleTimer()" id="overviewTimerBtn" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs smooth flex items-center gap-1.5">
                   <i class="fas fa-play"></i> Bắt đầu
                 </button>
-                <button onclick="endAndLogEarly()" class="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 dark:text-red-400 font-bold text-xs smooth flex items-center gap-1">
-                  <i class="fas fa-stop"></i> Lưu & Dừng
+                <button onclick="endAndLogEarly()" class="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold text-xs smooth flex items-center gap-1">
+                  Lưu & Dừng
                 </button>
-                <button onclick="resetTimer()" class="px-2.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs smooth">
-                  <i class="fas fa-redo"></i>
+                <button onclick="resetTimer()" class="px-2.5 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-bold text-xs smooth" title="Đặt lại">
+                  <i class="fas fa-redo text-[10px]"></i>
                 </button>
               </div>
             </div>
           </div>
 
           <!-- Mini Player Compact Status -->
-          <div class="bg-blue-50/70 dark:bg-blue-900/20 rounded-xl p-2.5 border border-blue-100 dark:border-blue-800/40 flex items-center justify-between gap-2">
+          <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-2.5 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 overflow-hidden">
-              <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs flex-shrink-0">
+              <div class="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center text-xs flex-shrink-0">
                 <i class="fas fa-music"></i>
               </div>
               <div class="truncate text-xs">
                 <div class="font-bold text-slate-900 dark:text-white truncate" id="overviewMusicName">RandomVie</div>
-                <div class="text-[10px] text-slate-400" id="overviewMusicStatus">Sẵn sàng</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400" id="overviewMusicStatus">Sẵn sàng</div>
               </div>
             </div>
-            <button onclick="openMiniplayerFull()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-[11px] shadow-sm hover:bg-blue-50 dark:hover:bg-slate-700 smooth flex-shrink-0">
+            <button onclick="openMiniplayerFull()" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-600 font-bold text-xs shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600 smooth flex-shrink-0">
               Mở Player
             </button>
           </div>
@@ -312,107 +282,91 @@
     <div id="view-gpa" class="tab-view hidden space-y-4 mobile-pb">
 
       <!-- GPA Header Actions -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white dark:bg-surface-cardDark p-4 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white dark:bg-surface-cardDark p-4 rounded-xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
         <div>
-          <h2 class="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-            <i class="fas fa-graduation-cap text-blue-600"></i> Bảng điểm
-          </h2>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">Bảng điểm học tập</h2>
         </div>
 
         <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button onclick="cleanupEmptySemesters()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 font-bold text-xs smooth flex items-center justify-center flex-shrink-0" title="Dọn dẹp các học kỳ rỗng">
+          <button onclick="cleanupEmptySemesters()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth flex items-center justify-center flex-shrink-0 border border-slate-200 dark:border-slate-700" title="Dọn dẹp các học kỳ rỗng">
             <i class="fas fa-broom"></i>
           </button>
-          <button onclick="exportJSON()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth flex items-center gap-1">
-            <i class="fas fa-download"></i> Xuất
+          <button onclick="exportJSON()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold text-xs smooth flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+            Xuất file
           </button>
-          <label for="import-json-file" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth flex items-center gap-1 cursor-pointer mb-0">
-            <i class="fas fa-upload"></i> Nhập
+          <label for="import-json-file" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold text-xs smooth flex items-center gap-1 cursor-pointer mb-0 border border-slate-200 dark:border-slate-700">
+            Nhập file
           </label>
           <input type="file" id="import-json-file" accept=".json" class="hidden" onchange="importJSONFile(event)">
-          <button onclick="addSemester()" class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center justify-center gap-1">
-            <i class="fas fa-plus"></i> Thêm Học kỳ
+          <button onclick="addSemester()" class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs smooth shadow-sm flex items-center justify-center gap-1">
+            Thêm Học kỳ
           </button>
         </div>
       </div>
 
-      <!-- Main GPA Content (Mobile: Chart on Top, Semesters below; Desktop: Semesters left, Chart right) -->
+      <!-- Main GPA Content -->
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start pb-6">
         
-        <!-- Semesters Accordion Container (order-2 on Mobile, xl:order-1 on Desktop) -->
+        <!-- Semesters Accordion Container -->
         <div class="xl:col-span-8 order-2 xl:order-1 space-y-3" id="semesters-container">
           <!-- Rendered dynamically -->
         </div>
 
-        <!-- Right: GPA Analytics Chart & Goal Forecast (order-1 on Mobile, xl:order-2 on Desktop) -->
+        <!-- Right: GPA Analytics Chart & Goal Forecast -->
         <div class="xl:col-span-4 order-1 xl:order-2 space-y-4">
           
-          <!-- GPA & Accumulated Credits Summary Card (Above GPA Chart) -->
-          <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+          <!-- GPA & Accumulated Credits Summary Card -->
+          <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
             <div class="grid grid-cols-2 gap-3">
-              <div class="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/50 dark:border-blue-800/40 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-base flex-shrink-0 shadow-sm">
-                  <i class="fas fa-star"></i>
-                </div>
-                <div class="truncate">
-                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">CGPA Tích lũy</span>
-                  <div class="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400" id="gpa-summary-cgpa">0.00</div>
-                </div>
+              <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">CGPA tích lũy</span>
+                <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1" id="gpa-summary-cgpa">0.00</div>
               </div>
 
-              <div class="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/50 dark:border-emerald-800/40 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base flex-shrink-0 shadow-sm">
-                  <i class="fas fa-award"></i>
-                </div>
-                <div class="truncate">
-                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Tín chỉ Tích lũy</span>
-                  <div class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400" id="gpa-summary-credits">0/120</div>
-                </div>
+              <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">Tín chỉ tích lũy</span>
+                <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1" id="gpa-summary-credits">0/120</div>
               </div>
             </div>
           </div>
 
           <!-- GPA Chart Card -->
-          <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-            <h3 class="font-extrabold text-xs text-slate-900 dark:text-white flex items-center gap-1.5 mb-3">
-              <i class="fas fa-chart-line text-blue-500"></i> Biểu đồ GPA
-            </h3>
+          <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">Biểu đồ GPA</h3>
             <div class="relative w-full aspect-[4/3] md:aspect-auto md:h-52">
               <canvas id="gpaChartCanvas"></canvas>
             </div>
           </div>
 
-          <!-- GPA Goal Calculator Card (Clean, Symmetrical UI matching original) -->
-          <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-            <h3 class="font-extrabold text-xs text-slate-900 dark:text-white flex items-center gap-1.5 mb-3">
-              <i class="fas fa-bullseye text-indigo-500"></i> Mục tiêu CGPA
-            </h3>
+          <!-- GPA Goal Calculator Card -->
+          <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">Mục tiêu CGPA</h3>
 
             <div class="space-y-3">
               <div>
-                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Mục tiêu CGPA</label>
+                <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Mục tiêu CGPA</label>
                 <input type="number" id="input-target-cgpa" min="0" max="4" step="0.01" placeholder="3.50"
-                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600"
                   oninput="updateGoalForecast()">
               </div>
 
-              <!-- Symmetrical 2-column layout with consistent labels -->
+              <!-- Symmetrical 2-column layout -->
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Tín còn lại</label>
-                  <div class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-center text-slate-900 dark:text-white flex items-center justify-center h-[38px]" id="goal-remaining-credits">0</div>
+                  <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Tín còn lại</label>
+                  <div class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm font-bold text-center text-slate-900 dark:text-white flex items-center justify-center h-[38px]" id="goal-remaining-credits">0</div>
                 </div>
                 <div>
-                  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Tín/Môn</label>
+                  <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Tín/Môn</label>
                   <input type="number" id="input-avg-credits" min="1" step="1" value="3"
-                    class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-center text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 h-[38px]"
+                    class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm font-bold text-center text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600 h-[38px]"
                     oninput="updateGoalForecast()">
                 </div>
               </div>
 
               <!-- Forecast Result Box -->
-              <div id="goal-forecast-result" class="bg-slate-50 dark:bg-slate-900/60 rounded-xl p-3 border border-slate-200/60 dark:border-slate-800 text-xs">
-                <span class="text-slate-500 dark:text-slate-400">Nhập mục tiêu CGPA để xem dự báo.</span>
+              <div id="goal-forecast-result" class="bg-slate-50 dark:bg-slate-800/80 rounded-lg p-3 border border-slate-200 dark:border-slate-700 text-xs">
+                <span class="text-slate-600 dark:text-slate-300">Nhập mục tiêu CGPA để xem dự báo.</span>
               </div>
             </div>
           </div>
@@ -429,54 +383,48 @@
     <div id="view-timetable" class="tab-view hidden space-y-4 mobile-pb">
 
       <!-- Timetable Header Bar -->
-      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-black">
-            <i class="fas fa-calendar-week"></i>
-          </div>
-          <div>
-            <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Thời khóa biểu</h2>
-            <span class="text-[11px] font-semibold text-slate-400 hidden sm:inline">Quản lý lịch học theo tuần và từng ca</span>
-          </div>
+      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">Thời khóa biểu</h2>
         </div>
 
         <div class="flex items-center gap-2">
           <!-- Grid / List Switcher -->
-          <div class="bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg flex items-center border border-slate-200/60 dark:border-slate-700/60">
-            <button onclick="setTimetableViewMode('grid')" id="btn-tkb-grid" class="px-3 py-1 rounded text-xs font-bold smooth bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm">
-              <i class="fas fa-table"></i> Lưới
+          <div class="bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg flex items-center border border-slate-200 dark:border-slate-700">
+            <button onclick="setTimetableViewMode('grid')" id="btn-tkb-grid" class="px-3 py-1 rounded text-xs font-semibold smooth bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-600">
+              Lưới
             </button>
-            <button onclick="setTimetableViewMode('list')" id="btn-tkb-list" class="px-3 py-1 rounded text-xs font-bold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-              <i class="fas fa-list"></i> Danh sách
+            <button onclick="setTimetableViewMode('list')" id="btn-tkb-list" class="px-3 py-1 rounded text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              Danh sách
             </button>
           </div>
 
-          <!-- Clean Broom Button (Icon only) -->
+          <!-- Clean Broom Button -->
           <button onclick="cleanupTimetable()" title="Dọn dẹp các lớp học không còn môn trong bảng điểm"
-            class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 smooth flex items-center justify-center text-xs border border-slate-200/50 dark:border-slate-700/50">
+            class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200 dark:border-slate-700 shadow-sm">
             <i class="fas fa-broom"></i>
           </button>
 
           <!-- Add Class Button -->
-          <button onclick="openAddClassModal()" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center gap-1">
-            <i class="fas fa-plus"></i> <span class="hidden sm:inline">Thêm Lớp</span>
+          <button onclick="openAddClassModal()" class="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs smooth shadow-sm flex items-center gap-1">
+            <i class="fas fa-plus text-[10px]"></i> <span class="hidden sm:inline">Thêm Lớp</span>
           </button>
         </div>
       </div>
 
       <!-- Weekly Grid View -->
-      <div id="timetable-grid-view" class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark overflow-x-auto shadow-sm">
+      <div id="timetable-grid-view" class="bg-white dark:bg-surface-cardDark rounded-xl p-4 sm:p-5 border border-surface-borderLight dark:border-surface-borderDark overflow-x-auto shadow-sm">
         <div class="min-w-[860px]">
           <!-- Day Headers -->
-          <div class="grid grid-cols-8 gap-2 mb-2 text-center text-xs font-extrabold uppercase">
-            <div class="py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 flex items-center justify-center">Ca / Giờ</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="1">Thứ 2</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="2">Thứ 3</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="3">Thứ 4</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="4">Thứ 5</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="5">Thứ 6</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="6">Thứ 7</div>
-            <div class="py-2.5 rounded-xl tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="0">Chủ Nhật</div>
+          <div class="grid grid-cols-8 gap-2 mb-2 text-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">
+            <div class="py-2 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">Ca / Giờ</div>
+            <div class="py-2 rounded-lg tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="1">Thứ 2</div>
+            <div class="py-2 rounded-lg tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="2">Thứ 3</div>
+            <div class="py-2 rounded-lg tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="3">Thứ 4</div>
+            <div class="py-2 rounded-lg tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="4">Thứ 5</div>
+            <div class="py-2 rounded-lg tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="5">Thứ 6</div>
+            <div class="py-2 rounded-lg tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="6">Thứ 7</div>
+            <div class="py-2 rounded-lg tkb-day-header text-slate-700 dark:text-slate-200 flex items-center justify-center" data-day="0">Chủ Nhật</div>
           </div>
 
           <!-- Shifts Grid Body: 4 rows -->
@@ -501,19 +449,13 @@
     <div id="view-tasks" class="tab-view hidden space-y-4 mobile-pb">
 
       <!-- Calendar & Tasks Header -->
-      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-2xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-black">
-            <i class="fas fa-calendar-check"></i>
-          </div>
-          <div>
-            <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Lịch & Nhiệm vụ</h2>
-            <span class="text-[11px] font-semibold text-slate-400 hidden sm:inline">Theo dõi tiến độ học tập và công việc hàng ngày</span>
-          </div>
+      <div class="flex items-center justify-between bg-white dark:bg-surface-cardDark px-4 py-3 rounded-xl border border-surface-borderLight dark:border-surface-borderDark shadow-sm">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">Lịch & Nhiệm vụ</h2>
         </div>
 
-        <button onclick="goToTodayCalendar()" class="px-3.5 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 font-bold text-xs smooth border border-blue-200/50 dark:border-blue-700/30 flex items-center gap-1.5">
-          <i class="fas fa-calendar-day"></i> Hôm nay
+        <button onclick="goToTodayCalendar()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold text-xs smooth border border-slate-200 dark:border-slate-700">
+          Hôm nay
         </button>
       </div>
 
@@ -576,16 +518,16 @@
           </div>
 
           <!-- Quick Inline Study Time Editor -->
-          <div class="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2">
-            <span class="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-              <i class="fas fa-stopwatch text-blue-500"></i> Phút học:
+          <div class="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              Phút học:
             </span>
             <div class="flex items-center gap-1.5">
               <input type="number" id="inlineStudyMinutesInput" min="0" max="1440" step="5" value="0"
-                class="w-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs font-black text-center text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                class="w-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-center text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600"
                 onchange="saveInlineStudyTime(this.value)">
               <button onclick="saveInlineStudyTime(document.getElementById('inlineStudyMinutesInput').value)"
-                class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs smooth">
+                class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold rounded-lg text-xs smooth">
                 Lưu
               </button>
             </div>
@@ -594,10 +536,10 @@
           <!-- Add Task Input -->
           <div class="flex gap-2">
             <input type="text" id="newTaskInput" placeholder="Nhiệm vụ cần làm (Enter)..." 
-              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600"
               onkeypress="if(event.key==='Enter') saveSelectedDateTask()">
-            <button onclick="saveSelectedDateTask()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center gap-1">
-              <i class="fas fa-plus"></i>
+            <button onclick="saveSelectedDateTask()" class="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs smooth shadow-sm flex items-center gap-1">
+              Thêm
             </button>
           </div>
 
@@ -608,8 +550,8 @@
 
           <!-- Task Bottom Actions -->
           <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
-            <button onclick="clearCompletedTasks()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-500 font-bold text-xs smooth flex items-center gap-1">
-              <i class="fas fa-trash-alt"></i> Xóa việc đã xong
+            <button onclick="clearCompletedTasks()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 font-semibold text-xs smooth flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+              <i class="fas fa-trash-alt text-[10px]"></i> Xóa việc đã xong
             </button>
           </div>
 
@@ -620,36 +562,36 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- TAB 5: PHÒNG FOCUS                                      -->
+    <!-- TAB 5: BỘ BẤM GIỜ TẬP TRUNG                             -->
     <!-- ======================================================= -->
     <div id="view-focus" class="tab-view hidden py-4 mobile-pb">
 
-      <div class="max-w-lg w-full mx-auto bg-white dark:bg-surface-cardDark rounded-3xl p-8 sm:p-10 border border-surface-borderLight dark:border-surface-borderDark text-center shadow-lg">
+      <div class="max-w-lg w-full mx-auto bg-white dark:bg-surface-cardDark rounded-2xl p-6 sm:p-8 border border-surface-borderLight dark:border-surface-borderDark text-center shadow-sm">
         
-        <div class="space-y-7">
+        <div class="space-y-6">
           
           <!-- Big Countdown Display -->
           <div class="py-2">
-            <div class="text-8xl sm:text-9xl font-black font-mono tracking-tight text-amber-500 dark:text-amber-400 select-none" id="focusTimerBigDisplay">
+            <div class="text-7xl sm:text-8xl font-extrabold font-mono tracking-tight text-amber-500 dark:text-amber-400 select-none" id="focusTimerBigDisplay">
               25:00
             </div>
-            <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2" id="focusModeLabel">
+            <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wider mt-2" id="focusModeLabel">
               Đồng hồ
             </div>
           </div>
 
           <!-- Direct Focus Minutes & Break Dropdown -->
-          <div class="space-y-4 text-left bg-slate-50 dark:bg-slate-900/70 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-800">
+          <div class="space-y-4 text-left bg-slate-50 dark:bg-slate-800/80 p-5 rounded-xl border border-slate-200 dark:border-slate-700">
             <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Thời gian học (Phút):</label>
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Thời gian học (Phút):</label>
               <input type="number" id="focusCustomMinutes" min="1" max="300" value="25"
-                class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-center font-bold text-base text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-center font-bold text-base text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600"
                 oninput="onCustomMinutesChange(this.value)">
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Thời gian nghỉ sau phiên:</label>
-              <select id="focusBreakSelect" onchange="onBreakDurationChange(this.value)" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-xs text-slate-900 dark:text-white focus:outline-none">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Thời gian nghỉ sau phiên:</label>
+              <select id="focusBreakSelect" onchange="onBreakDurationChange(this.value)" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3.5 py-2 font-semibold text-xs text-slate-900 dark:text-white focus:outline-none">
                 <option value="0">Không nghỉ (0 phút)</option>
                 <option value="5" selected>Nghỉ 5 phút</option>
                 <option value="10">Nghỉ 10 phút</option>
@@ -662,21 +604,21 @@
 
           <!-- Action Buttons -->
           <div class="flex items-center justify-center gap-3 pt-1">
-            <button onclick="toggleTimer()" id="focusMainPlayBtn" class="flex-1 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm smooth shadow-sm flex items-center justify-center gap-2">
-              <i class="fas fa-play"></i> Bắt đầu
+            <button onclick="toggleTimer()" id="focusMainPlayBtn" class="flex-1 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm smooth shadow-sm flex items-center justify-center gap-2">
+              <i class="fas fa-play text-xs"></i> Bắt đầu
             </button>
-            <button onclick="endAndLogEarly()" class="px-5 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm smooth shadow-sm flex items-center gap-2">
-              <i class="fas fa-stop"></i> Lưu & Dừng
+            <button onclick="endAndLogEarly()" class="px-5 py-3 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm smooth flex items-center gap-2 border border-slate-300 dark:border-slate-700">
+              Lưu & Dừng
             </button>
-            <button onclick="resetTimer()" class="w-14 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm smooth flex items-center justify-center" title="Đặt lại">
-              <i class="fas fa-redo"></i>
+            <button onclick="resetTimer()" class="w-12 py-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm smooth flex items-center justify-center border border-slate-200 dark:border-slate-700" title="Đặt lại">
+              <i class="fas fa-redo text-xs"></i>
             </button>
           </div>
 
           <!-- Shortcut Tip -->
-          <div class="text-xs text-slate-400 dark:text-slate-500 pt-1">
-            <span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono">Space</span> Bật/Dừng &nbsp;|&nbsp;
-            <span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono">← / →</span> Đổi bài nhạc
+          <div class="text-xs text-slate-500 dark:text-slate-400 pt-1">
+            <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded font-mono text-[11px]">Space</span> Bật/Dừng &nbsp;|&nbsp;
+            <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded font-mono text-[11px]">← / →</span> Đổi bài nhạc
           </div>
 
         </div>
@@ -691,12 +633,12 @@
   <!-- FLOATING MINIPLAYER (Clean Expand / Hide)  -->
   <!-- ========================================== -->
   <!-- Floating Mini Pill Trigger (Shown when minimized) -->
-  <div id="miniplayer-floating-pill" onclick="openMiniplayerFull()" class="hidden fixed bottom-16 sm:bottom-4 right-4 z-50 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white rounded-full pl-3.5 pr-2 py-1.5 shadow-2xl border border-surface-borderLight dark:border-surface-borderDark glass flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 smooth max-w-[260px]">
-    <div class="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white flex-shrink-0 animate-spin" id="floatingPillSpin" style="animation-duration: 3s;">
+  <div id="miniplayer-floating-pill" onclick="openMiniplayerFull()" class="hidden fixed bottom-16 sm:bottom-4 right-4 z-50 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-full pl-3.5 pr-2 py-1.5 shadow-xl border border-surface-borderLight dark:border-surface-borderDark flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 smooth max-w-[260px]">
+    <div class="w-5 h-5 rounded-full bg-slate-900 dark:bg-white dark:text-slate-900 text-white flex items-center justify-center text-[10px] flex-shrink-0" id="floatingPillSpin">
       <i class="fas fa-music"></i>
     </div>
-    <span class="text-xs font-extrabold truncate flex-1" id="floatingPillTitle">RandomVie</span>
-    <button onclick="event.stopPropagation(); togglePlayMusic()" class="w-6 h-6 rounded-full bg-slate-100 dark:bg-white/20 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white/30 flex items-center justify-center text-[10px] flex-shrink-0">
+    <span class="text-xs font-bold truncate flex-1" id="floatingPillTitle">RandomVie</span>
+    <button onclick="event.stopPropagation(); togglePlayMusic()" class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-[10px] flex-shrink-0">
       <i class="fas fa-play" id="floatingPlayIcon"></i>
     </button>
   </div>
@@ -744,11 +686,11 @@
         <input type="text" id="youtubeApiKeyInput" placeholder="AIzaSy..." class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 font-semibold text-slate-800 dark:text-white focus:outline-none">
       </div>
       <div class="flex gap-1.5 pt-1">
-        <button onclick="fetchAndBuildTrueShuffle()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 rounded smooth text-[11px]">
-          🔄 Quét API
+        <button onclick="fetchAndBuildTrueShuffle()" class="flex-1 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold py-1.5 rounded-lg smooth text-xs">
+          Quét API
         </button>
-        <button onclick="promptAddCustomPlaylist()" class="px-2 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded smooth text-[11px]">
-          ➕ Thêm
+        <button onclick="promptAddCustomPlaylist()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold rounded-lg smooth text-xs border border-slate-200 dark:border-slate-700">
+          Thêm
         </button>
       </div>
     </div>
@@ -757,27 +699,27 @@
     <div class="space-y-2">
       <div class="flex items-center justify-between">
         <div class="truncate flex-1 pr-2">
-          <div class="font-extrabold text-xs text-slate-900 dark:text-white truncate" id="playerCurrentTrackTitle">Đang sẵn sàng...</div>
-          <div class="text-[10px] text-slate-400 truncate" id="playerCurrentPlaylistName">Playlist: RandomVie</div>
+          <div class="font-bold text-xs text-slate-900 dark:text-white truncate" id="playerCurrentTrackTitle">Đang sẵn sàng...</div>
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate" id="playerCurrentPlaylistName">Playlist: RandomVie</div>
         </div>
-        <div class="text-[10px] font-mono text-slate-400" id="playerTrackIndex">0/0</div>
+        <div class="text-[11px] font-mono text-slate-500 dark:text-slate-400" id="playerTrackIndex">0/0</div>
       </div>
 
       <div class="flex items-center justify-between gap-1.5">
-        <button onclick="playPrevTrack()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs" title="Bài trước (←)">
+        <button onclick="playPrevTrack()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200 dark:border-slate-700" title="Bài trước (←)">
           <i class="fas fa-backward-step"></i>
         </button>
 
-        <button onclick="togglePlayMusic()" id="playerPlayPauseBtn" class="flex-1 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs smooth shadow-sm flex items-center justify-center gap-1.5">
-          <i class="fas fa-play"></i> Phát
+        <button onclick="togglePlayMusic()" id="playerPlayPauseBtn" class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs smooth shadow-sm flex items-center justify-center gap-1.5">
+          <i class="fas fa-play text-xs"></i> Phát
         </button>
 
-        <button onclick="playNextTrack()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs" title="Bài sau (→)">
+        <button onclick="playNextTrack()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 smooth flex items-center justify-center text-xs border border-slate-200 dark:border-slate-700" title="Bài sau (→)">
           <i class="fas fa-forward-step"></i>
         </button>
 
-        <button onclick="toggleTrueShuffle()" id="playerShuffleBtn" class="px-2 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-[11px] smooth flex items-center gap-1" title="True Shuffle">
-          <i class="fas fa-random"></i>
+        <button onclick="toggleTrueShuffle()" id="playerShuffleBtn" class="px-2.5 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs smooth flex items-center gap-1 border border-slate-200 dark:border-slate-700" title="True Shuffle">
+          <i class="fas fa-random text-xs"></i>
         </button>
       </div>
     </div>
@@ -787,26 +729,21 @@
   <!-- ========================================== -->
   <!-- MOBILE BOTTOM NAVIGATION BAR               -->
   <!-- ========================================== -->
-  <div class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-surface-cardDark/95 glass border-t border-surface-borderLight dark:border-surface-borderDark px-2 py-1.5 flex justify-around items-center">
-    <button onclick="switchTab('overview')" id="m-tab-overview" class="flex flex-col items-center gap-0.5 text-blue-600 dark:text-blue-400 p-1 flex-1">
-      <i class="fas fa-th-large text-sm"></i>
-      <span class="text-[10px] font-bold">Tổng quan</span>
+  <div class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-surface-cardDark border-t border-surface-borderLight dark:border-surface-borderDark px-2 py-1.5 flex justify-around items-center">
+    <button onclick="switchTab('overview')" id="m-tab-overview" class="flex flex-col items-center gap-0.5 text-slate-900 dark:text-white p-1 flex-1 font-bold">
+      <span class="text-xs">Tổng quan</span>
     </button>
-    <button onclick="switchTab('gpa')" id="m-tab-gpa" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
-      <i class="fas fa-chart-pie text-sm"></i>
-      <span class="text-[10px] font-bold">GPA</span>
+    <button onclick="switchTab('gpa')" id="m-tab-gpa" class="flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400 p-1 flex-1 font-medium">
+      <span class="text-xs">GPA</span>
     </button>
-    <button onclick="switchTab('timetable')" id="m-tab-timetable" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
-      <i class="fas fa-calendar-week text-sm"></i>
-      <span class="text-[10px] font-bold">TKB</span>
+    <button onclick="switchTab('timetable')" id="m-tab-timetable" class="flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400 p-1 flex-1 font-medium">
+      <span class="text-xs">TKB</span>
     </button>
-    <button onclick="switchTab('tasks')" id="m-tab-tasks" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
-      <i class="fas fa-check-circle text-sm"></i>
-      <span class="text-[10px] font-bold">Nhiệm vụ</span>
+    <button onclick="switchTab('tasks')" id="m-tab-tasks" class="flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400 p-1 flex-1 font-medium">
+      <span class="text-xs">Nhiệm vụ</span>
     </button>
-    <button onclick="switchTab('focus')" id="m-tab-focus" class="flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1">
-      <i class="fas fa-stopwatch text-sm"></i>
-      <span class="text-[10px] font-bold">Focus</span>
+    <button onclick="switchTab('focus')" id="m-tab-focus" class="flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400 p-1 flex-1 font-medium">
+      <span class="text-xs">Tập trung</span>
     </button>
   </div>
 
@@ -814,13 +751,13 @@
   <!-- MODALS                                     -->
   <!-- ========================================== -->
   <!-- MODAL: ADD / EDIT TIMETABLE CLASS -->
-  <div id="class-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+  <div id="class-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-5 w-full max-w-md border border-surface-borderLight dark:border-surface-borderDark shadow-2xl smooth">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-          <i class="fas fa-book-open text-blue-600"></i> <span id="classModalTitle">Thêm Lớp học</span>
+        <h3 class="font-bold text-base text-slate-900 dark:text-white" id="classModalTitle">
+          Thêm Lớp học
         </h3>
-        <button onclick="closeModal('class-modal')" class="w-7 h-7 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
+        <button onclick="closeModal('class-modal')" class="w-7 h-7 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -829,8 +766,8 @@
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Ngày trong tuần</label>
-          <select id="class-input-day" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Ngày trong tuần</label>
+          <select id="class-input-day" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
             <option value="1">Thứ Hai</option>
             <option value="2">Thứ Ba</option>
             <option value="3">Thứ Tư</option>
@@ -842,16 +779,16 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Tên Môn học</label>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Tên Môn học</label>
           <input type="text" id="class-input-name" placeholder="Tên môn học" list="gpa-subject-datalist"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
           <datalist id="gpa-subject-datalist"></datalist>
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Ca học</label>
-            <select id="class-input-shift" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Ca học</label>
+            <select id="class-input-shift" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
               <option value="Ca 1 (07:00 - 09:40)">Ca 1 (07:00 - 09:40)</option>
               <option value="Ca 2 (09:50 - 12:30)">Ca 2 (09:50 - 12:30)</option>
               <option value="Ca 3 (13:30 - 16:10)">Ca 3 (13:30 - 16:10)</option>
@@ -860,41 +797,41 @@
           </div>
 
           <div>
-            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Phòng học</label>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Phòng học</label>
             <input type="text" id="class-input-room" placeholder="Phòng học" 
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Giảng viên (Tùy chọn)</label>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Giảng viên (Tùy chọn)</label>
             <input type="text" id="class-input-teacher" placeholder="Giảng viên" 
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
           </div>
           <div>
-            <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Màu thẻ</label>
-            <select id="class-input-color" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
-              <option value="blue">🔵 Xanh dương</option>
-              <option value="emerald">🟢 Xanh lục</option>
-              <option value="amber">🟡 Vàng hổ phách</option>
-              <option value="purple">🟣 Tím</option>
-              <option value="rose">🔴 Đỏ hồng</option>
-              <option value="teal">🩵 Xanh mòng két</option>
-              <option value="orange">🟠 Cam</option>
-              <option value="indigo">🔮 Chàm</option>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Màu thẻ</label>
+            <select id="class-input-color" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
+              <option value="blue">Xanh dương</option>
+              <option value="emerald">Xanh lục</option>
+              <option value="amber">Vàng hổ phách</option>
+              <option value="purple">Tím</option>
+              <option value="rose">Đỏ hồng</option>
+              <option value="teal">Xanh mòng két</option>
+              <option value="orange">Cam</option>
+              <option value="indigo">Chàm</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Ghi chú thêm</label>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Ghi chú thêm</label>
           <input type="text" id="class-input-notes" placeholder="Ghi chú thêm" 
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
         </div>
 
         <div class="pt-2">
-          <button onclick="saveClassModal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl smooth shadow-sm text-xs">
+          <button onclick="saveClassModal()" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold py-2.5 rounded-lg smooth shadow-sm text-xs">
             Lưu
           </button>
         </div>
@@ -903,45 +840,45 @@
   </div>
 
   <!-- MODAL: APP SETTINGS & BACKUP -->
-  <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+  <div id="settings-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-5 w-full max-w-md border border-surface-borderLight dark:border-surface-borderDark shadow-2xl smooth">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
-          <i class="fas fa-sliders-h text-blue-600"></i> Cài đặt & Sao lưu
+        <h3 class="font-bold text-base text-slate-900 dark:text-white">
+          Cài đặt & Sao lưu
         </h3>
-        <button onclick="closeModal('settings-modal')" class="w-7 h-7 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
+        <button onclick="closeModal('settings-modal')" class="w-7 h-7 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center smooth">
           <i class="fas fa-times"></i>
         </button>
       </div>
 
       <div class="space-y-3.5 text-xs">
         <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Tổng số tín chỉ toàn khóa</label>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Tổng số tín chỉ toàn khóa</label>
           <input type="number" id="setting-total-credits" min="1" value="120"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
         </div>
 
         <div>
-          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Mục tiêu học ngày (Phút)</label>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Mục tiêu học ngày (Phút)</label>
           <input type="number" id="setting-daily-goal" min="10" value="360"
-            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 font-bold text-slate-900 dark:text-white focus:outline-none">
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-600">
         </div>
 
         <div>
-          <button onclick="saveAppSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl smooth shadow-sm text-xs">
+          <button onclick="saveAppSettings()" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold py-2.5 rounded-lg smooth shadow-sm text-xs">
             Lưu cài đặt
           </button>
         </div>
 
         <!-- Manual Backup / Restore Section -->
         <div class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
-          <span class="block font-bold text-slate-700 dark:text-slate-300">📁 Sao lưu & Phục hồi dữ liệu</span>
+          <span class="block font-semibold text-slate-700 dark:text-slate-300">Sao lưu & Phục hồi dữ liệu</span>
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="exportDataJSON()" class="py-2 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl smooth flex items-center justify-center gap-1.5">
-              <i class="fas fa-file-export text-blue-500"></i> Xuất file JSON
+            <button onclick="exportDataJSON()" class="py-2 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-lg smooth flex items-center justify-center gap-1.5 border border-slate-200 dark:border-slate-700">
+              Xuất file JSON
             </button>
-            <label class="py-2 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl smooth flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fas fa-file-import text-emerald-500"></i> Nhập file JSON
+            <label class="py-2 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-lg smooth flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200 dark:border-slate-700">
+              Nhập file JSON
               <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="importDataJSON(event)">
             </label>
           </div>
@@ -1039,39 +976,39 @@
 
     let gpaChart = null;
 
-    // 8-Color Palette System
+    // 8-Color Palette System (Neutral cards + High-contrast badges)
     const COLOR_CLASSES = {
       blue: {
-        card: 'border-blue-500/40 bg-blue-50/70 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200',
-        badge: 'bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-900'
       },
       emerald: {
-        card: 'border-emerald-500/40 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200',
-        badge: 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900'
       },
       amber: {
-        card: 'border-amber-500/40 bg-amber-50/70 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200',
-        badge: 'bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-900'
       },
       purple: {
-        card: 'border-purple-500/40 bg-purple-50/70 dark:bg-purple-950/40 text-purple-900 dark:text-purple-200',
-        badge: 'bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-900'
       },
       rose: {
-        card: 'border-rose-500/40 bg-rose-50/70 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200',
-        badge: 'bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
       },
       teal: {
-        card: 'border-teal-500/40 bg-teal-50/70 dark:bg-teal-950/40 text-teal-900 dark:text-teal-200',
-        badge: 'bg-teal-100 dark:bg-teal-900/60 text-teal-700 dark:text-teal-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300 border border-teal-200 dark:border-teal-900'
       },
       orange: {
-        card: 'border-orange-500/40 bg-orange-50/70 dark:bg-orange-950/40 text-orange-900 dark:text-orange-200',
-        badge: 'bg-orange-100 dark:bg-orange-900/60 text-orange-700 dark:text-orange-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300 border border-orange-200 dark:border-orange-900'
       },
       indigo: {
-        card: 'border-indigo-500/40 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200',
-        badge: 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300'
+        card: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700',
+        badge: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900'
       }
     };
 
@@ -1275,17 +1212,17 @@
       if (activeView) activeView.classList.remove('hidden');
 
       document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.className = 'nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        btn.className = 'nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
       });
       const activeBtn = document.getElementById(`tab-btn-${tabId}`);
       if (activeBtn) {
-        activeBtn.className = 'nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 smooth bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm';
+        activeBtn.className = 'nav-tab px-3 py-1.5 rounded-md text-xs font-semibold smooth bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-700';
       }
 
       ['overview', 'gpa', 'timetable', 'tasks', 'focus'].forEach(t => {
         const mBtn = document.getElementById(`m-tab-${t}`);
         if (mBtn) {
-          mBtn.className = t === tabId ? 'flex flex-col items-center gap-0.5 text-blue-600 dark:text-blue-400 p-1 flex-1' : 'flex flex-col items-center gap-0.5 text-slate-400 p-1 flex-1';
+          mBtn.className = t === tabId ? 'flex flex-col items-center gap-0.5 text-slate-900 dark:text-white p-1 flex-1 font-bold' : 'flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400 p-1 flex-1 font-medium';
         }
       });
 
@@ -1330,7 +1267,7 @@
       if (classBox) {
         if (dayClasses.length === 0) {
           classBox.innerHTML = `
-            <div class="text-center py-4 text-slate-400 text-xs">
+            <div class="text-center py-4 text-slate-500 dark:text-slate-400 text-xs">
               Không có lịch học hôm nay.
             </div>
           `;
@@ -1338,16 +1275,16 @@
           classBox.innerHTML = dayClasses.map(c => {
             const pal = COLOR_CLASSES[c.color] || COLOR_CLASSES.blue;
             return `
-              <div class="p-2.5 rounded-xl border ${pal.card} flex items-center justify-between gap-2 smooth shadow-sm">
+              <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between gap-2 shadow-sm">
                 <div class="truncate">
-                  <div class="font-extrabold text-xs text-slate-900 dark:text-white truncate">${c.name}</div>
-                  <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-2">
+                  <div class="font-bold text-xs text-slate-900 dark:text-white truncate">${c.name}</div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
                     <span>${c.shift}</span>
                     <span>Phòng ${c.room || '?'}</span>
                   </div>
                 </div>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg ${pal.badge} shadow-sm flex-shrink-0">
-                  ${c.room || 'Phòng'}
+                <span class="text-xs font-semibold px-2 py-0.5 rounded ${pal.badge} flex-shrink-0">
+                  P.${c.room || '?'}
                 </span>
               </div>
             `;
@@ -1417,17 +1354,16 @@
     // 6. TAB 2: GPA TRACKER (ORIGINAL PROVEN LOGIC)
     // ==========================================
     function getGradeInfo(rawScore) {
-      // Đảm bảo làm tròn 1 chữ số thập phân cho việc xếp loại chuẩn gốc
       const score = Math.round(rawScore * 10) / 10;
-      if (score >= 9.0) return { letter: 'A+', gpa: 4.0, bg: 'bg-emerald-100 dark:bg-emerald-500/20', text: 'text-emerald-700 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-500/30' };
-      if (score >= 8.5) return { letter: 'A', gpa: 3.7, bg: 'bg-emerald-50 dark:bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-300', border: 'border-emerald-200 dark:border-emerald-500/30' };
-      if (score >= 8.0) return { letter: 'B+', gpa: 3.5, bg: 'bg-blue-100 dark:bg-blue-500/20', text: 'text-blue-700 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-500/30' };
-      if (score >= 7.0) return { letter: 'B', gpa: 3.0, bg: 'bg-blue-50 dark:bg-blue-500/10', text: 'text-blue-600 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-500/30' };
-      if (score >= 6.5) return { letter: 'C+', gpa: 2.5, bg: 'bg-amber-100 dark:bg-amber-500/20', text: 'text-amber-700 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-500/30' };
-      if (score >= 5.5) return { letter: 'C', gpa: 2.0, bg: 'bg-amber-50 dark:bg-amber-500/10', text: 'text-amber-600 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-500/30' };
-      if (score >= 5.0) return { letter: 'D+', gpa: 1.5, bg: 'bg-orange-100 dark:bg-orange-500/20', text: 'text-orange-700 dark:text-orange-400', border: 'border-orange-200 dark:border-orange-500/30' };
-      if (score >= 4.0) return { letter: 'D', gpa: 1.0, bg: 'bg-orange-50 dark:bg-orange-500/10', text: 'text-orange-600 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-500/30' };
-      return { letter: 'F', gpa: 0, bg: 'bg-red-100 dark:bg-red-500/20', text: 'text-red-700 dark:text-red-400', border: 'border-red-200 dark:border-red-500/30' };
+      if (score >= 9.0) return { letter: 'A+', gpa: 4.0, bg: 'bg-emerald-50 dark:bg-emerald-950', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-300 dark:border-emerald-800' };
+      if (score >= 8.5) return { letter: 'A', gpa: 3.7, bg: 'bg-emerald-50 dark:bg-emerald-950', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-200 dark:border-emerald-800' };
+      if (score >= 8.0) return { letter: 'B+', gpa: 3.5, bg: 'bg-blue-50 dark:bg-blue-950', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-800' };
+      if (score >= 7.0) return { letter: 'B', gpa: 3.0, bg: 'bg-blue-50 dark:bg-blue-950', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-800' };
+      if (score >= 6.5) return { letter: 'C+', gpa: 2.5, bg: 'bg-amber-50 dark:bg-amber-950', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-800' };
+      if (score >= 5.5) return { letter: 'C', gpa: 2.0, bg: 'bg-amber-50 dark:bg-amber-950', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-800' };
+      if (score >= 5.0) return { letter: 'D+', gpa: 1.5, bg: 'bg-orange-50 dark:bg-orange-950', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-300 dark:border-orange-800' };
+      if (score >= 4.0) return { letter: 'D', gpa: 1.0, bg: 'bg-orange-50 dark:bg-orange-950', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-800' };
+      return { letter: 'F', gpa: 0, bg: 'bg-red-50 dark:bg-red-950', text: 'text-red-700 dark:text-red-300', border: 'border-red-300 dark:border-red-800' };
     }
 
     function toggleAccordion(sIndex) {
@@ -1446,9 +1382,9 @@
 
       if (!state.semesters || state.semesters.length === 0) {
         container.innerHTML = `
-          <div class="bg-white dark:bg-surface-cardDark border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl p-10 text-center flex flex-col items-center">
+          <div class="bg-white dark:bg-surface-cardDark border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-10 text-center flex flex-col items-center">
             <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Chưa có dữ liệu học kỳ</h3>
-            <button onclick="addSemester()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs smooth">
+            <button onclick="addSemester()" class="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 px-5 py-2.5 rounded-lg font-bold text-xs smooth">
               Tạo Học kỳ mới
             </button>
           </div>
@@ -1461,29 +1397,29 @@
         const subjects = sem.subjects || [];
 
         return `
-        <div class="bg-white dark:bg-surface-cardDark rounded-2xl border border-surface-borderLight dark:border-surface-borderDark overflow-hidden smooth shadow-sm ${isExpanded ? 'ring-1 ring-blue-500/30' : ''}">
+        <div class="bg-white dark:bg-surface-cardDark rounded-xl border border-surface-borderLight dark:border-surface-borderDark overflow-hidden smooth shadow-sm ${isExpanded ? 'border-slate-300 dark:border-slate-700' : ''}">
           
           <!-- Accordion Header -->
-          <div class="p-3.5 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50/50 dark:bg-slate-900/30 cursor-pointer" onclick="toggleAccordion(${sIndex})">
+          <div class="p-3.5 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50 dark:bg-slate-800/40 cursor-pointer" onclick="toggleAccordion(${sIndex})">
             
             <div class="flex items-center gap-2.5 w-full sm:w-auto flex-1">
-              <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center text-xs smooth ${isExpanded ? 'rotate-180 text-blue-500' : ''}">
+              <div class="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs smooth ${isExpanded ? 'rotate-180' : ''}">
                 <i class="fas fa-chevron-down"></i>
               </div>
               <input type="text" value="${sem.name || ''}" onclick="event.stopPropagation()" onchange="updateSemesterName(${sIndex}, this.value)" 
-                class="text-sm sm:text-base font-extrabold bg-transparent border-none outline-none text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 smooth">
+                class="text-sm sm:text-base font-bold bg-transparent border-none outline-none text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 smooth">
             </div>
             
             <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end" onclick="event.stopPropagation()">
-              <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm text-xs font-bold">
-                <span class="text-slate-400 text-[10px] uppercase">GPA</span>
-                <span class="text-blue-600 dark:text-blue-400 text-xs font-black" id="sem-gpa-${sIndex}">0.00</span>
+              <div class="flex items-center gap-1.5 bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm text-xs font-semibold">
+                <span class="text-slate-500 dark:text-slate-400 text-[11px]">GPA:</span>
+                <span class="text-slate-900 dark:text-white text-xs font-bold" id="sem-gpa-${sIndex}">0.00</span>
               </div>
-              <div class="flex items-center gap-1.5 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm text-xs font-bold">
-                <span class="text-slate-400 text-[10px] uppercase">Tín</span>
-                <span class="text-emerald-600 dark:text-emerald-400 text-xs font-black" id="sem-credits-${sIndex}">0</span>
+              <div class="flex items-center gap-1.5 bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm text-xs font-semibold">
+                <span class="text-slate-500 dark:text-slate-400 text-[11px]">Tín:</span>
+                <span class="text-slate-900 dark:text-white text-xs font-bold" id="sem-credits-${sIndex}">0</span>
               </div>
-              <button onclick="deleteSemester(${sIndex})" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-red-500 smooth flex items-center justify-center text-xs" title="Xóa học kỳ">
+              <button onclick="deleteSemester(${sIndex})" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 smooth flex items-center justify-center text-xs border border-slate-200 dark:border-slate-700" title="Xóa học kỳ">
                 <i class="fas fa-trash-alt"></i>
               </button>
             </div>
@@ -1493,7 +1429,7 @@
           <div class="accordion-content ${isExpanded ? '' : 'collapsed'} border-t border-slate-100 dark:border-slate-800">
             <div class="p-3.5 sm:p-4">
               <!-- Desktop Table Header -->
-              <div class="hidden md:grid grid-cols-12 gap-2 mb-2 px-2 text-[10px] font-extrabold text-slate-400 uppercase">
+              <div class="hidden md:grid grid-cols-12 gap-2 mb-2 px-2 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">
                 <div class="col-span-4">Môn học</div>
                 <div class="col-span-1 text-center">Tín</div>
                 <div class="col-span-1 text-center">GK(%)</div>
@@ -1508,43 +1444,43 @@
               <!-- Subjects List -->
               <div class="space-y-2">
                 ${subjects.map((sub, subIndex) => `
-                  <div class="subject-row grid grid-cols-6 md:grid-cols-12 gap-1.5 items-center bg-slate-50/70 dark:bg-slate-900/40 p-2 rounded-xl border border-slate-200/50 dark:border-slate-800 relative" data-sem="${sIndex}" data-sub="${subIndex}">
+                  <div class="subject-row grid grid-cols-6 md:grid-cols-12 gap-1.5 items-center bg-slate-50 dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 relative" data-sem="${sIndex}" data-sub="${subIndex}">
                     
                     <div class="col-span-6 md:col-span-4">
-                      <input type="text" class="auto-save sub-name w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-none" value="${sub.name || ''}" placeholder="Tên môn học">
+                      <input type="text" class="auto-save sub-name w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-2.5 py-1.5 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none" value="${sub.name || ''}" placeholder="Tên môn học">
                     </div>
                     
                     <div class="col-span-2 md:col-span-1">
-                      <input type="number" min="0" step="1" class="auto-recalc sub-credits w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-1 py-1.5 text-center text-xs font-bold text-slate-900 dark:text-white focus:outline-none" value="${sub.credits !== undefined ? sub.credits : 3}">
+                      <input type="number" min="0" step="1" class="auto-recalc sub-credits w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-1 py-1.5 text-center text-xs font-semibold text-slate-900 dark:text-white focus:outline-none" value="${sub.credits !== undefined ? sub.credits : 3}">
                     </div>
                     
                     <div class="col-span-2 md:col-span-1">
-                      <input type="number" min="0" max="100" class="auto-recalc mid-weight w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-1 py-1.5 text-center text-xs font-bold text-slate-500" value="${sub.midWeight !== undefined ? sub.midWeight : 40}">
+                      <input type="number" min="0" max="100" class="auto-recalc mid-weight w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-1 py-1.5 text-center text-xs font-semibold text-slate-600 dark:text-slate-400" value="${sub.midWeight !== undefined ? sub.midWeight : 40}">
                     </div>
                     
                     <div class="col-span-2 md:col-span-1">
-                      <input type="number" min="0" max="100" class="auto-recalc final-weight w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-1 py-1.5 text-center text-xs font-bold text-slate-500" value="${sub.finalWeight !== undefined ? sub.finalWeight : 60}">
+                      <input type="number" min="0" max="100" class="auto-recalc final-weight w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-1 py-1.5 text-center text-xs font-semibold text-slate-600 dark:text-slate-400" value="${sub.finalWeight !== undefined ? sub.finalWeight : 60}">
                     </div>
                     
                     <div class="col-span-2 md:col-span-1">
-                      <input type="number" min="0" max="10" step="0.1" class="auto-recalc mid-score w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-1 py-1.5 text-center text-xs font-black text-blue-600 dark:text-blue-400 focus:outline-none" value="${sub.midScore !== undefined ? sub.midScore : 0}">
+                      <input type="number" min="0" max="10" step="0.1" class="auto-recalc mid-score w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-1 py-1.5 text-center text-xs font-bold text-slate-900 dark:text-white focus:outline-none" value="${sub.midScore !== undefined ? sub.midScore : 0}">
                     </div>
                     
                     <div class="col-span-2 md:col-span-1">
-                      <input type="number" min="0" max="10" step="0.1" class="auto-recalc final-score w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-1 py-1.5 text-center text-xs font-black text-blue-600 dark:text-blue-400 focus:outline-none" value="${sub.finalScore !== undefined ? sub.finalScore : 0}">
+                      <input type="number" min="0" max="10" step="0.1" class="auto-recalc final-score w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-1 py-1.5 text-center text-xs font-bold text-slate-900 dark:text-white focus:outline-none" value="${sub.finalScore !== undefined ? sub.finalScore : 0}">
                     </div>
                     
-                    <div class="col-span-2 md:col-span-1 text-center font-black text-xs text-slate-800 dark:text-slate-200 out-total">0.0</div>
+                    <div class="col-span-2 md:col-span-1 text-center font-bold text-xs text-slate-900 dark:text-slate-100 out-total">0.0</div>
                     
                     <div class="col-span-2 md:col-span-1 text-center">
-                      <div class="out-letter-container mx-auto w-8 h-6 rounded flex items-center justify-center font-black text-[11px] border">
+                      <div class="out-letter-container mx-auto w-8 h-6 rounded flex items-center justify-center font-bold text-xs border">
                         <span class="out-letter">-</span>
                       </div>
                     </div>
                     
                     <div class="col-span-4 md:col-span-1 flex items-center justify-center gap-1">
-                      <button onclick="quickAddToTimetable('${sub.name || ''}')" title="Thêm vào TKB" class="w-6 h-6 rounded text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center text-xs"><i class="fas fa-calendar-plus"></i></button>
-                      <button onclick="deleteSubject(${sIndex}, ${subIndex})" title="Xóa môn" class="w-6 h-6 rounded text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
+                      <button onclick="quickAddToTimetable('${sub.name || ''}')" title="Thêm vào TKB" class="w-6 h-6 rounded text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center justify-center text-xs"><i class="fas fa-calendar-plus"></i></button>
+                      <button onclick="deleteSubject(${sIndex}, ${subIndex})" title="Xóa môn" class="w-6 h-6 rounded text-slate-400 hover:text-red-600 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
                     </div>
                   </div>
                 `).join('')}
@@ -1552,8 +1488,8 @@
 
               <!-- Footer Add Button -->
               <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button onclick="addSubject(${sIndex})" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
-                  <i class="fas fa-plus"></i> Thêm môn học
+                <button onclick="addSubject(${sIndex})" class="text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center gap-1">
+                  <i class="fas fa-plus text-[10px]"></i> Thêm môn học
                 </button>
               </div>
             </div>
@@ -1941,7 +1877,7 @@
             <div class="grid grid-cols-8 gap-2.5 items-stretch">
               <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 text-center flex flex-col justify-center items-center min-h-[88px] sm:min-h-[96px] shadow-sm">
                 <span class="font-black text-xs sm:text-sm text-blue-600 dark:text-blue-400 uppercase tracking-wide">${sh.label}</span>
-                <span class="text-[10px] text-slate-400 font-mono mt-1 px-1.5 py-0.5 rounded bg-slate-200/50 dark:bg-slate-800/80">${sh.time}</span>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1">${sh.time}</span>
               </div>
 
               ${daysOfWeek.map(d => {
@@ -1949,11 +1885,11 @@
                 const isTodayCol = d === todayDay;
 
                 return `
-                  <div class="p-1.5 sm:p-2 rounded-xl border ${isTodayCol ? 'bg-blue-50/25 dark:bg-blue-950/20 border-blue-400/40 ring-1 ring-blue-400/20' : 'bg-slate-50/40 dark:bg-slate-900/20 border-slate-200/40 dark:border-slate-800/40'} flex flex-col gap-1.5 justify-center min-h-[88px] sm:min-h-[96px]">
+                  <div class="p-1.5 sm:p-2 rounded-xl border ${isTodayCol ? 'bg-slate-100/70 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800'} flex flex-col gap-1.5 justify-center min-h-[88px] sm:min-h-[96px]">
                     ${matches.map(c => renderClassCard(c)).join('')}
                     ${matches.length === 0 ? `
-                      <button onclick="openAddClassModalFor(${d}, '${sh.label} (${sh.time})')" class="w-full h-full min-h-[52px] rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50/10 flex items-center justify-center text-xs smooth group" title="Thêm môn">
-                        <i class="fas fa-plus opacity-40 group-hover:opacity-100 group-hover:scale-110 smooth text-xs"></i>
+                      <button onclick="openAddClassModalFor(${d}, '${sh.label} (${sh.time})')" class="w-full h-full min-h-[52px] rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center text-xs smooth" title="Thêm môn">
+                        <i class="fas fa-plus text-xs"></i>
                       </button>
                     ` : ''}
                   </div>
@@ -1971,10 +1907,10 @@
           const isToday = d === todayDay;
 
           return `
-            <div class="bg-white dark:bg-surface-cardDark rounded-2xl p-4 border ${isToday ? 'border-blue-500 ring-1 ring-blue-500/30' : 'border-surface-borderLight dark:border-surface-borderDark'} shadow-sm">
+            <div class="bg-white dark:bg-surface-cardDark rounded-xl p-4 border ${isToday ? 'border-slate-400 dark:border-slate-600 ring-1 ring-slate-400/20' : 'border-surface-borderLight dark:border-surface-borderDark'} shadow-sm">
               <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
-                <span class="font-extrabold text-xs text-slate-900 dark:text-white">${getDayNameVN(d)}</span>
-                <button onclick="openAddClassModalFor(${d})" class="text-xs text-blue-600 dark:text-blue-400 font-bold">
+                <span class="font-bold text-xs text-slate-900 dark:text-white">${getDayNameVN(d)}</span>
+                <button onclick="openAddClassModalFor(${d})" class="text-xs text-slate-700 dark:text-slate-300 font-bold hover:text-blue-600">
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
@@ -1993,20 +1929,20 @@
       const pal = COLOR_CLASSES[c.color] || COLOR_CLASSES.blue;
 
       return `
-        <div class="p-2 sm:p-2.5 rounded-xl border ${pal.card} relative group text-xs smooth shadow-sm flex flex-col justify-between gap-1.5 h-full min-h-[76px]">
+        <div class="p-2 sm:p-2.5 rounded-xl border ${pal.card} relative text-xs smooth shadow-sm flex flex-col justify-between gap-1.5 h-full min-h-[76px]">
           <div class="flex items-start justify-between gap-1">
-            <div class="font-extrabold text-xs sm:text-[13px] leading-snug text-slate-900 dark:text-white break-words flex-1">${c.name}</div>
-            <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 smooth flex-shrink-0 pt-0.5">
-              <button onclick="editClass('${c.id}')" class="text-slate-400 hover:text-blue-600 p-0.5" title="Sửa"><i class="fas fa-pencil-alt text-[10px]"></i></button>
-              <button onclick="deleteClass('${c.id}')" class="text-slate-400 hover:text-red-600 p-0.5" title="Xóa"><i class="fas fa-trash-alt text-[10px]"></i></button>
+            <div class="font-bold text-xs sm:text-[13px] leading-snug text-slate-900 dark:text-white break-words flex-1">${c.name}</div>
+            <div class="flex items-center gap-1 flex-shrink-0 pt-0.5">
+              <button onclick="editClass('${c.id}')" class="text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800" title="Sửa"><i class="fas fa-pencil-alt text-[10px]"></i></button>
+              <button onclick="deleteClass('${c.id}')" class="text-slate-400 hover:text-red-600 p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800" title="Xóa"><i class="fas fa-trash-alt text-[10px]"></i></button>
             </div>
           </div>
           
-          <div class="text-[10px] font-bold text-slate-600 dark:text-slate-300 flex items-center justify-between gap-1 mt-auto pt-1">
-            <span class="px-2 py-0.5 rounded-md ${pal.badge} font-black">
+          <div class="text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center justify-between gap-1 mt-auto pt-1">
+            <span class="px-2 py-0.5 rounded ${pal.badge} text-[11px] font-bold">
               P.${c.room || '?'}
             </span>
-            ${isDetailed ? `<span class="text-[10px] text-slate-400 font-mono">${c.shift}</span>` : ''}
+            ${isDetailed ? `<span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">${c.shift}</span>` : ''}
           </div>
         </div>
       `;
@@ -2140,7 +2076,7 @@
       // Padding cells before day 1
       for (let i = 0; i < firstDayIndex; i++) {
         const empty = document.createElement('div');
-        empty.className = 'rounded-xl opacity-10 bg-slate-500/10 min-h-[56px]';
+        empty.className = 'rounded-lg bg-slate-50 dark:bg-slate-900/40 border border-transparent min-h-[56px]';
         grid.appendChild(empty);
       }
 
@@ -2156,26 +2092,19 @@
         const isToday = dateStr === todayStr;
         const isSelected = dateStr === state.calendar.selectedDateStr;
 
-        let bgClass = 'bg-slate-50 dark:bg-slate-900/60 border-slate-200/60 dark:border-slate-800';
-        if (studyTime >= ((state.focus && state.focus.dailyGoalMinutes) || 360)) {
-          bgClass = 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300';
-        } else if (studyTime > 0) {
-          bgClass = 'bg-blue-950/40 border-blue-500/50 text-blue-300';
-        }
-
         const cell = document.createElement('div');
-        cell.className = `p-2 rounded-xl border ${bgClass} ${isSelected ? 'ring-2 ring-blue-500 shadow-md' : ''} ${isToday ? 'border-2 border-blue-500 font-bold' : ''} cursor-pointer hover:border-blue-400 smooth flex flex-col justify-between overflow-hidden min-h-[56px] shadow-sm`;
+        cell.className = `p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 ${isSelected ? 'ring-2 ring-slate-900 dark:ring-white' : ''} ${isToday && !isSelected ? 'border-slate-400 dark:border-slate-500 font-bold' : ''} cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 smooth flex flex-col justify-between overflow-hidden min-h-[56px] shadow-sm`;
         cell.onclick = () => selectCalendarDate(dateStr);
 
         cell.innerHTML = `
-          <div class="flex items-center justify-between text-xs font-black leading-none">
-            <span class="${isToday ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-200'}">${d}</span>
-            ${studyTime > 0 ? `<span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-blue-600/30 text-blue-300">${studyTime}m</span>` : ''}
+          <div class="flex items-center justify-between text-xs font-bold leading-none">
+            <span class="${isToday ? 'text-slate-900 dark:text-white font-extrabold underline' : 'text-slate-700 dark:text-slate-300'}">${d}</span>
+            ${studyTime > 0 ? `<span class="text-[10px] font-mono font-semibold px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${studyTime}m</span>` : ''}
           </div>
-          <div class="text-[10px] truncate mt-1">
+          <div class="text-[11px] truncate mt-1">
             ${totalTasks > 0 ? `
-              <span class="px-1.5 py-0.5 rounded font-extrabold text-[9px] ${completedTasks === totalTasks ? 'text-emerald-400' : 'text-amber-300'}">
-                ✓ ${completedTasks}/${totalTasks}
+              <span class="font-medium text-[10px] ${completedTasks === totalTasks ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}">
+                ${completedTasks}/${totalTasks} việc
               </span>
             ` : ''}
           </div>
@@ -2214,7 +2143,7 @@
       if (!list) return;
       if (!dayData.tasks || dayData.tasks.length === 0) {
         list.innerHTML = `
-          <div class="text-center py-6 text-slate-400 text-xs">
+          <div class="text-center py-6 text-slate-500 dark:text-slate-400 text-xs">
             Chưa có nhiệm vụ nào cho ngày này.
           </div>
         `;
@@ -2222,14 +2151,14 @@
       }
 
       list.innerHTML = dayData.tasks.map((t, idx) => `
-        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 smooth">
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 smooth">
           <label class="flex items-center gap-2.5 cursor-pointer flex-1 truncate">
-            <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleSelectedDateTask(${idx})" class="w-4 h-4 rounded accent-blue-600 cursor-pointer">
-            <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate ${t.completed ? 'line-through text-slate-400' : ''}">
+            <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleSelectedDateTask(${idx})" class="w-4 h-4 rounded accent-slate-900 dark:accent-slate-100 cursor-pointer">
+            <span class="text-xs font-medium text-slate-800 dark:text-slate-200 truncate ${t.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">
               ${t.text}
             </span>
           </label>
-          <button onclick="deleteSelectedDateTask(${idx})" class="w-6 h-6 text-slate-400 hover:text-red-500 text-xs flex items-center justify-center">
+          <button onclick="deleteSelectedDateTask(${idx})" class="w-6 h-6 text-slate-400 hover:text-red-600 dark:hover:text-red-400 text-xs flex items-center justify-center">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -2542,7 +2471,7 @@
         if (dot) dot.classList.remove('hidden');
         if (pillIcon) pillIcon.className = 'fas fa-pause';
         if (pillSpin) pillSpin.classList.add('animate-spin');
-        document.getElementById('overviewMusicStatus').textContent = 'Đang phát 🎵';
+        document.getElementById('overviewMusicStatus').textContent = 'Đang phát';
       } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
         isPlayingMusic = false;
         if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i> Phát';
